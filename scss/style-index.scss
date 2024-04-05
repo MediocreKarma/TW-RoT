@@ -1,0 +1,48 @@
+@import "./vars.scss";
+
+.welcome-container {
+    & * {
+        color: #fff;
+    }
+    box-sizing: border-box;
+    // text-align: center;
+    height: 100vh;
+    // padding: 50px 20px;
+    background-color: #5a005f;
+
+    // &__title {
+    //     font-size: 36px;
+    //     margin-bottom: 20px;
+    // }
+
+    // &__description {
+    //     font-size: 18px;
+    //     color: #666;
+    // }
+    
+    display: flex;
+    width: 100%;
+
+    > * {
+        flex-grow: 1;
+        flex-basis: 0;
+    }
+
+    &__left {
+        padding: $padding-big;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: $primary-hover-color;
+
+        > h1 {
+            font-family: $font-display;
+            font-size: 6em;
+        }
+    }
+
+    &__right {
+        display: flex;
+        background-image: url("../img/trafic.jpg");
+    }
+}

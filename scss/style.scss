@@ -1,0 +1,23 @@
+@import "./vars.scss";
+@import "./style-index.scss";
+@import "./style-login.scss";
+@import "./style-navbar.scss";
+
+body {
+  font-family: $font;
+  margin: 0;
+}
+
+.flex-center-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}

@@ -1,17 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap");
 .navbar {
+  position: fixed;
+  width: 100%;
   box-sizing: border-box;
-  background-color: #6694c6;
-  padding: 10px;
+  top: 0;
+  background-color: #313f6a;
+  padding: 1em;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  align-self: flex-start;
-  position: fixed;
-  top: 0;
-  z-index: 1;
-  width: 100%;
+  margin-top: 0px;
 }
 .navbar__brand {
   color: #fff;
@@ -41,17 +40,4 @@
   text-decoration: underline;
 }
 
-.welcome-container {
-  text-align: center;
-  padding: 50px 20px;
-}
-.welcome-container__title {
-  font-size: 36px;
-  margin-bottom: 20px;
-}
-.welcome-container__description {
-  font-size: 18px;
-  color: #666;
-}
-
-/*# sourceMappingURL=navbar.css.map */
+/*# sourceMappingURL=style-navbar.css.map */
