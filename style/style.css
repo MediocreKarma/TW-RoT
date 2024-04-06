@@ -10,7 +10,6 @@ html {
 html[data-theme=dark] {
   --text-color: #fff;
   --background-color: #222;
-  --button-color--hover: #fff;
 }
 
 .welcome-container {

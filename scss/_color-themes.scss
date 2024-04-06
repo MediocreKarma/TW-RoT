@@ -19,7 +19,6 @@ html {
     &[data-theme="dark"] {
         --text-color: #{$text-color--dark};
         --background-color: #{$bg--dark};
-        --button-color--hover: #fff;
     }
 }
 
