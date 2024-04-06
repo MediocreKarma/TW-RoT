@@ -1,0 +1,22 @@
+$primary-color--hover: #313f6a;
+$primary-color: #5a6896;
+
+$bg--light: #fff;
+$text-color--light: #222;
+
+$bg--dark: #222;
+$text-color--dark: #fff;
+
+html {
+    &[data-theme="light"] {
+        --color-text: #{$text-color--light};
+        --color-background: #{$bg--light};
+    }
+
+    &[data-theme="dark"] {
+        --color-text: #{$text-color--dark};
+        --color-background: #{$bg--dark};
+    }
+}
+
+  

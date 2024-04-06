@@ -1,8 +1,9 @@
-@import "./vars.scss";
+@use "vars";
+@use "color-themes";
 
 .welcome-container {
     & * {
-        color: #fff;
+        color: var(--color-text);
     }
     box-sizing: border-box;
     // text-align: center;
@@ -29,20 +30,24 @@
     }
 
     &__left {
-        padding: $padding-big;
+        padding: vars.$padding-big;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        background-color: $primary-hover-color;
+        background-color: color-themes.$primary-color--hover;
+        color: #fff;
 
         > h1 {
-            font-family: $font-display;
+            font-family: vars.$font-display;
             font-size: 6em;
         }
     }
 
     &__right {
-        display: flex;
         background-image: url("../img/trafic.jpg");
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
     }
 }

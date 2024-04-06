@@ -1,4 +1,5 @@
-@import "./vars.css";
+@use "vars";
+@use "color-themes";
 
 .login-container {
     // background-color: #fff;
@@ -38,15 +39,16 @@
     &__button {
         width: 100%;
         padding: 10px;
-        background-color: $primary-color;
+        background-color: color-themes.$primary-color;
         color: #fff;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        
+        &:hover {
+            background-color: color-themes.$primary-color--hover;
+        }
     }
     
-    &:hover {
-        background-color: $primary-hover-color;
-    }
 }

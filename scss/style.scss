@@ -1,10 +1,12 @@
-@import "./vars.scss";
-@import "./style-index.scss";
-@import "./style-login.scss";
-@import "./style-navbar.scss";
+@use "./vars.scss";
+@use "./style-index.scss";
+@use "./style-login.scss";
+@use "./style-navbar.scss";
+
+
 
 body {
-  font-family: $font;
+  font-family: vars.$font;
   margin: 0;
 }
 

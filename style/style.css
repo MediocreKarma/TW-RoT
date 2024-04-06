@@ -1,10 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap");
-@import "./vars.css";
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap");
+html[data-theme=light] {
+  --color-text: #222;
+  --color-background: #fff;
+}
+html[data-theme=dark] {
+  --color-text: #fff;
+  --color-background: #222;
+}
+
 .welcome-container {
   box-sizing: border-box;
   height: 100vh;
@@ -13,7 +17,7 @@
   width: 100%;
 }
 .welcome-container * {
-  color: #fff;
+  color: var(--color-text);
 }
 .welcome-container > * {
   flex-grow: 1;
@@ -24,15 +28,19 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: #5a6896;
+  background-color: #313f6a;
+  color: #fff;
 }
 .welcome-container__left > h1 {
   font-family: "Inconsolata", monospace;
   font-size: 6em;
 }
 .welcome-container__right {
-  display: flex;
   background-image: url("../img/trafic.jpg");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 .login-container__title {
@@ -58,15 +66,15 @@
 .login-form__button {
   width: 100%;
   padding: 10px;
-  background-color: #313f6a;
+  background-color: #5a6896;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-.login-form:hover {
-  background-color: #5a6896;
+.login-form__button:hover {
+  background-color: #313f6a;
 }
 
 .navbar {
@@ -74,7 +82,7 @@
   width: 100%;
   box-sizing: border-box;
   top: 0;
-  background-color: #313f6a;
+  background-color: #5a6896;
   padding: 1em;
   display: flex;
   align-items: center;
