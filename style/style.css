@@ -1,20 +1,23 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap");
-html[data-theme=light] {
-  --color-text: #222;
-  --color-background: #fff;
+html {
+  --text-color: #222;
+  --background-color: #fff;
+  --button-text-color: #fff;
+  --button-color: #6353aa;
+  --button-color--hover: #8a7cd1;
 }
 html[data-theme=dark] {
-  --color-text: #fff;
-  --color-background: #222;
+  --text-color: #fff;
+  --background-color: #222;
+  --button-color--hover: #fff;
 }
 
 .welcome-container {
-  box-sizing: border-box;
   height: 100vh;
-  background-color: #5a005f;
-  display: flex;
   width: 100%;
+  box-sizing: border-box;
+  display: flex;
 }
 .welcome-container * {
   color: var(--color-text);
@@ -28,8 +31,11 @@ html[data-theme=dark] {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: #313f6a;
+  background-color: #3d3469;
+}
+.welcome-container__left > * {
   color: #fff;
+  margin-bottom: 2rem;
 }
 .welcome-container__left > h1 {
   font-family: "Inconsolata", monospace;
@@ -41,6 +47,13 @@ html[data-theme=dark] {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+}
+
+.features-container {
+  height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--background-color);
 }
 
 .login-container__title {
@@ -64,17 +77,17 @@ html[data-theme=dark] {
   border-radius: 5px;
 }
 .login-form__button {
-  width: 100%;
-  padding: 10px;
-  background-color: #5a6896;
-  color: #fff;
+  padding: 1em;
+  font-family: "Space Grotesk", sans-serif;
+  border-radius: 3px;
+  background-color: var(--button-color);
+  color: var(--button-text-color);
   border: none;
-  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 .login-form__button:hover {
-  background-color: #313f6a;
+  background-color: var(--button-color--hover);
 }
 
 .navbar {
@@ -82,7 +95,7 @@ html[data-theme=dark] {
   width: 100%;
   box-sizing: border-box;
   top: 0;
-  background-color: #5a6896;
+  background-color: #6353aa;
   padding: 1em;
   display: flex;
   align-items: center;
@@ -120,6 +133,20 @@ html[data-theme=dark] {
 body {
   font-family: "Space Grotesk", sans-serif;
   margin: 0;
+}
+
+button {
+  padding: 1em;
+  font-family: "Space Grotesk", sans-serif;
+  border-radius: 3px;
+  background-color: var(--button-color);
+  color: var(--button-text-color);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+button:hover {
+  background-color: var(--button-color--hover);
 }
 
 .flex-center-container {

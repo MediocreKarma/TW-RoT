@@ -1,8 +1,8 @@
-@use "./vars.scss";
-@use "./style-index.scss";
-@use "./style-login.scss";
-@use "./style-navbar.scss";
-
+@use "vars";
+@use "utils";
+@use "style-index";
+@use "style-login";
+@use "style-navbar";
 
 
 body {
@@ -10,6 +10,11 @@ body {
   margin: 0;
 }
 
+button {
+  @include utils.button;
+}
+
+// todo: move below to utils
 .flex-center-container {
   width: 100%;
   min-height: 100vh;

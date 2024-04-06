@@ -1,5 +1,6 @@
 @use "vars";
 @use "color-themes";
+@use "utils";
 
 .login-container {
     // background-color: #fff;
@@ -37,18 +38,11 @@
     }
 
     &__button {
-        width: 100%;
-        padding: 10px;
-        background-color: color-themes.$primary-color;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        
-        &:hover {
-            background-color: color-themes.$primary-color--hover;
-        }
+        @include utils.button;
+        // width: 100%;
+        // padding: 10px;
+        // background-color: color-themes.$primary-color;
+        // color: #fff;
     }
     
 }

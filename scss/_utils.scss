@@ -1,0 +1,24 @@
+@use "vars";
+@use "color-themes";
+
+@mixin full-screen {
+    height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@mixin button {
+    padding: vars.$padding-small;
+    font-family: vars.$font;
+    border-radius: 3px;
+    background-color: var(--button-color);
+    color: var(--button-text-color);
+    border: none;
+    // border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: var(--button-color--hover);
+    }
+}

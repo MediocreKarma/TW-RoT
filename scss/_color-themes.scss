@@ -1,5 +1,7 @@
-$primary-color--hover: #313f6a;
-$primary-color: #5a6896;
+
+$primary-color: #6353aa;
+$primary-color--dark: #3d3469;
+$primary-color--hover: #8a7cd1;
 
 $bg--light: #fff;
 $text-color--light: #222;
@@ -8,14 +10,16 @@ $bg--dark: #222;
 $text-color--dark: #fff;
 
 html {
-    &[data-theme="light"] {
-        --color-text: #{$text-color--light};
-        --color-background: #{$bg--light};
-    }
+    --text-color: #{$text-color--light};
+    --background-color: #{$bg--light};
+    --button-text-color: #{$text-color--dark};
+    --button-color: #{$primary-color};
+    --button-color--hover: #{$primary-color--hover};
 
     &[data-theme="dark"] {
-        --color-text: #{$text-color--dark};
-        --color-background: #{$bg--dark};
+        --text-color: #{$text-color--dark};
+        --background-color: #{$bg--dark};
+        --button-color--hover: #fff;
     }
 }
 
