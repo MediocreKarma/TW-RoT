@@ -3,18 +3,25 @@ $primary-color: #6353aa;
 $primary-color--dark: #3d3469;
 $primary-color--hover: #8a7cd1;
 
+$secondary-color: #E9D985;
+$secondary-color--dark: #826b3c;
+$secondary-color--hover: #eed65d;
+
 $bg--light: #fff;
 $text-color--light: #222;
 
 $bg--dark: #222;
 $text-color--dark: #fff;
 
-html {
-    --text-color: #{$text-color--light};
-    --background-color: #{$bg--light};
+body {
     --button-text-color: #{$text-color--dark};
     --button-color: #{$primary-color};
     --button-color--hover: #{$primary-color--hover};
+
+    &[data-theme="light"] {
+        --text-color: #{$text-color--light};
+        --background-color: #{$bg--light};
+    }
 
     &[data-theme="dark"] {
         --text-color: #{$text-color--dark};

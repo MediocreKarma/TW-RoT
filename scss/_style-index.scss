@@ -4,11 +4,12 @@
 
 .welcome-container {
     @include utils.full-screen;
-    & * {
-        color: var(--color-text);
-    }
-    display: flex;
     
+    * {
+        color: var(--text-color);
+    }
+
+    display: flex;
 
     > * {
         flex-grow: 1;
@@ -28,7 +29,7 @@
 
         > h1 {
             font-family: vars.$font-display;
-            font-size: 6em;
+            font-size: 6rem;
         }
     }
 
@@ -45,4 +46,52 @@
     @include utils.full-screen;
 
     background-color: var(--background-color);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: vars.$padding-big;
+    box-sizing: border-box;
+
+    &__description {
+        text-align: center;
+    }
+
+    > .features-wrapper {
+        display: flex;
+        height: 50%;
+        gap: vars.$padding-small;
+
+        > .feature-card {
+            flex: 1;
+            box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+            padding: vars.$padding-small;
+            gap: vars.$padding-small;
+            display: flex;
+            justify-content: flex-start;
+            // justify-content: stretch;
+            flex-direction: column;
+
+            & > * {
+                flex-grow: 1;
+            }
+
+            // second to last and last children of card (image and button)
+            & > *:nth-last-child(1), & > *:nth-last-child(2) {
+                flex-grow: 0;
+            }
+            
+            > button {
+                justify-self: flex-end;
+            }
+            
+            > img {
+                box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+                object-fit: cover;
+                aspect-ratio: 16 / 9;
+                max-width: 100%;
+            }
+        }
+    }
 }

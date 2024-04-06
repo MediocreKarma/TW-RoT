@@ -2,7 +2,7 @@
 @use "color-themes";
 
 @mixin full-screen {
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
     box-sizing: border-box;
 }
@@ -10,6 +10,7 @@
 @mixin button {
     padding: vars.$padding-small;
     font-family: vars.$font;
+    font-size: vars.$font-size;
     border-radius: 3px;
     background-color: var(--button-color);
     color: var(--button-text-color);
@@ -21,4 +22,9 @@
     &:hover {
         background-color: var(--button-color--hover);
     }
+}
+
+@mixin transparent-color($color, $opacity: 0.3) {
+    background: $color; // in CSS au prioritate cele mai tarzii puse linii. invers fata de Yacc :))
+    background: rgba($color, $opacity);
 }
