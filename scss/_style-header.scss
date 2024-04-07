@@ -1,0 +1,149 @@
+@use "vars";
+@use "color-themes";
+
+a {
+    color: #FFF;
+}
+
+.header {
+    background-color: color-themes.$primary-color;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, .1);
+    position: fixed;
+    width: 100%;
+    z-index: 3;
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        overflow: hidden;
+        background-color: color-themes.$primary-color;
+    }
+
+    li a {
+        display: block;
+        padding: 20px 20px;
+        text-decoration: none;
+
+        &:hover {
+            background-color: color-themes.$primary-color--hover;
+        }
+
+    }
+
+    .logo {
+        display: block;
+        float: left;
+        // TODO
+        font-size: 32px;
+        padding: 10px 20px;
+        text-decoration: none;
+
+        &:hover {
+            background-color: color-themes.$primary-color--hover;
+        }
+    }
+
+    &__icon {
+        cursor: pointer;
+        //display: inline-block;
+        float: right;
+        padding: 28px 20px;
+        position: relative;
+        user-select: none;
+
+        .navicon {
+            background-color: #FFF;
+            display: block;
+            height: 2px;
+            position: relative;
+            transition: .2s ease-out;
+            width: 18px;
+
+            &:before, 
+            &:after {
+                background: #FFF;
+                content: '';
+                display: block;
+                height: 100%;
+                position: absolute;
+                transition: all .2s ease-out;
+                width: 100%;
+            }
+
+            &:before {
+                top: 5px;
+            }
+
+            &:after {
+                top: -5px;
+            }
+        }
+
+    }
+
+    &__button {
+        display: none;
+
+        &:checked {
+            ~ .header__list {
+                max-height: 240px;
+            }
+
+
+            ~ .header__icon {
+                .navicon {
+                    background: transparent;
+
+                    &:before {
+                        transform: rotate(-45deg);
+                    }
+    
+                    &:after {
+                        transform: rotate( 45deg);
+                    }
+                }
+
+                &:not(.steps) .navicon {
+                    &:before, 
+                    &:after {
+                        top: 0;
+                    }
+                }
+
+            }
+
+        }
+
+    }
+
+    &__list {
+        clear: both;
+        max-height: 0;
+        transition: max-height .2s ease-out;
+
+    }
+
+}
+
+@media only screen and (min-width: 801px) {
+    .header {
+        li {
+            float: left;
+
+            a {
+                padding: 20px 30px;
+            }
+        }
+        
+        &__list {
+            clear: none;
+            float: right;
+            max-height: none;
+        }
+
+        &__icon {
+            display: none;
+        }
+    }
+}

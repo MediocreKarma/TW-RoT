@@ -2,22 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Welcome to RoT</title>
   <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-  <nav class="navbar">
+  <header class="header">
+    <a href="./index.html" class="logo">RoT</a>
+    <input class="header__button" type="checkbox" id="header__button"/>
+    <label class="header__icon" for="header__button">
+      <span class="navicon"></span>
+    </label>
+    <ul class="header__list" id="header__list">
+      <li class="header__list__item"><a href="/cod_rutier.html">Cod rutier</a></li>
+      <li class="header__list__item"><a href="/indicatoare.html">Indicatoare</a></li>
+      <li class="header__list__item"><a href="/chestionare.html">Chestionare</a></li>
+      <li class="header__list__item"><a href="/login.html">Autentificare</a></li>
+    </ul>
+
+  </header>
+  <!-- <nav class="navbar">
     <div class="navbar__brand">
       <h1>RoT</h1>
     </div>
-    <ul class="navbar__list">
-      <li class="navbar__item"><a href="/cod_rutier.html" class="navbar__link">Cod rutier</a></li>
-      <li class="navbar__item"><a href="/indicatoare.html" class="navbar__link">Indicatoare</a></li>
-      <li class="navbar__item"><a href="/chestionare.html" class="navbar__link">Chestionare</a></li>
-      <li class="navbar__item"><a href="/login.html" class="navbar__link">Autentificare</a></li>
-    </ul>
-  </nav>
+
+
+    <i class="fa fa-navicon" aria-hidden="true" onclick="toggleNavbarMenu()">
+    </i>
+  </nav> -->
   <div class="flex-column">
    
     <div class="welcome-container">
@@ -58,4 +71,5 @@
     
   </div>
 </body>
+<script src="./index.js"></script>
 </html>

@@ -60,6 +60,7 @@
 
     > .features-wrapper {
         display: flex;
+        flex-direction: row;
         height: 50%;
         gap: vars.$padding-small;
 
@@ -93,5 +94,22 @@
                 max-width: 100%;
             }
         }
+    }
+}
+
+
+@media only screen and (max-width: 800px) {
+    .welcome-container__right {
+        display: none;
+    }
+  } 
+  
+@media only screen and (max-width: 600px) {
+    .features-container > .features-wrapper {
+        flex-direction: column;
+    }
+
+    .welcome-container__left, .features-container {
+        padding: vars.$padding-small;
     }
 }
