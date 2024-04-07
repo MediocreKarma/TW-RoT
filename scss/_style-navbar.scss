@@ -2,55 +2,62 @@
 @use "color-themes";
 
 .navbar {
-  
-  position: fixed;
-  width: 100%;
-  box-sizing: border-box;
-  
-  top: 0;
   background-color: color-themes.$primary-color;
-  padding: vars.$padding-small;
+  color: #fff;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  
-  margin-top: 0px;
-  // flex-wrap: wrap;
-  // align-self: flex-start;
-  // position: fixed;
-  // top: 0;
-  // width: 100%;
+  align-items: stretch;
 
+  position: fixed;
+  top: 0;
+  width: 100%;
+ 
   &__brand {
-    color: #fff;
-    margin: 0;
+    display: flex;
+    align-items: center;
+    padding: vars.$padding-small;
 
-    & h1 {
+    > h1 {
       margin: 0;
     }
   }
 
   &__list {
-    display: flex;
     list-style-type: none;
+    display: flex;
+    align-items: center;
     margin: 0;
     padding: 0;
-    text-align: center;
   }
 
   &__item {
-    margin-left: vars.$padding-small;
+    height: 100%;
   }
 
   &__link {
-    margin: 0;
-    color: #fff;
+    height: 100%;
+    box-sizing: border-box;
     text-decoration: none;
-    font-size: 18px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: vars.$padding-small;
+    transition: background-color 0.3s ease;
+    
+    > p {
+      margin: 0;
+    }
+
+    &:hover {
+      background-color: color-themes.$primary-color--hover;
+    }
   }
 
-  &__link:hover {
-    text-decoration: underline;
-  }
 }
+
+
+
+
+
+
 
