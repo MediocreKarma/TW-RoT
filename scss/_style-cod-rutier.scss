@@ -1,0 +1,60 @@
+@use "vars";
+@use "color-themes";
+
+.cod-rutier {
+    &__title {
+        text-align: center;
+    }
+    padding: vars.$padding-big;
+    padding-top: vars.$padding-small;
+    gap: vars.$padding-small;
+    display: flex;
+    flex-direction: column;
+}
+
+.chapters-container {
+    // margin-top: vars.$padding-small * 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: vars.$padding-small;
+    // padding: vars.$padding-big;
+}
+
+
+// TODO, optional : card mixin in utils
+// bc this has a bit in common with the cards from index
+.chapter-card {
+    text-align: center;
+    // flex-basis: 20%;
+    display: flex;
+    padding: vars.$padding-small;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: vars.$border-radius;
+    // background-color: red;flex: 1;
+    box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+    padding: vars.$padding-small;
+    gap: vars.$padding-small;
+    
+    > .chapter-card__title {
+        margin: 0;
+    }
+
+    &--anexa {
+        @include color-themes.secondary;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .chapters-container {
+        grid-template-columns: 1fr 1fr;
+    }
+  } 
+  
+@media only screen and (max-width: 600px) {
+    .chapters-container {
+        grid-template-columns: 1fr;
+    }
+    
+}

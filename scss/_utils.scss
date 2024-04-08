@@ -11,20 +11,15 @@
     padding: vars.$padding-small;
     font-family: vars.$font;
     font-size: vars.$font-size;
-    border-radius: 3px;
-    background-color: var(--button-color);
-    color: var(--button-text-color);
+    border-radius: vars.$border-radius;
+    background-color: color-themes.$primary-color;
+    color: color-themes.$text-color--dark;
     border: none;
     // border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 
     &:hover {
-        background-color: var(--button-color--hover);
+        background-color: color-themes.$primary-color--hover;
     }
-}
-
-@mixin transparent-color($color, $opacity: 0.3) {
-    background: $color; // in CSS au prioritate cele mai tarzii puse linii. invers fata de Yacc :))
-    background: rgba($color, $opacity);
 }

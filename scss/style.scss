@@ -1,11 +1,12 @@
 @use "vars";
 @use "utils";
+@use "style-dark-mode-switch";
+// @use "style-navbar";
+@use "style-header";
+
 @use "style-index";
 @use "style-login";
-@use "style-navbar";
-@use "style-header";
-@use "style-dark-mode-switch";
-
+@use "style-cod-rutier";
 
 body {
   font-family: vars.$font;
@@ -18,7 +19,6 @@ button {
   @include utils.button;
 }
 
-// todo: move below to utils
 .flex-center-container {
   width: 100%;
   min-height: 100vh;
@@ -31,4 +31,12 @@ button {
 .flex-column {
   display: flex;
   flex-direction: column;
+}
+
+.main-container {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--background-color);
+  // padding: vars.$padding-small * 1.5;
+  padding-top: vars.$padding-big;
 }

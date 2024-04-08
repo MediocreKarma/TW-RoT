@@ -3,9 +3,9 @@ $primary-color: #6353aa;
 $primary-color--dark: #3d3469;
 $primary-color--hover: #8a7cd1;
 
-$secondary-color: #E9D985;
-$secondary-color--dark: #826b3c;
-$secondary-color--hover: #eed65d;
+$secondary-color: #cf5656;
+$secondary-color--dark: #cf5656;
+$secondary-color--hover: #e68a8a;
 
 $bg--light: #fff;
 $text-color--light: #222;
@@ -29,4 +29,12 @@ body {
     }
 }
 
-  
+@mixin secondary {
+    button {
+        background-color: $secondary-color;
+        color: $text-color--dark;
+        &:hover {
+            background-color: $secondary-color--hover;
+        }
+    }
+}
