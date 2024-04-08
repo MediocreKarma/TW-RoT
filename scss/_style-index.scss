@@ -85,6 +85,10 @@
             > button {
                 justify-self: flex-end;
             }
+
+            a {
+                text-decoration: none;
+            }
             
             > img {
                 box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);

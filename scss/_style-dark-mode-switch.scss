@@ -13,11 +13,9 @@
     border-radius: 1rem;
     background-color: transparentize(#ffffff, 0.5);
   }
-
-  @media (min-width:1024px) {
-    & label {
-      width:2.5rem
-    }
+  
+  & label {
+    width:2.5rem
   }
 
   & input {
