@@ -1,11 +1,11 @@
 @use "vars";
 @use "color-themes";
 
-a {
-    color: #FFF;
-}
-
 .header {
+
+    a {
+        color: #FFF;
+    }
 
     &__dark-switch {
         position: relative;

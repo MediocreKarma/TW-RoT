@@ -59,16 +59,15 @@ body[data-theme=dark] {
   left: 1rem;
 }
 
-a {
-  color: #FFF;
-}
-
 .header {
   background-color: #6353aa;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.1);
   position: fixed;
   width: 100%;
   z-index: 3;
+}
+.header a {
+  color: #FFF;
 }
 .header__dark-switch {
   position: relative;
@@ -253,6 +252,7 @@ a {
 }
 .features-container > .features-wrapper > .feature-card a {
   text-decoration: none;
+  color: #fff;
 }
 .features-container > .features-wrapper > .feature-card > img {
   box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
@@ -322,12 +322,13 @@ a {
 }
 
 .chapters-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .chapter-card {
+  flex: 0 0 22%;
   text-align: center;
   display: flex;
   padding: 1rem;
@@ -339,7 +340,7 @@ a {
   padding: 1rem;
   gap: 1rem;
 }
-.chapter-card > .chapter-card__title {
+.chapter-card .chapter-card__title {
   margin: 0;
 }
 .chapter-card--anexa button {
@@ -348,6 +349,9 @@ a {
 }
 .chapter-card--anexa button:hover {
   background-color: #e68a8a;
+}
+.chapter-card a {
+  color: var(--text-color);
 }
 
 @media only screen and (max-width: 800px) {
@@ -360,11 +364,66 @@ a {
     grid-template-columns: 1fr;
   }
 }
+.indicatoare {
+  padding: 4rem;
+  padding-top: 1rem;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.indicatoare__title {
+  text-align: center;
+}
+
+.category-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.category-card {
+  flex: 0 0 30%;
+  text-align: center;
+  display: flex;
+  padding: 1rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
+  padding: 1rem;
+  gap: 1rem;
+}
+.category-card__title {
+  margin: 0;
+  padding-bottom: 1rem;
+}
+.category-card a {
+  color: var(--text-color);
+}
+.category-card img {
+  width: 300px;
+}
+
+a {
+  text-decoration: none;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
 body {
   font-family: "Space Grotesk", sans-serif;
   font-size: 1rem;
   margin: 0;
+  padding: 0;
+  min-height: 100vh;
   color: var(--text-color);
+  background-color: var(--background-color);
 }
 
 button {
