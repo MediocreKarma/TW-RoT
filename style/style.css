@@ -227,6 +227,11 @@ a {
   width: 100%;
   z-index: 3;
 }
+.header .dark-switch {
+  margin: 1rem;
+  align-self: center;
+  justify-self: center;
+}
 .header ul {
   margin: 0;
   padding: 0;
@@ -324,6 +329,53 @@ a {
     display: none;
   }
 }
+.dark-switch {
+  display: flex;
+}
+.dark-switch label {
+  position: relative;
+  display: inline-block;
+  top: 0.33rem;
+  height: 1rem;
+  width: 1.5rem;
+  cursor: pointer;
+  border-radius: 1rem;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+@media (min-width: 1024px) {
+  .dark-switch label {
+    width: 2.5rem;
+  }
+}
+.dark-switch input {
+  display: none;
+  position: absolute;
+  opacity: 0;
+}
+.dark-switch span {
+  position: absolute;
+  top: -0.25rem;
+  left: 0;
+  display: flex;
+  height: 1.5rem;
+  width: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: #8a7cd1;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.3s;
+}
+.dark-switch span * {
+  width: 50%;
+  height: 50%;
+  color: white;
+}
+.dark-switch input:checked + label span {
+  left: 1rem;
+}
+
 body {
   font-family: "Space Grotesk", sans-serif;
   font-size: 1rem;
