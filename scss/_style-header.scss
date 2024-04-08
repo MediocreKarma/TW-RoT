@@ -6,18 +6,20 @@ a {
 }
 
 .header {
+
+    &__dark-switch {
+        position: relative;
+        padding-right: 1rem;
+        top: 1rem;
+        float: right;
+    }
+
     background-color: color-themes.$primary-color;
     box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, .1);
     position: fixed;
     width: 100%;
     z-index: 3;
 
-
-    .dark-switch {
-        margin: vars.$padding-small;
-        align-self: center;
-        justify-self: center;
-    }
 
     ul {
         margin: 0;
@@ -135,6 +137,15 @@ a {
 
 @media only screen and (min-width: 801px) {
     .header {
+
+        &__dark-switch {
+            top: 0.2rem;
+            position: relative;
+            float: left;
+            margin: vars.$padding-small;
+        }
+    
+
         li {
             float: left;
 

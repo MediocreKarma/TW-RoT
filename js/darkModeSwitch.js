@@ -1,6 +1,6 @@
 
 window.addEventListener("load", () => {
-    var darkSwitch = document.getElementById("dark-switch");
+    var darkSwitch = document.getElementById("header__dark-switch__input");
 
     setThemeLocally = () => {
         var isDarkThemeSelected = localStorage.getItem("darkSwitch") !== null &&

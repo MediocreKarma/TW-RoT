@@ -227,10 +227,11 @@ a {
   width: 100%;
   z-index: 3;
 }
-.header .dark-switch {
-  margin: 1rem;
-  align-self: center;
-  justify-self: center;
+.header__dark-switch {
+  position: relative;
+  padding-right: 1rem;
+  top: 1rem;
+  float: right;
 }
 .header ul {
   margin: 0;
@@ -314,6 +315,12 @@ a {
 }
 
 @media only screen and (min-width: 801px) {
+  .header__dark-switch {
+    top: 0.2rem;
+    position: relative;
+    float: left;
+    margin: 1rem;
+  }
   .header li {
     float: left;
   }
@@ -329,10 +336,10 @@ a {
     display: none;
   }
 }
-.dark-switch {
+.header__dark-switch {
   display: flex;
 }
-.dark-switch label {
+.header__dark-switch label {
   position: relative;
   display: inline-block;
   top: 0.33rem;
@@ -343,16 +350,16 @@ a {
   background-color: rgba(255, 255, 255, 0.5);
 }
 @media (min-width: 1024px) {
-  .dark-switch label {
+  .header__dark-switch label {
     width: 2.5rem;
   }
 }
-.dark-switch input {
+.header__dark-switch input {
   display: none;
   position: absolute;
   opacity: 0;
 }
-.dark-switch span {
+.header__dark-switch span {
   position: absolute;
   top: -0.25rem;
   left: 0;
@@ -367,12 +374,12 @@ a {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 0.3s;
 }
-.dark-switch span * {
+.header__dark-switch span * {
   width: 50%;
   height: 50%;
   color: white;
 }
-.dark-switch input:checked + label span {
+.header__dark-switch input:checked + label span {
   left: 1rem;
 }
 
