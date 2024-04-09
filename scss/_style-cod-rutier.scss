@@ -18,8 +18,7 @@
     flex-wrap: wrap;
     justify-content: center;
     //grid-template-columns: 1fr 1fr 1fr 1fr;
-    //gap: vars.$padding-small;
-    // padding: vars.$padding-big;
+    gap: vars.$padding-small;
 }
 
 
@@ -28,7 +27,6 @@
 .chapter-card {
     flex: 0 0 22%;
     text-align: center;
-    // flex-basis: 20%;
     display: flex;
     padding: vars.$padding-small;
     flex-direction: column;
@@ -55,13 +53,7 @@
 
 @media only screen and (max-width: 800px) {
     .chapters-container {
-        grid-template-columns: 1fr 1fr;
+        // grid-template-columns: 1fr 1fr;
+        flex-direction: column;
     }
-  } 
-  
-@media only screen and (max-width: 600px) {
-    .chapters-container {
-        grid-template-columns: 1fr;
-    }
-    
-}
+} 

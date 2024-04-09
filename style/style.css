@@ -105,9 +105,7 @@ body[data-theme=dark] {
   float: right;
   padding: 28px 20px;
   position: relative;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 .header__icon .navicon {
   background-color: #FFF;
@@ -209,6 +207,9 @@ body[data-theme=dark] {
 }
 .welcome-container__right {
   background-image: url("../img/trafic.jpg");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   background-size: cover;
 }
 
@@ -256,8 +257,7 @@ body[data-theme=dark] {
 }
 .features-container > .features-wrapper > .feature-card > img {
   box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   aspect-ratio: 16/9;
   max-width: 100%;
 }
@@ -325,6 +325,7 @@ body[data-theme=dark] {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 1rem;
 }
 
 .chapter-card {
@@ -356,12 +357,7 @@ body[data-theme=dark] {
 
 @media only screen and (max-width: 800px) {
   .chapters-container {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-@media only screen and (max-width: 600px) {
-  .chapters-container {
-    grid-template-columns: 1fr;
+    flex-direction: column;
   }
 }
 .indicatoare {
@@ -459,4 +455,6 @@ button:hover {
   box-sizing: border-box;
   background-color: var(--background-color);
   padding-top: 4rem;
-}/*# sourceMappingURL=style.css.map */
+}
+
+/*# sourceMappingURL=style.css.map */
