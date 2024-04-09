@@ -15,7 +15,7 @@
         align-self: center;
         max-width: 80%;
         box-sizing: border-box;
-        
+
         @media only screen and (max-width: vars.$media-query-size-big)  {
             flex-direction: column;
             max-width: 100%;
@@ -57,7 +57,7 @@
             &:hover {
                 background-color: color-themes.$primary-color--hover;
             }
-            
+
         }
 
         &--checked {
@@ -73,7 +73,7 @@
                 }
             }
         }
-        
+
     }
 }
 

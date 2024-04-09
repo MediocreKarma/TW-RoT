@@ -18,14 +18,12 @@
     text-align: center;
     // flex-basis: 20%;
     display: flex;
-    padding: vars.$padding-small;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     border-radius: vars.$border-radius;
     // background-color: red;flex: 1;
     box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
-    padding: vars.$padding-small;
     gap: vars.$padding-small;
     
     &__title {
@@ -35,6 +33,8 @@
 
     a {
         color: var(--text-color);
+        display: inline-block;
+        padding: vars.$padding-small;
     }
 
     img {
