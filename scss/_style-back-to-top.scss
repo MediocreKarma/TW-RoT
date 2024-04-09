@@ -1,0 +1,17 @@
+@use "vars";
+
+.back-to-top {
+  opacity: 0;
+  position: fixed;
+  bottom: vars.$padding-big;
+  left: vars.$padding-big;
+  z-index: 99;
+  cursor: pointer;
+  transition: all .5s ease;
+  transform: translateY(100px);
+  &--show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0)
+  }
+}
