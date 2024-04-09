@@ -35,46 +35,79 @@
     padding: 0;
     margin: 0;
     // overflow: hidden;
-
     flex: 0 0 20%;
-
-
     flex-direction: column;
-    // padding: vars.$padding-small;
-    list-style: none;
+
+    a {
+        color: #fff;
+    }
+
+    // li {
+
+    // }
 
     &__item {
-        padding: 0;
-        margin: 0;
+        box-sizing: border-box;
+        padding: calc(vars.$padding-small);
         width: 100%;
-        > a {
-            box-sizing: border-box;
-            background-color: color-themes.$primary-color;
-            width: 100%;
-            padding: calc(vars.$padding-small);
-            cursor: pointer;
-            display:inline-block;
-            &:hover {
-                background-color: color-themes.$primary-color--hover;
-            }
+        display: inline-block;
+        border: 1rem;
 
+        background-color: color-themes.$primary-color;
+        &:hover {
+            background-color: color-themes.$primary-color--hover;
         }
 
         &--checked {
-            > a {
-                box-sizing: border-box;
-                background-color: color-themes.$secondary-color;
-                width: 100%;
-                padding: calc(vars.$padding-small);
-                cursor: pointer;
-                display:inline-block;
-                &:hover {
-                    background-color: color-themes.$secondary-color--hover;
-                }
+            box-sizing: border-box;
+            padding: calc(vars.$padding-small);
+            width: 100%;
+            display: inline-block;
+            border: 1rem;
+            background-color: color-themes.$secondary-color;
+            &:hover {
+                background-color: color-themes.$secondary-color--hover;
             }
         }
-
     }
+
+    // &__item {
+        
+    //     box-sizing: border-box;
+    //     padding: 10px;
+    //     margin: 10px;
+    //     width: 100%;
+    //     > a {
+    //         background-color: color-themes.$primary-color;
+    //         width: 100%;
+    //         padding: calc(vars.$padding-small);
+    //         cursor: pointer;
+    //         display:inline-block;
+    //         &:hover {
+    //             background-color: color-themes.$primary-color--hover;
+    //         }
+
+    //     }
+
+    //     &--checked {
+            
+    //         padding: 10px;
+    //         margin: 10px;
+    //         width: 100%;
+    //         > a {
+    //             box-sizing: border-box;
+    //             background-color: color-themes.$secondary-color;
+    //             width: 100%;
+    //             padding: calc(vars.$padding-small);
+    //             cursor: pointer;
+    //             display:inline-block;
+    //             &:hover {
+    //                 background-color: color-themes.$secondary-color--hover;
+    //             }
+    //         }
+    //     }
+
+    // }
 }
 
 .chapter-content {

@@ -15,7 +15,9 @@
 
         // TODO, optional : card mixin in utils
         // bc this has a bit in common with the cards from index
-        .chapter-card {
+        
+        a {
+            color: var(--text-color);
             flex: 0 0 22%;
             text-align: center;
             display: flex;
@@ -28,6 +30,9 @@
             box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
             padding: vars.$padding-small;
             gap: vars.$padding-small;
+        }
+
+        .chapter-card {
             
             .chapter-card__title {
                 margin: 0;
@@ -35,10 +40,6 @@
         
             &--anexa {
                 @include color-themes.secondary;
-            }
-        
-            a {
-                color: var(--text-color);
             }
         }
     
