@@ -1,15 +1,9 @@
 @use "vars";
 @use "color-themes";
+@use "utils";
 
 .indicatoare {
-    &__title {
-        text-align: center;
-    }
-    padding: vars.$padding-big;
-    padding-top: vars.$padding-small;
-    gap: vars.$padding-small;
-    display: flex;
-    flex-direction: column;
+    @include utils.main-page-container; 
 }
 
 .category-container {

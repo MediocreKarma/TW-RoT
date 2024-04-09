@@ -1,59 +1,52 @@
 @use "vars";
 @use "color-themes";
+@use "utils";
 
 .cod-rutier {
-    &__title {
-        text-align: center;
-    }
-    padding: vars.$padding-big;
-    padding-top: vars.$padding-small;
-    gap: vars.$padding-small;
-    display: flex;
-    flex-direction: column;
-}
-
-.chapters-container {
-    // margin-top: vars.$padding-small * 2;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    //grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: vars.$padding-small;
-}
-
-
-// TODO, optional : card mixin in utils
-// bc this has a bit in common with the cards from index
-.chapter-card {
-    flex: 0 0 22%;
-    text-align: center;
-    display: flex;
-    padding: vars.$padding-small;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: vars.$border-radius;
-    // background-color: red;flex: 1;
-    box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
-    padding: vars.$padding-small;
-    gap: vars.$padding-small;
+    @include utils.main-page-container;
     
-    .chapter-card__title {
-        margin: 0;
-    }
+    .chapters-container {
+        // margin-top: vars.$padding-small * 2;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        //grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: vars.$padding-small;
 
-    &--anexa {
-        @include color-themes.secondary;
-    }
-
-    a {
-        color: var(--text-color);
+        // TODO, optional : card mixin in utils
+        // bc this has a bit in common with the cards from index
+        .chapter-card {
+            flex: 0 0 22%;
+            text-align: center;
+            display: flex;
+            padding: vars.$padding-small;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: vars.$border-radius;
+            // background-color: red;flex: 1;
+            box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+            padding: vars.$padding-small;
+            gap: vars.$padding-small;
+            
+            .chapter-card__title {
+                margin: 0;
+            }
+        
+            &--anexa {
+                @include color-themes.secondary;
+            }
+        
+            a {
+                color: var(--text-color);
+            }
+        }
+    
+        @media only screen and (max-width: 800px) {
+            // grid-template-columns: 1fr 1fr;
+            flex-direction: column;
+        } 
     }
 }
 
-@media only screen and (max-width: 800px) {
-    .chapters-container {
-        // grid-template-columns: 1fr 1fr;
-        flex-direction: column;
-    }
-} 
+

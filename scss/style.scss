@@ -1,13 +1,13 @@
 @use "vars";
 @use "utils";
 @use "style-dark-mode-switch";
-// @use "style-navbar";
 @use "style-header";
 
 @use "style-index";
 @use "style-login";
 @use "style-cod-rutier";
 @use "style-indicatoare";
+@use "style-capitol";
 
 a {
   text-decoration: none;

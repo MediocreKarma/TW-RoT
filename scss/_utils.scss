@@ -23,3 +23,26 @@
         background-color: color-themes.$primary-color--hover;
     }
 }
+
+@mixin main-page-container {
+    padding: vars.$padding-big;
+    padding-top: vars.$padding-small;
+    gap: vars.$padding-small;
+    display: flex;
+    flex-direction: column;
+
+    &__info {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        gap: vars.$padding-small;
+        margin-bottom: vars.$padding-small;
+    }
+
+    &__title {
+        text-align: center;
+    }
+}

@@ -1,0 +1,87 @@
+@use "utils";
+@use "vars";
+@use "color-themes";
+
+.capitol {
+    @include utils.main-page-container;
+
+    .content-container {
+        > * {
+            border-radius: vars.$border-radius;
+            overflow: hidden;
+        }
+        display: flex;
+        gap: vars.$padding-small;
+        align-self: center;
+        max-width: 80%;
+        box-sizing: border-box;
+        
+        @media only screen and (max-width: vars.$media-query-size-big)  {
+            flex-direction: column;
+            max-width: 100%;
+            width: 100%;
+            > * {
+                width: 100%;
+                flex: 1;
+            }
+        }
+    }
+}
+
+.chapter-sidebar {
+    align-self: start;
+    color: white;
+    border-radius: vars.$border-radius;
+    padding: 0;
+    margin: 0;
+    // overflow: hidden;
+
+    flex: 0 0 20%;
+
+
+    flex-direction: column;
+    // padding: vars.$padding-small;
+    list-style: none;
+
+    &__item {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        > a {
+            box-sizing: border-box;
+            background-color: color-themes.$primary-color;
+            width: 100%;
+            padding: calc(vars.$padding-small);
+            cursor: pointer;
+            display:inline-block;
+            &:hover {
+                background-color: color-themes.$primary-color--hover;
+            }
+            
+        }
+
+        &--checked {
+            > a {
+                box-sizing: border-box;
+                background-color: color-themes.$secondary-color;
+                width: 100%;
+                padding: calc(vars.$padding-small);
+                cursor: pointer;
+                display:inline-block;
+                &:hover {
+                    background-color: color-themes.$secondary-color--hover;
+                }
+            }
+        }
+        
+    }
+}
+
+.chapter-content {
+    flex: 1;
+    padding: vars.$padding-small;
+    border-radius: vars.$border-radius;
+    // background-color: red;flex: 1;
+    box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+    box-sizing: border-box;
+}
