@@ -11,6 +11,12 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: vars.$padding-small;
+
+    a {
+        flex: 0 0 30%;
+        color: var(--text-color);
+        display: inline-block;
+    }
 }
 
 .category-card {
@@ -24,17 +30,12 @@
     border-radius: vars.$border-radius;
     // background-color: red;flex: 1;
     box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+    padding: vars.$padding-small;
     gap: vars.$padding-small;
     
     &__title {
         margin: 0;
         padding-bottom: 1rem;
-    }
-
-    a {
-        color: var(--text-color);
-        display: inline-block;
-        padding: vars.$padding-small;
     }
 
     img {
