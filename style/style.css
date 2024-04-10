@@ -105,9 +105,7 @@ body[data-theme=dark] {
   float: right;
   padding: 28px 20px;
   position: relative;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 .header__icon .navicon {
   background-color: #FFF;
@@ -209,6 +207,9 @@ body[data-theme=dark] {
 }
 .welcome-container__right {
   background-image: url("../img/trafic.jpg");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   background-size: cover;
 }
 
@@ -226,17 +227,14 @@ body[data-theme=dark] {
 .features-container__description {
   text-align: center;
 }
-.features-container > .features-wrapper {
+.features-container .features-wrapper {
   display: flex;
   flex-direction: row;
   height: 50%;
   gap: 1rem;
   justify-content: stretch;
 }
-.features-container > .features-wrapper a {
-  flex: 1;
-}
-.features-container > .features-wrapper .feature-card {
+.features-container .features-wrapper .feature-card {
   color: var(--text-color);
   flex: 1;
   box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
@@ -244,30 +242,25 @@ body[data-theme=dark] {
   display: flex;
   justify-content: stretch;
   flex-direction: column;
-}
-.features-container > .features-wrapper .feature-card > * {
-  flex-grow: 1;
   padding: 1rem;
 }
-.features-container > .features-wrapper .feature-card > *:nth-last-child(1), .features-container > .features-wrapper .feature-card > *:nth-last-child(2) {
-  flex-grow: 0;
+.features-container .features-wrapper .feature-card > :nth-child(1) {
+  flex-grow: 1;
 }
-.features-container > .features-wrapper .feature-card button {
-  justify-self: flex-end;
-  height: 100%;
+.features-container .features-wrapper .feature-card > :nth-last-child(1) {
+  flex-grow: 0;
   width: 100%;
   display: block;
   color: #fff;
 }
-.features-container > .features-wrapper .feature-card > img {
+.features-container .features-wrapper .feature-card img {
   box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   aspect-ratio: 16/9;
   max-width: 100%;
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 820px) {
   .welcome-container__right {
     display: none;
   }
@@ -579,4 +572,6 @@ button:hover {
   box-sizing: border-box;
   background-color: var(--background-color);
   padding-top: 4rem;
-}/*# sourceMappingURL=style.css.map */
+}
+
+/*# sourceMappingURL=style.css.map */
