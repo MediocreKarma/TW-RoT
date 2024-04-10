@@ -2,9 +2,7 @@
 @use "vars";
 @use "color-themes";
 
-.noscroll {
-    overflow: hidden;
-}
+$media-query-leaderboard: 1200px;
 
 .leaderboard {
     display: flex;
@@ -12,7 +10,7 @@
     flex-direction: column;
     justify-content: center;
     box-sizing: border-box;
-    max-width: 75%;
+    width: 75%;
     margin-left: auto;
     margin-right: auto;
     margin-top: 80px;
@@ -41,14 +39,17 @@
         border-color: #777777;
         table-layout: fixed;
         cursor: default;
+    }
 
-        th {
-            color: white;
-            font-size: 24px;
-            padding: vars.$padding-small;
-            word-wrap: break-word;
-            text-transform: capitalize;
-            //gap: vars.$padding-small;
+    th {
+        color: white;
+        font-size: 1.20rem;
+        padding: vars.$padding-small;
+        word-wrap: break-word;
+        text-transform: capitalize;
+        //gap: vars.$padding-small;
+        @media only screen and (max-width: $media-query-leaderboard) {
+            font-size: 1rem;
         }
     }
 
@@ -61,22 +62,26 @@
         background-color: color-themes.$primary-color--dark;
 
         height: 8rem;
-        font-size: 3rem;
         padding: 1rem 3rem;
         position: relative;
         
         border-radius: 25px 25px 0 0;
     }
 
+    td {
+        height: 4rem;
+        font-size: 1.0rem;
+        padding: 1rem 2rem;
+        position: relative;
+        color: var(--text-color);
+
+        @media only screen and (max-width: $media-query-leaderboard) {
+            font-size: 0.8rem;
+        }
+
+    }
     
     tbody { 
-
-        td {
-            height: 4rem;
-            font-size: 1.5rem;
-            padding: 1rem 2rem;
-            position: relative;
-        }
 
         tr:first-child {
             background-color: color-themes.$secondary-color;
@@ -97,30 +102,15 @@
             }
         }
 
-        // tr:nth-child(odd) {
-        //     background-color: color-themes.$secondary-color;
-        //     &:hover {
-        //         box-shadow: 0 0 20px color-themes.$secondary-color--hover;
-        //     }
-        // }
-
-        // tr:nth-child(even) {
-        //     background-color: color-themes.$primary-color;
-        //     &:hover {
-        //         box-shadow: 0 0 20px color-themes.$primary-color--hover;
-        //     }
-        // }
-
-        
-        td {
-            font-size: 2rem;
-            color: var(--text-color);
+        tr:nth-child(2n + 3) {
+            background-color: var(--leaderboard-nth-even-color);
+            &:hover {
+                box-shadow: 0 0 20px var(--leaderboard-nth-even-color);
+            }
         }
 
         td:not(:nth-child(2)) {
             font-weight: bold;
-            font-size: 1.5rem;
-            //background-color: white;
         }
         
         td:nth-child(n + 3) {
@@ -130,9 +120,29 @@
     }
 
 
-    // :nth-child(odd) {
-    //     background-color: green;
-    // }
+    @media only screen and (max-width: $media-query-leaderboard) {
+
+        col, td, th {
+            padding: 0.2rem;
+            // display only after one category
+            // tbd how to select which (menu for selecting category?)
+            &:nth-child(n + 4) {
+                display: none;
+            }
+        }
+
+        &__rang {
+            width: 10%;
+        }
+
+        &__percentage {
+            width: 25%;
+        }
+
+        &__correct, &__questionnaires {
+            width: 0%;
+        }
+    }
 
     .leaderboard-buttons {
         width: 100%;

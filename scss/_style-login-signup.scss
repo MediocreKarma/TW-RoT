@@ -34,7 +34,7 @@
     position: relative;
     z-index: 1;
     background-color: var(--background-color);
-    margin: vars.$padding-big;
+    margin: vars.$padding-small;
     box-shadow: 0 0 3px rgba(114, 114, 114, 0.5);
     border-radius: vars.$border-radius;
     padding: vars.$padding-small;
@@ -43,6 +43,7 @@
         margin-bottom: 20px;
     }
     width: 100%;
+    top: 60px;
 
     button {
         @include utils.button;
@@ -53,10 +54,22 @@
         text-align: center;
     }
 
+    a {
+        color: var(--link-color);
+    }
+
     @media only screen and (min-width: calc(vars.$media-query-size-big + 1px)) {
         width: 50%;
+        padding: vars.$padding-big;
+        margin: vars.$padding-big;
+    }
+
+    @media only screen and (max-height: vars.$media-query-size-big) {
+        bottom: 70px;
+        margin-bottom: 70px;
     }
 }
+
 
 .login-form, .signup-form {
     &__group {

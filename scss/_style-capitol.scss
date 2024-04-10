@@ -13,8 +13,12 @@
         display: flex;
         gap: vars.$padding-small;
         align-self: center;
-        max-width: 80%;
+        max-width: 85%;
         box-sizing: border-box;
+
+        @media only screen and (max-width: calc(vars.$media-query-size-big + 100px)) {
+            max-width: 95%;
+        }
 
         @media only screen and (max-width: vars.$media-query-size-big)  {
             flex-direction: column;
@@ -48,10 +52,12 @@
 
     &__item {
         box-sizing: border-box;
-        padding: calc(vars.$padding-small);
+        padding: vars.$padding-small;
+        gap: 1rem;
         width: 100%;
         display: inline-block;
-        border: 1rem;
+        text-align: left;
+        word-wrap: break-word;
 
         background-color: color-themes.$primary-color;
         &:hover {
@@ -59,11 +65,6 @@
         }
 
         &--checked {
-            box-sizing: border-box;
-            padding: calc(vars.$padding-small);
-            width: 100%;
-            display: inline-block;
-            border: 1rem;
             background-color: color-themes.$secondary-color;
             &:hover {
                 background-color: color-themes.$secondary-color--hover;
@@ -117,4 +118,8 @@
     // background-color: red;flex: 1;
     box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
     box-sizing: border-box;
+
+    @media only screen and (max-width: vars.$media-query-size-big) {
+        
+    }
 }

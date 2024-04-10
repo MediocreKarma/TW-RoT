@@ -12,6 +12,12 @@
   &--show {
     display: block;
     opacity: 1;
-    transform: translateY(0)
+    transform: translateY(0);
+  }
+
+  @media only screen and (max-width: vars.$media-query-size-small) {
+    bottom: vars.$padding-small;
+    left: vars.$padding-small;
   }
 }
+

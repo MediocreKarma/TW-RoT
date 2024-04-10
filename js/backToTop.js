@@ -1,7 +1,5 @@
 window.addEventListener("load", () => {
     var backToTop = document.getElementById("back-to-top");
-    console.log("yes");
-    console.log(backToTop);
     handleScroll = () => {
         const viewportHeight = window.innerHeight;
         if (window.scrollY > viewportHeight * 0.8) {

@@ -26,6 +26,7 @@
 
 @mixin main-page-container {
     padding: vars.$padding-big;
+    padding-bottom: calc(vars.$padding-big + 2rem);
     padding-top: vars.$padding-small;
     gap: vars.$padding-small;
     display: flex;
@@ -44,5 +45,10 @@
 
     &__title {
         text-align: center;
+    }
+
+    @media only screen and (max-width: vars.$media-query-size-small) {
+        padding: vars.$padding-small;
+        padding-bottom: calc(vars.$padding-big + 2rem);
     }
 }

@@ -8,10 +8,14 @@ body {
 body[data-theme=light] {
   --text-color: #222;
   --background-color: #fff;
+  --link-color: #6353aa;
+  --leaderboard-nth-even-color: #f6f6f6;
 }
 body[data-theme=dark] {
   --text-color: #fff;
   --background-color: #222;
+  --link-color: #ea9a4b;
+  --leaderboard-nth-even-color: #1d1d1d;
 }
 
 .header__dark-switch {
@@ -195,6 +199,12 @@ body[data-theme=dark] {
   opacity: 1;
   transform: translateY(0);
 }
+@media only screen and (max-width: 600px) {
+  .back-to-top {
+    bottom: 1rem;
+    left: 1rem;
+  }
+}
 
 .welcome-container {
   min-height: 100vh;
@@ -314,11 +324,12 @@ body[data-theme=dark] {
   position: relative;
   z-index: 1;
   background-color: var(--background-color);
-  margin: 3.5rem;
+  margin: 1rem;
   box-shadow: 0 0 3px rgba(114, 114, 114, 0.5);
   border-radius: 3px;
   padding: 1rem;
   width: 100%;
+  top: 60px;
 }
 .login-card__title, .signup-card__title {
   text-align: center;
@@ -342,9 +353,20 @@ body[data-theme=dark] {
 .login-card p, .signup-card p {
   text-align: center;
 }
+.login-card a, .signup-card a {
+  color: var(--link-color);
+}
 @media only screen and (min-width: 821px) {
   .login-card, .signup-card {
     width: 50%;
+    padding: 3.5rem;
+    margin: 3.5rem;
+  }
+}
+@media only screen and (max-height: 820px) {
+  .login-card, .signup-card {
+    bottom: 70px;
+    margin-bottom: 70px;
   }
 }
 
@@ -366,6 +388,7 @@ body[data-theme=dark] {
 
 .cod-rutier {
   padding: 3.5rem;
+  padding-bottom: 5.5rem;
   padding-top: 1rem;
   gap: 1rem;
   display: flex;
@@ -383,6 +406,12 @@ body[data-theme=dark] {
 }
 .cod-rutier__title {
   text-align: center;
+}
+@media only screen and (max-width: 600px) {
+  .cod-rutier {
+    padding: 1rem;
+    padding-bottom: 5.5rem;
+  }
 }
 .cod-rutier .chapters-container {
   display: flex;
@@ -422,6 +451,7 @@ body[data-theme=dark] {
 
 .indicatoare {
   padding: 3.5rem;
+  padding-bottom: 5.5rem;
   padding-top: 1rem;
   gap: 1rem;
   display: flex;
@@ -439,6 +469,12 @@ body[data-theme=dark] {
 }
 .indicatoare__title {
   text-align: center;
+}
+@media only screen and (max-width: 600px) {
+  .indicatoare {
+    padding: 1rem;
+    padding-bottom: 5.5rem;
+  }
 }
 
 .category-container {
@@ -464,6 +500,7 @@ body[data-theme=dark] {
   box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
   padding: 1rem;
   gap: 1rem;
+  height: 90%;
 }
 .category-card__title {
   margin: 0;
@@ -472,9 +509,15 @@ body[data-theme=dark] {
 .category-card img {
   width: 300px;
 }
+@media only screen and (max-width: 600px) {
+  .category-card img {
+    width: 200px;
+  }
+}
 
 .capitol {
   padding: 3.5rem;
+  padding-bottom: 5.5rem;
   padding-top: 1rem;
   gap: 1rem;
   display: flex;
@@ -493,16 +536,27 @@ body[data-theme=dark] {
 .capitol__title {
   text-align: center;
 }
+@media only screen and (max-width: 600px) {
+  .capitol {
+    padding: 1rem;
+    padding-bottom: 5.5rem;
+  }
+}
 .capitol .content-container {
   display: flex;
   gap: 1rem;
   align-self: center;
-  max-width: 80%;
+  max-width: 85%;
   box-sizing: border-box;
 }
 .capitol .content-container > * {
   border-radius: 3px;
   overflow: hidden;
+}
+@media only screen and (max-width: 920px) {
+  .capitol .content-container {
+    max-width: 95%;
+  }
 }
 @media only screen and (max-width: 820px) {
   .capitol .content-container {
@@ -531,20 +585,17 @@ body[data-theme=dark] {
 .chapter-sidebar__item {
   box-sizing: border-box;
   padding: 1rem;
+  gap: 1rem;
   width: 100%;
   display: inline-block;
-  border: 1rem;
+  text-align: left;
+  word-wrap: break-word;
   background-color: #6353aa;
 }
 .chapter-sidebar__item:hover {
   background-color: #8a7cd1;
 }
 .chapter-sidebar__item--checked {
-  box-sizing: border-box;
-  padding: 1rem;
-  width: 100%;
-  display: inline-block;
-  border: 1rem;
   background-color: #ea9a4b;
 }
 .chapter-sidebar__item--checked:hover {
@@ -558,18 +609,13 @@ body[data-theme=dark] {
   box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
   box-sizing: border-box;
 }
-
-.noscroll {
-  overflow: hidden;
-}
-
 .leaderboard {
   display: flex;
   background-color: var(--background-color);
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
-  max-width: 75%;
+  width: 75%;
   margin-left: auto;
   margin-right: auto;
   margin-top: 80px;
@@ -596,12 +642,17 @@ body[data-theme=dark] {
   table-layout: fixed;
   cursor: default;
 }
-.leaderboard table th {
+.leaderboard th {
   color: white;
-  font-size: 24px;
+  font-size: 1.2rem;
   padding: 1rem;
   word-wrap: break-word;
   text-transform: capitalize;
+}
+@media only screen and (max-width: 1200px) {
+  .leaderboard th {
+    font-size: 1rem;
+  }
 }
 .leaderboard tr {
   transition: all 0.2s ease-in-out;
@@ -610,16 +661,21 @@ body[data-theme=dark] {
 .leaderboard thead > tr {
   background-color: #3d3469;
   height: 8rem;
-  font-size: 3rem;
   padding: 1rem 3rem;
   position: relative;
   border-radius: 25px 25px 0 0;
 }
-.leaderboard tbody td {
+.leaderboard td {
   height: 4rem;
-  font-size: 1.5rem;
+  font-size: 1rem;
   padding: 1rem 2rem;
   position: relative;
+  color: var(--text-color);
+}
+@media only screen and (max-width: 1200px) {
+  .leaderboard td {
+    font-size: 0.8rem;
+  }
 }
 .leaderboard tbody tr:first-child {
   background-color: #ea9a4b;
@@ -637,17 +693,35 @@ body[data-theme=dark] {
 .leaderboard tbody tr:not(:first-child):hover td {
   color: white;
 }
-.leaderboard tbody td {
-  font-size: 2rem;
-  color: var(--text-color);
+.leaderboard tbody tr:nth-child(2n+3) {
+  background-color: var(--leaderboard-nth-even-color);
+}
+.leaderboard tbody tr:nth-child(2n+3):hover {
+  box-shadow: 0 0 20px var(--leaderboard-nth-even-color);
 }
 .leaderboard tbody td:not(:nth-child(2)) {
   font-weight: bold;
-  font-size: 1.5rem;
 }
 .leaderboard tbody td:nth-child(n+3) {
   text-align: center;
   padding: 0;
+}
+@media only screen and (max-width: 1200px) {
+  .leaderboard col, .leaderboard td, .leaderboard th {
+    padding: 0.2rem;
+  }
+  .leaderboard col:nth-child(n+4), .leaderboard td:nth-child(n+4), .leaderboard th:nth-child(n+4) {
+    display: none;
+  }
+  .leaderboard__rang {
+    width: 10%;
+  }
+  .leaderboard__percentage {
+    width: 25%;
+  }
+  .leaderboard__correct, .leaderboard__questionnaires {
+    width: 0%;
+  }
 }
 .leaderboard .leaderboard-buttons {
   width: 100%;
