@@ -1,14 +1,17 @@
 @use "vars";
 @use "utils";
+
+// components
 @use "style-dark-mode-switch";
 @use "style-header";
+@use "style-back-to-top";
 
+// pages
 @use "style-index";
-@use "style-login";
+@use "style-login-signup";
 @use "style-cod-rutier";
 @use "style-indicatoare";
 @use "style-capitol";
-@use "style-back-to-top";
 
 a {
   text-decoration: none;
@@ -50,6 +53,7 @@ button {
 
 .main-container {
   width: 100%;
+  flex: 1 1 100%;
   box-sizing: border-box;
   background-color: var(--background-color);
   // padding: vars.$padding-small * 1.5;
