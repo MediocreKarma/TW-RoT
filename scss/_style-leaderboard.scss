@@ -1,0 +1,147 @@
+@use "utils";
+@use "vars";
+@use "color-themes";
+
+.noscroll {
+    overflow: hidden;
+}
+
+.leaderboard {
+    display: flex;
+    background-color: var(--background-color);
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+    max-width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 80px;
+    border-collapse: collapse;
+    border: 1px solid #777777;
+    border-radius: 20px;
+
+    &__rank {
+        width: 7%;
+    }
+
+    &__percentage, &__correct, &__questionnaires {
+        width: 13%;
+    }
+
+    h1 {
+        padding-bottom: 20px;
+        text-align: center;
+        width: 100%;
+    }
+
+    table {
+        border-radius: 25px;
+        width: 100%;
+        border-spacing: 0;
+        border-color: #777777;
+        table-layout: fixed;
+        cursor: default;
+
+        th {
+            color: white;
+            font-size: 24px;
+            padding: vars.$padding-small;
+            word-wrap: break-word;
+            text-transform: capitalize;
+            //gap: vars.$padding-small;
+        }
+    }
+
+    tr {
+        transition: all 0.2s ease-in-out;
+        border-radius: 0.2rem;
+    }
+
+    thead > tr {
+        background-color: color-themes.$primary-color--dark;
+
+        height: 8rem;
+        font-size: 3rem;
+        padding: 1rem 3rem;
+        position: relative;
+        
+        border-radius: 25px 25px 0 0;
+    }
+
+    
+    tbody { 
+
+        td {
+            height: 4rem;
+            font-size: 1.5rem;
+            padding: 1rem 2rem;
+            position: relative;
+        }
+
+        tr:first-child {
+            background-color: color-themes.$secondary-color;
+            td {
+                color: white;
+            }
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+
+        tr:not(:first-child):hover {
+            background-color: color-themes.$primary-color;
+            transform: scale(1.1);
+            td {
+                color: white;
+            }
+        }
+
+        // tr:nth-child(odd) {
+        //     background-color: color-themes.$secondary-color;
+        //     &:hover {
+        //         box-shadow: 0 0 20px color-themes.$secondary-color--hover;
+        //     }
+        // }
+
+        // tr:nth-child(even) {
+        //     background-color: color-themes.$primary-color;
+        //     &:hover {
+        //         box-shadow: 0 0 20px color-themes.$primary-color--hover;
+        //     }
+        // }
+
+        
+        td {
+            font-size: 2rem;
+            color: var(--text-color);
+        }
+
+        td:not(:nth-child(2)) {
+            font-weight: bold;
+            font-size: 1.5rem;
+            //background-color: white;
+        }
+        
+        td:nth-child(n + 3) {
+            text-align: center;
+            padding: 0;
+        }
+    }
+
+
+    // :nth-child(odd) {
+    //     background-color: green;
+    // }
+
+    .leaderboard-buttons {
+        width: 100%;
+        margin-top: 3rem;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+    }
+
+
+}
