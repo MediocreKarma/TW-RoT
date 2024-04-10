@@ -40,21 +40,28 @@
 
   </header>
 
-  <div class="flex-center-container login-container">
-    <div class="login-card">
-      <h2 class="login-card__title">Autentificare</h2>
-      <form id="login-form" class="login-form" action="./index.html" method="post">
-        <div class="login-form__group">
-          <label for="email" class="login-form__label">Email</label>
-          <input type="email" id="email" name="email" class="login-form__input" required>
+  <div class="flex-center-container signup-container">
+    <div class="signup-card">
+      <h2 class="signup-card__title">Înregistrare</h2>
+      <form id="signup-form" class="signup-form" action="./index.html" method="post">
+        <div class="signup-form__group">
+          <label for="email" class="signup-form__label">Email</label>
+          <input type="email" id="email" name="email" class="signup-form__input" required>
         </div>
-        <div class="login-form__group">
-          <label for="password" class="login-form__label">Parolă</label>
-          <input type="password" id="password" name="password" class="login-form__input" required>
+        <div class="signup-form__group">
+          <label for="password" class="signup-form__label">Parolă</label>
+          <input type="password" id="password" name="password" class="signup-form__input" required>
         </div>
-        <button type="submit" class="login-form__button">Autentificare</button>
+        <div class="signup-form__group">
+            <label for="firstname" class="signup-form__label">Prenume</label>
+            <input type="firstname" id="firstname" name="firstname" class="signup-form__input" required>
+          </div>
+          <div class="signup-form__group">
+            <label for="lastname" class="signup-form__label">Nume</label>
+            <input type="lastname" id="lastname" name="lastname" class="signup-form__input" required>
+          </div>
+        <button type="submit" class="signup-form__button">Înregistrare</button>
       </form>
-      <p>Nu ai încă cont? <a href="./signup.html">Înregistrează-te</a></p>
     </div>
   </div>
 </body>
