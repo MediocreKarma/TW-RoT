@@ -1,0 +1,11 @@
+@use "vars";
+@use "color-themes";
+@use "utils";
+
+.exerseaza {
+    @include utils.main-page-container;
+
+    // &__title {
+    //     text-align: left;
+    // }
+}
