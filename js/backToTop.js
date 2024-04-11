@@ -20,4 +20,3 @@ window.addEventListener("load", () => {
 
     backToTop.addEventListener("click", scrollToTop);
 })
-

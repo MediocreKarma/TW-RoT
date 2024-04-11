@@ -110,7 +110,9 @@ body[data-theme=dark] {
   float: right;
   padding: 28px 20px;
   position: relative;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 .header__icon .navicon {
   background-color: #FFF;
@@ -234,9 +236,6 @@ body[data-theme=dark] {
 }
 .welcome-container__right {
   background-image: url("../img/trafic.jpg");
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
   background-size: cover;
 }
 
@@ -282,7 +281,8 @@ body[data-theme=dark] {
 }
 .features-container .features-wrapper .feature-card img {
   box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
-  object-fit: cover;
+  -o-object-fit: cover;
+     object-fit: cover;
   aspect-ratio: 16/9;
   max-width: 100%;
 }
@@ -483,7 +483,7 @@ body[data-theme=dark] {
   justify-content: center;
   gap: 1rem;
 }
-.category-container a {
+.category-container a, .category-container .card-wrapper {
   flex: 0 0 30%;
   color: var(--text-color);
   display: inline-block;
@@ -958,6 +958,4 @@ button:hover {
   box-sizing: border-box;
   background-color: var(--background-color);
   padding-top: 3.5rem;
-}
-
-/*# sourceMappingURL=style.css.map */
+}/*# sourceMappingURL=style.css.map */

@@ -12,7 +12,7 @@
     justify-content: center;
     gap: vars.$padding-small;
 
-    a {
+    a, .card-wrapper {
         flex: 0 0 30%;
         color: var(--text-color);
         display: inline-block;
@@ -21,6 +21,7 @@
 
 .category-card {
     flex: 0 0 30%;
+    //width: 30vh;
     text-align: center;
     // flex-basis: 20%;
     display: flex;
