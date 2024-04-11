@@ -11,6 +11,7 @@ $media-query-leaderboard: 1200px;
     justify-content: center;
     box-sizing: border-box;
     width: 75%;
+    margin-bottom: vars.$padding-big;
     margin-left: auto;
     margin-right: auto;
     margin-top: 80px;
@@ -19,11 +20,12 @@ $media-query-leaderboard: 1200px;
     border-radius: 20px;
 
     &__rank {
-        width: 7%;
+        text-align: left;
+        width: 10%;
     }
 
     &__percentage, &__correct, &__questionnaires {
-        width: 13%;
+        width: 15%;
     }
 
     h1 {
@@ -46,7 +48,7 @@ $media-query-leaderboard: 1200px;
         font-size: 1.20rem;
         padding: vars.$padding-small;
         word-wrap: break-word;
-        text-transform: capitalize;
+        // text-transform: capitalize;
         //gap: vars.$padding-small;
         @media only screen and (max-width: $media-query-leaderboard) {
             font-size: 1rem;
@@ -131,7 +133,8 @@ $media-query-leaderboard: 1200px;
             }
         }
 
-        &__rang {
+        &__rank {
+            text-align: left;
             width: 10%;
         }
 

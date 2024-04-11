@@ -110,9 +110,7 @@ body[data-theme=dark] {
   float: right;
   padding: 28px 20px;
   position: relative;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 .header__icon .navicon {
   background-color: #FFF;
@@ -236,6 +234,9 @@ body[data-theme=dark] {
 }
 .welcome-container__right {
   background-image: url("../img/trafic.jpg");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   background-size: cover;
 }
 
@@ -281,8 +282,7 @@ body[data-theme=dark] {
 }
 .features-container .features-wrapper .feature-card img {
   box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   aspect-ratio: 16/9;
   max-width: 100%;
 }
@@ -616,6 +616,7 @@ body[data-theme=dark] {
   justify-content: center;
   box-sizing: border-box;
   width: 75%;
+  margin-bottom: 3.5rem;
   margin-left: auto;
   margin-right: auto;
   margin-top: 80px;
@@ -624,10 +625,11 @@ body[data-theme=dark] {
   border-radius: 20px;
 }
 .leaderboard__rank {
-  width: 7%;
+  text-align: left;
+  width: 10%;
 }
 .leaderboard__percentage, .leaderboard__correct, .leaderboard__questionnaires {
-  width: 13%;
+  width: 15%;
 }
 .leaderboard h1 {
   padding-bottom: 20px;
@@ -647,7 +649,6 @@ body[data-theme=dark] {
   font-size: 1.2rem;
   padding: 1rem;
   word-wrap: break-word;
-  text-transform: capitalize;
 }
 @media only screen and (max-width: 1200px) {
   .leaderboard th {
@@ -713,7 +714,8 @@ body[data-theme=dark] {
   .leaderboard col:nth-child(n+4), .leaderboard td:nth-child(n+4), .leaderboard th:nth-child(n+4) {
     display: none;
   }
-  .leaderboard__rang {
+  .leaderboard__rank {
+    text-align: left;
     width: 10%;
   }
   .leaderboard__percentage {
@@ -747,7 +749,6 @@ body {
   font-size: 1rem;
   margin: 0;
   padding: 0;
-  min-height: 100vh;
   color: var(--text-color);
   background-color: var(--background-color);
 }
@@ -786,4 +787,6 @@ button:hover {
   box-sizing: border-box;
   background-color: var(--background-color);
   padding-top: 3.5rem;
-}/*# sourceMappingURL=style.css.map */
+}
+
+/*# sourceMappingURL=style.css.map */
