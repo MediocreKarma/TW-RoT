@@ -25,6 +25,8 @@
 }
 
 @mixin main-page-container {
+    width: 100%;
+    box-sizing: border-box;
     padding: vars.$padding-big;
     padding-bottom: calc(vars.$padding-big + 2rem);
     padding-top: vars.$padding-small;

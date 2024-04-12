@@ -4,8 +4,60 @@
 
 .exerseaza {
     @include utils.main-page-container;
+}
 
-    // &__title {
-    //     text-align: left;
-    // }
+.question-categories {
+    text-align: center;
+    // border: 3px solid red; // for testing purposes
+    box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+    padding: vars.$padding-small;
+    gap: vars.$padding-small;
+    // background-color: blue;
+    border-radius: vars.$border-radius;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &__title {
+        margin: 0;
+    }
+
+    &__container {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        & > * {
+            flex: 1 0 40%;
+        }
+
+        @media only screen and (max-width: vars.$media-query-size-big) {
+            flex-direction: column;
+            & > * {
+                flex: unset;
+            }
+        }
+        gap: vars.$padding-small;
+    }
+}
+
+.question-category {
+    box-sizing: border-box;
+    box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+    border-radius: vars.$border-radius;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: vars.$padding-small;
+
+    background-color: color-themes.$secondary-color;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+        background-color: color-themes.$secondary-color--hover;
+    }
+    color: white;
+    
+    p {
+        margin: 0;
+    }
 }
