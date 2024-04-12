@@ -41,6 +41,12 @@
                 margin-bottom: calc(vars.$padding-small / 4);
             }
 
+            @media only screen and (max-width: 330px) {
+                h2 {
+                    line-height: 100%;
+                }
+            }
+
             color: color-themes.$text-color--dark;
             background-color: color-themes.$primary-color;
             
@@ -104,10 +110,10 @@
             
             label {
                 &:hover {
+                    transition: all 0.2s ease-in-out;
                     background-color: color-themes.$secondary-color--hover;
                 }
                 border-radius: vars.$border-radius;
-                transition: all 0.2s ease-in-out;
                 cursor: pointer;
                 box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
                 display: block;
@@ -138,6 +144,11 @@
             justify-self: center;
             display: flex;
             gap: vars.$padding-small;
+            
+
+            @media only screen and (max-width: vars.$media-query-size-small) {
+                flex-direction: column;
+            }
         }
     }
 }
