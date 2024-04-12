@@ -261,6 +261,12 @@ body[data-theme=dark] {
   gap: 1rem;
   justify-content: stretch;
 }
+@media only screen and (min-width: 2000px) {
+  .features-container .features-wrapper {
+    max-width: 160rem;
+    align-self: center;
+  }
+}
 .features-container .features-wrapper .feature-card {
   color: var(--text-color);
   flex: 1;
@@ -393,6 +399,7 @@ body[data-theme=dark] {
   gap: 1rem;
   display: flex;
   flex-direction: column;
+  align-self: center;
 }
 .cod-rutier__info {
   text-align: center;
@@ -407,10 +414,9 @@ body[data-theme=dark] {
 .cod-rutier__title {
   text-align: center;
 }
-@media only screen and (max-width: 600px) {
+@media only screen and (min-width: 2000px) {
   .cod-rutier {
-    padding: 1rem;
-    padding-bottom: 5.5rem;
+    max-width: 100rem;
   }
 }
 .cod-rutier .chapters-container {
@@ -456,6 +462,7 @@ body[data-theme=dark] {
   gap: 1rem;
   display: flex;
   flex-direction: column;
+  align-self: center;
 }
 .indicatoare__info {
   text-align: center;
@@ -470,10 +477,9 @@ body[data-theme=dark] {
 .indicatoare__title {
   text-align: center;
 }
-@media only screen and (max-width: 600px) {
+@media only screen and (min-width: 2000px) {
   .indicatoare {
-    padding: 1rem;
-    padding-bottom: 5.5rem;
+    max-width: 100rem;
   }
 }
 
@@ -488,6 +494,7 @@ body[data-theme=dark] {
 }
 
 .category-card {
+  box-sizing: border-box;
   flex: 0 0 30%;
   text-align: center;
   display: flex;
@@ -499,13 +506,23 @@ body[data-theme=dark] {
   padding: 1rem;
   gap: 1rem;
 }
+@media only screen and (max-width: 820px) {
+  .category-card {
+    flex: 0 0 40%;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .category-card {
+    flex: 0 0 100%;
+  }
+}
 .category-card__title {
   margin: 0;
   padding-bottom: 1rem;
 }
 .category-card img {
-  display: block;
-  max-width: 100%;
+  flex-grow: 0;
+  height: 16rem;
 }
 .category-card__body {
   height: 100%;
@@ -525,6 +542,30 @@ body[data-theme=dark] {
   padding-bottom: 0;
 }
 
+.category-info {
+  align-self: center;
+  width: 80%;
+  margin-bottom: 3.5rem;
+  border-radius: 3px;
+  overflow: hidden;
+  background-color: #ea9a4b;
+  color: #fff;
+  box-sizing: border-box;
+}
+.category-info__row {
+  padding: 1rem;
+  border-bottom: 3px solid var(--background-color);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+}
+.category-info__row:nth-last-child(1) {
+  border-bottom: unset;
+}
+.category-info__row > :nth-last-child(1) {
+  text-align: right;
+}
+
 .capitol {
   padding: 3.5rem;
   padding-bottom: 5.5rem;
@@ -532,6 +573,7 @@ body[data-theme=dark] {
   gap: 1rem;
   display: flex;
   flex-direction: column;
+  align-self: center;
 }
 .capitol__info {
   text-align: center;
@@ -546,10 +588,9 @@ body[data-theme=dark] {
 .capitol__title {
   text-align: center;
 }
-@media only screen and (max-width: 600px) {
+@media only screen and (min-width: 2000px) {
   .capitol {
-    padding: 1rem;
-    padding-bottom: 5.5rem;
+    max-width: 100rem;
   }
 }
 .capitol .content-container {
@@ -751,6 +792,7 @@ body[data-theme=dark] {
   gap: 1rem;
   display: flex;
   flex-direction: column;
+  align-self: center;
 }
 .exerseaza__info {
   text-align: center;
@@ -765,10 +807,9 @@ body[data-theme=dark] {
 .exerseaza__title {
   text-align: center;
 }
-@media only screen and (max-width: 600px) {
+@media only screen and (min-width: 2000px) {
   .exerseaza {
-    padding: 1rem;
-    padding-bottom: 5.5rem;
+    max-width: 100rem;
   }
 }
 
@@ -779,6 +820,7 @@ body[data-theme=dark] {
   gap: 1rem;
   display: flex;
   flex-direction: column;
+  align-self: center;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -797,10 +839,9 @@ body[data-theme=dark] {
 .intrebare__title {
   text-align: center;
 }
-@media only screen and (max-width: 600px) {
+@media only screen and (min-width: 2000px) {
   .intrebare {
-    padding: 1rem;
-    padding-bottom: 5.5rem;
+    max-width: 100rem;
   }
 }
 .intrebare__card {
@@ -978,6 +1019,8 @@ button:hover {
   box-sizing: border-box;
   background-color: var(--background-color);
   padding-top: 3.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
 /*# sourceMappingURL=style.css.map */

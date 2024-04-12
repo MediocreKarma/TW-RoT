@@ -59,6 +59,11 @@
     }
 
     .features-wrapper {
+        
+        @media only screen and (min-width: vars.$media-query-size-biggest) {
+            max-width: 160rem;
+            align-self: center;
+        }
         display: flex;
         flex-direction: row;
         height: 50%;
