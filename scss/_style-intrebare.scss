@@ -109,10 +109,10 @@
             // padding: vars.$padding-small;
             
             label {
-                &:hover {
-                    transition: all 0.2s ease-in-out;
-                    background-color: color-themes.$secondary-color--hover;
-                }
+                // &:hover {
+                //     background-color: color-themes.$secondary-color--hover;
+                // }
+                transition: all 0.2s ease-in-out;
                 border-radius: vars.$border-radius;
                 cursor: pointer;
                 box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
