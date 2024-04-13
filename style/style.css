@@ -247,6 +247,7 @@ body[data-theme=dark] {
 }
 .welcome-container__buttons button {
   width: 100%;
+  color: #fff;
 }
 .welcome-container__right {
   background-image: url("../img/trafic.jpg");
