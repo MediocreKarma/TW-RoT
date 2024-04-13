@@ -473,6 +473,11 @@ body[data-theme=dark] {
   height: fit-content;
   justify-content: center;
 }
+@media only screen and (max-width: 820px) {
+  .about__info-cards {
+    flex-direction: column;
+  }
+}
 .about__info-card {
   flex: 1;
   display: flex;

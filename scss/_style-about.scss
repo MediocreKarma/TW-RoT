@@ -15,6 +15,10 @@
         height: fit-content;
         justify-content: center;
         // align-items: baseline;
+
+        @media only screen and (max-width: vars.$media-query-size-big) {
+            flex-direction: column;
+        }
     }
 
     &__info-card {
