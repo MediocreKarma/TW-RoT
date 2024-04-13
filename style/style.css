@@ -1053,8 +1053,7 @@ body[data-theme=dark] {
   flex-direction: column;
   align-items: center;
   padding-bottom: 1rem;
-  overflow-y: visible;
-  height: 100px;
+  justify-content: center;
 }
 .comparison__info {
   text-align: center;
@@ -1079,20 +1078,13 @@ body[data-theme=dark] {
   margin: 3.5rem;
   width: 20%;
 }
+@media only screen and (max-width: 600px) {
+  .comparison__select {
+    width: 80%;
+  }
+}
 .comparison__select::-ms-expand {
   display: none;
-}
-.comparison__select:after {
-  color: #333;
-  content: "<>";
-  font: 17px "Consolas", monospace;
-  transform: rotate(90deg);
-  right: 11px;
-  top: 18px;
-  padding: 0 0 2px;
-  border-bottom: 1px solid #777777;
-  position: absolute;
-  pointer-events: none;
 }
 .comparison__select select {
   border-radius: 0px;
@@ -1120,6 +1112,7 @@ body[data-theme=dark] {
 }
 .comparison__target {
   display: flex;
+  justify-content: center;
 }
 .comparison__results {
   display: flex;
@@ -1153,6 +1146,11 @@ body[data-theme=dark] {
 .compare-card img {
   flex-grow: 0;
   height: 16rem;
+}
+@media only screen and (max-width: 600px) {
+  .compare-card img {
+    height: 12rem;
+  }
 }
 
 a {
