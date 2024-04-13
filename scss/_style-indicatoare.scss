@@ -47,6 +47,13 @@
         height: 16rem;
     }
 
+    @media only screen and (max-width: vars.$media-query-size-small) {
+        img {
+            flex-grow: 0;
+            height: 8rem;
+        }
+    }
+
     &__body {
         height: 100%;
         display: flex;

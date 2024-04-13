@@ -3,8 +3,6 @@
 
 .header {
 
-    z-index: 999;
-
     a {
         color: #FFF;
     }
@@ -20,9 +18,8 @@
     box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, .1);
     position: fixed;
     width: 100%;
-    z-index: 3;
+    z-index: 100;
     top: 0;
-
 
     ul {
         margin: 0;
