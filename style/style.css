@@ -235,6 +235,17 @@ body[data-theme=dark] {
   font-family: "Inconsolata", monospace;
   font-size: 6rem;
 }
+.welcome-container__buttons {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+}
+.welcome-container__buttons > * {
+  flex: 1;
+}
+.welcome-container__buttons button {
+  width: 100%;
+}
 .welcome-container__right {
   background-image: url("../img/trafic.jpg");
   -webkit-background-size: cover;

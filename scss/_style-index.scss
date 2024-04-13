@@ -33,6 +33,19 @@
         }
     }
 
+    &__buttons {
+        width: 100%;
+        display: flex;
+        & > * {
+            flex: 1;
+        }
+        gap: vars.$padding-small;
+
+        button {
+            width: 100%;
+        }
+    }
+
     &__right {
         background-image: url("../img/trafic.jpg");
         -webkit-background-size: cover;
@@ -53,6 +66,7 @@
 
     padding: vars.$padding-big;
     box-sizing: border-box;
+
 
     &__description {
         text-align: center;

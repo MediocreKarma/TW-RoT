@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Welcome to RoT</title>
   <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="js/darkModeSwitch.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/backToTop.js"></script>
 </head>
+
 <body>
   <header class="header">
     <a href="./index.html" class="logo">RoT</a>
@@ -40,23 +45,8 @@
 
   </header>
 
-  <div class="flex-center-container login-container">
-    <div class="login-card">
-      <h2 class="login-card__title">Autentificare</h2>
-      <form id="login-form" class="login-form" action="./index.html" method="post">
-        <div class="login-form__group">
-          <label for="email" class="login-form__label">Email</label>
-          <input type="email" id="email" name="email" class="login-form__input" required>
-        </div>
-        <div class="login-form__group">
-          <label for="password" class="login-form__label">Parolă</label>
-          <input type="password" id="password" name="password" class="login-form__input" required>
-        </div>
-        <button type="submit" class="login-form__button">Autentificare</button>
-      </form>
-      <p>Nu ai cont încă? <a href="./signup.html">Înregistrează-te</a></p>
-      <p>Ai uitat parola? <a href="./reset_password.html">Resetează parola</a></p>
-    </div>
+  <div class="main-container">
+    <!--o lista de useri pe care sa i poti sterge, ca mai mult ce sa le faci-->
   </div>
 </body>
 </html>
