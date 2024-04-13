@@ -8,7 +8,9 @@ $media-query-leaderboard: 1200px;
     display: flex;
     background-color: var(--background-color);
     flex-direction: column;
+    align-items: center;
     justify-content: center;
+    gap: vars.$padding-small;
     box-sizing: border-box;
     width: 75%;
     margin-bottom: vars.$padding-big;
@@ -17,7 +19,7 @@ $media-query-leaderboard: 1200px;
     margin-top: 80px;
     border-collapse: collapse;
     border: 1px solid #777777;
-    border-radius: 20px;
+    border-radius: 10px;
 
     &__rank {
         text-align: left;
@@ -29,7 +31,9 @@ $media-query-leaderboard: 1200px;
     }
 
     h1 {
-        padding-bottom: 20px;
+        margin: 0;
+        margin-top: vars.$padding-small;
+        // padding-bottom: 20px;
         text-align: center;
         width: 100%;
     }

@@ -35,7 +35,7 @@
     z-index: 1;
     background-color: var(--background-color);
     margin: vars.$padding-small;
-    box-shadow: 0 0 3px rgba(114, 114, 114, 0.5);
+    box-shadow: vars.$box-shadow;
     border-radius: vars.$border-radius;
     padding: vars.$padding-small;
     &__title {

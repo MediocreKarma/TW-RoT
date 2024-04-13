@@ -1,0 +1,9 @@
+@use "vars";
+@use "color-themes";
+@use "utils";
+
+.admin-dashboard {
+    @include utils.main-page-container;
+
+
+}

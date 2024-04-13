@@ -1,0 +1,40 @@
+@use "vars";
+@use "color-themes";
+@use "utils";
+
+.help {
+    @include utils.main-page-container;
+
+    &__items {
+        display: flex;
+        flex-direction: column;
+        gap: vars.$padding-small;
+        overflow: hidden;
+    }
+
+    &__item {
+        & a {
+            font-weight: bold;
+            color: color-themes.$secondary-color--hover;
+        }
+
+        color: color-themes.$text-color--dark;
+        border-radius: vars.$border-radius;
+        overflow: hidden;
+        
+        & > * {
+            margin: 0;
+        }
+
+        &__question {
+            padding: vars.$padding-small;
+            background-color: color-themes.$secondary-color;
+        }
+        
+        &__answer {
+            padding: vars.$padding-small;
+            background-color: color-themes.$secondary-color--dark;
+
+        }
+    }
+}

@@ -27,7 +27,7 @@
             justify-content: center;
             border-radius: vars.$border-radius;
             // background-color: red;flex: 1;
-            box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+            box-shadow: vars.$box-shadow;
             padding: vars.$padding-small;
             gap: vars.$padding-small;
         }

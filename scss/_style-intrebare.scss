@@ -15,7 +15,7 @@
             max-width: 100%;
         }
 
-        box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+        box-shadow: vars.$box-shadow;
         border-radius: vars.$border-radius;
         // padding: vars.$padding-small;
         margin: 0;
@@ -85,7 +85,7 @@
 
             img {
                 border-radius: vars.$border-radius;
-                box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+                box-shadow: vars.$box-shadow;
                 width: 100%;
                 height: auto;
             }
@@ -115,7 +115,7 @@
                 transition: all 0.2s ease-in-out;
                 border-radius: vars.$border-radius;
                 cursor: pointer;
-                box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+                box-shadow: vars.$box-shadow;
                 display: block;
                 box-sizing: border-box;
                 padding: vars.$padding-small;

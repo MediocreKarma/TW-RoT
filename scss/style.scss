@@ -1,3 +1,4 @@
+// utils
 @use "vars";
 @use "utils";
 @use "color-themes";
@@ -11,14 +12,17 @@
 // pages
 @use "style-index";
 @use "style-about";
+@use "style-help";
 @use "style-login-signup";
+// ------
 @use "style-cod-rutier";
 @use "style-indicatoare";
 @use "style-capitol";
-@use "style-leaderboard";
-@use "style-exerseaza";
-@use "style-intrebare";
 @use "style-compare";
+// ------
+@use "style-exerseaza";
+@use "style-leaderboard";
+@use "style-intrebare";
 
 a {
   text-decoration: none;

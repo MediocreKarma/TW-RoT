@@ -9,7 +9,7 @@
 .question-categories {
     text-align: center;
     // border: 3px solid red; // for testing purposes
-    box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+    box-shadow: vars.$box-shadow;
     padding: vars.$padding-small;
     gap: vars.$padding-small;
     // background-color: blue;
@@ -41,7 +41,7 @@
 
 .question-category {
     box-sizing: border-box;
-    box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+    box-shadow: vars.$box-shadow;
     border-radius: vars.$border-radius;
     
     display: flex;
