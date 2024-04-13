@@ -8,12 +8,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: vars.$padding-small;
     padding-bottom: vars.$padding-small;
     justify-content: center;
 
     &__select {
+        border-radius: vars.$border-radius;
         position: relative;
-        margin: vars.$padding-big;
         width: 20%;
 
         @media only screen and (max-width: vars.$media-query-size-small) {
@@ -43,12 +44,13 @@
         // }
 
         select {
-            border-radius: 0px;
             appearance: none;
+            border-radius: vars.$border-radius;
+            overflow: hidden;
             display: block;
             width: 100%;
             max-width: 320px;
-            height: 50px;
+            height: 3rem;
             float: right;
             margin: 5px 0px;
             padding: 0px 24px;

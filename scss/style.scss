@@ -1,13 +1,16 @@
 @use "vars";
 @use "utils";
+@use "color-themes";
 
 // components
 @use "style-dark-mode-switch";
 @use "style-header";
 @use "style-back-to-top";
+@use "style-footer";
 
 // pages
 @use "style-index";
+@use "style-about";
 @use "style-login-signup";
 @use "style-cod-rutier";
 @use "style-indicatoare";
@@ -16,11 +19,10 @@
 @use "style-exerseaza";
 @use "style-intrebare";
 @use "style-compare";
-@use "style-footer";
 
 a {
   text-decoration: none;
-  color: var(--text-color);
+  color: var(--link-color);
   cursor: pointer;
 }
 

@@ -3,6 +3,10 @@
 @use "utils";
 
 .footer {
+    & a:not(&__button) {
+        color: var(--text-color);
+    }
+
     display: flex;
     flex-flow: row wrap;
     padding: vars.$padding-small;
