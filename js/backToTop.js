@@ -1,6 +1,14 @@
-window.addEventListener("load", () => {
-    var backToTop = document.getElementById("back-to-top");
-    handleScroll = () => {
+window.onload = function() {
+    const backToTop = document.getElementById("back-to-top");
+    const bttMarginBottom = parseInt(window.getComputedStyle(backToTop).getPropertyValue('bottom'));
+
+    const footer = document.getElementById("footer");
+
+    window.onscroll = function() {
+        handleScroll();
+    }
+    
+    function handleScroll() {
         const viewportHeight = window.innerHeight;
         if (window.scrollY > viewportHeight * 0.8) {
             backToTop.classList.add("back-to-top--show");
@@ -8,15 +16,25 @@ window.addEventListener("load", () => {
         else {
             backToTop.classList.remove("back-to-top--show");
         }
+        if (footer == null) {
+            return;
+        }
+        const footerStartPos = footer.getBoundingClientRect().y;
+        if (window.innerHeight > footerStartPos) {
+            backToTop.style.bottom = `${(window.innerHeight - footerStartPos) + bttMarginBottom - 5}px`
+        } 
+        else {
+            backToTop.style.bottom = '';
+        }
     }
-    document.addEventListener("scroll", handleScroll);
 
     function scrollToTop() {
         document.documentElement.scrollTo({
-          top: 0,
-          behavior: "smooth"
+            top: 0,
+            behavior: "smooth"
         })
-      };
+    };
 
     backToTop.addEventListener("click", scrollToTop);
-})
+}
+

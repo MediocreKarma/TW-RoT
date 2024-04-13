@@ -8,6 +8,7 @@
     padding: vars.$padding-small;
     color: var(--text-color);
     border-top: 1px solid #777;
+    margin-top: vars.$padding-big;
 
     > * {
         flex: 1 100%;

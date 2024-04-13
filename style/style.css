@@ -64,6 +64,7 @@ body[data-theme=dark] {
 }
 
 .header {
+  z-index: 999;
   background-color: #6353aa;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.1);
   position: fixed;
@@ -87,10 +88,16 @@ body[data-theme=dark] {
   overflow: hidden;
   background-color: #6353aa;
 }
+.header li {
+  position: relative;
+  z-index: 999;
+}
 .header li a {
   display: block;
   padding: 20px 20px;
   text-decoration: none;
+  position: relative;
+  z-index: 999;
 }
 .header li a:hover {
   background-color: #8a7cd1;
@@ -159,6 +166,8 @@ body[data-theme=dark] {
   clear: both;
   max-height: 0;
   transition: max-height 0.2s ease-out;
+  position: relative;
+  z-index: 999;
 }
 .header__profile-info h4 {
   display: inline;
@@ -1159,6 +1168,7 @@ body[data-theme=dark] {
   padding: 1rem;
   color: var(--text-color);
   border-top: 1px solid #777;
+  margin-top: 3.5rem;
 }
 .footer > * {
   flex: 1 100%;

@@ -3,6 +3,8 @@
 
 .header {
 
+    z-index: 999;
+
     a {
         color: #FFF;
     }
@@ -30,10 +32,17 @@
         background-color: color-themes.$primary-color;
     }
 
+    li {
+        position: relative;
+        z-index: 999;
+    }
+
     li a {
         display: block;
         padding: 20px 20px;
         text-decoration: none;
+        position: relative;
+        z-index: 999;
 
         &:hover {
             background-color: color-themes.$primary-color--hover;
@@ -131,7 +140,8 @@
         clear: both;
         max-height: 0;
         transition: max-height .2s ease-out;
-
+        position: relative;
+        z-index: 999;
     }
 
     &__profile-info {
