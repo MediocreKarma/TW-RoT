@@ -1,29 +1,14 @@
 function assignHoverColor(evt) {
     var checkbox = evt.currentTarget.cbox;
     var label    = evt.currentTarget.label;
-    whiteBackground = function() {
-        label.style["background-color"] = "white";
-    }
-    coloredBackground = function() {
-        label.style["background-color"] = null;
-    }
     if (!checkbox.checked) {
         label.style["background-color"] = "#f0c395";
-        label.removeEventListener('click', whiteBackground);
-        label.addEventListener('click', coloredBackground, false);
-    }
-    if (checkbox.checked) {
-        label.removeEventListener('click', coloredBackground);
-        label.addEventListener('click', whiteBackground, false);
     }
 }
 
 function unassignHoverColor(evt) {
-    var checkbox = evt.currentTarget.cbox;
     var label    = evt.currentTarget.label;
-    if (!checkbox.checked) {
-        label.style["background-color"] = "white";
-    }
+    label.style["background-color"] = null;
 }
 
 window.onload = (function() {
@@ -35,5 +20,8 @@ window.onload = (function() {
         label.label = label;
         label.addEventListener("mouseenter", assignHoverColor, false);
         label.addEventListener("mouseleave", unassignHoverColor, false);
+        label.addEventListener("click", function() {
+            label.style["background-color"] = null;
+        }, false);
     }
 })
