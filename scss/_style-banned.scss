@@ -1,0 +1,26 @@
+@use "vars";
+@use "color-themes";
+@use "utils";
+
+.banned-container {
+    @include utils.main-page-container;
+    justify-content: center;
+    align-items: center;
+}
+
+.banned-card {
+    justify-content: center;
+    align-items: center;
+    padding: vars.$padding-small;
+    margin-top: vars.$padding-big;
+    border: 1px solid #777777;
+    width: auto;
+
+    h1 {
+        margin-top: 0;
+    }
+
+    ul {
+        margin-bottom: 0;
+    }
+}
