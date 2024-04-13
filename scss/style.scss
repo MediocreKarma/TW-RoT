@@ -16,9 +16,12 @@
 @use "style-exerseaza";
 @use "style-intrebare";
 @use "style-compare";
+@use "style-footer";
 
 a {
   text-decoration: none;
+  color: var(--text-color);
+  cursor: pointer;
 }
 
 html {
