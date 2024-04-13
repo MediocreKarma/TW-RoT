@@ -18,8 +18,8 @@ window.onload = (function() {
         let label   = document.getElementById(id + '-label');
         label.cbox  = cbox;
         label.label = label;
-        label.addEventListener("mouseenter", assignHoverColor, false);
-        label.addEventListener("mouseleave", unassignHoverColor, false);
+        label.addEventListener("mouseover", assignHoverColor, false);
+        label.addEventListener("mouseout", unassignHoverColor, false);
         label.addEventListener("click", function() {
             label.style["background-color"] = null;
         }, false);

@@ -8,8 +8,8 @@
   <link rel="stylesheet" href="style/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="js/darkModeSwitch.js"></script>
-  <script src="js/navbar.js"></script>
   <script src="js/backToTop.js"></script>
+  <script src="js/selectedCompare.js"></script>
 </head>
 
 <body>
@@ -46,7 +46,103 @@
   </header>
 
   <div class="main-container">
+    <button class="back-to-top" id="back-to-top">Înapoi sus</button>
     <!--comparam semne rutiere romanesti vs europene-->
+    <div class="comparison">
+      <h1 class="comparison__title">Compara indicatoarele din Romania cu cele din restul Europei</h1>
+      <div class="comparison__target" id="comparison__target">
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/RO_road_sign_B02.svg/120px-RO_road_sign_B02.svg.png">
+          <h3>Romania</h3>
+        </div>
+      </div>
+      <div class="comparison__select">  
+        <select id="select-id">
+          <option selected value="0">--</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+          <option value="1">Stop</option>
+        </select>
+      </div>
+
+      <div class="comparison__results" id="comparison__results">
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Traffic_Sign_GR_-_KOK_2009_-_R-2.svg/1024px-Traffic_Sign_GR_-_KOK_2009_-_R-2.svg.png">
+          <h3>Grecia</h3>  
+        </div>
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Traffic_Sign_GR_-_KOK_2009_-_R-2.svg/1024px-Traffic_Sign_GR_-_KOK_2009_-_R-2.svg.png">
+          <h3>Grecia</h3>  
+        </div>
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Traffic_Sign_GR_-_KOK_2009_-_R-2.svg/1024px-Traffic_Sign_GR_-_KOK_2009_-_R-2.svg.png">
+          <h3>Grecia</h3>  
+        </div>
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Traffic_Sign_GR_-_KOK_2009_-_R-2.svg/1024px-Traffic_Sign_GR_-_KOK_2009_-_R-2.svg.png">
+          <h3>Grecia</h3>  
+        </div>
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Traffic_Sign_GR_-_KOK_2009_-_R-2.svg/1024px-Traffic_Sign_GR_-_KOK_2009_-_R-2.svg.png">
+          <h3>Grecia</h3>  
+        </div>
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Traffic_Sign_GR_-_KOK_2009_-_R-2.svg/1024px-Traffic_Sign_GR_-_KOK_2009_-_R-2.svg.png">
+          <h3>Grecia</h3>  
+        </div>
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Traffic_Sign_GR_-_KOK_2009_-_R-2.svg/1024px-Traffic_Sign_GR_-_KOK_2009_-_R-2.svg.png">
+          <h3>Grecia</h3>  
+        </div>
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Traffic_Sign_GR_-_KOK_2009_-_R-2.svg/1024px-Traffic_Sign_GR_-_KOK_2009_-_R-2.svg.png">
+          <h3>Grecia</h3>  
+        </div>
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Traffic_Sign_GR_-_KOK_2009_-_R-2.svg/1024px-Traffic_Sign_GR_-_KOK_2009_-_R-2.svg.png">
+          <h3>Grecia</h3>  
+        </div>
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Traffic_Sign_GR_-_KOK_2009_-_R-2.svg/1024px-Traffic_Sign_GR_-_KOK_2009_-_R-2.svg.png">
+          <h3>Grecia</h3>  
+        </div>
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Traffic_Sign_GR_-_KOK_2009_-_R-2.svg/1024px-Traffic_Sign_GR_-_KOK_2009_-_R-2.svg.png">
+          <h3>Grecia</h3>  
+        </div>
+        <div class="compare-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Traffic_Sign_GR_-_KOK_2009_-_R-2.svg/1024px-Traffic_Sign_GR_-_KOK_2009_-_R-2.svg.png">
+          <h3>Grecia</h3>  
+        </div>
+      </div>
+    </div>
   </div>
 </body>
 </html>

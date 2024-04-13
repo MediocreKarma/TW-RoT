@@ -1038,6 +1038,122 @@ body[data-theme=dark] {
   }
 }
 
+.comparison {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 3.5rem;
+  padding-bottom: 5.5rem;
+  padding-top: 1rem;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 1rem;
+  overflow-y: visible;
+  height: 100px;
+}
+.comparison__info {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.comparison__title {
+  text-align: center;
+}
+@media only screen and (min-width: 2000px) {
+  .comparison {
+    max-width: 100rem;
+  }
+}
+.comparison__select {
+  position: relative;
+  margin: 3.5rem;
+  width: 20%;
+}
+.comparison__select::-ms-expand {
+  display: none;
+}
+.comparison__select:after {
+  color: #333;
+  content: "<>";
+  font: 17px "Consolas", monospace;
+  transform: rotate(90deg);
+  right: 11px;
+  top: 18px;
+  padding: 0 0 2px;
+  border-bottom: 1px solid #777777;
+  position: absolute;
+  pointer-events: none;
+}
+.comparison__select select {
+  border-radius: 0px;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: 50px;
+  float: right;
+  margin: 5px 0px;
+  padding: 0px 24px;
+  font-size: 16px;
+  line-height: 1.75;
+  color: #333;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #cccccc;
+  -ms-word-break: normal;
+  word-break: normal;
+}
+.comparison option {
+  border-radius: 0;
+}
+.comparison__target {
+  display: flex;
+}
+.comparison__results {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.compare-card {
+  display: border-box;
+  flex: 0 0 30%;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: stretch;
+  border-radius: 3px;
+  box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
+  padding: 1rem;
+  gap: 1rem;
+}
+@media only screen and (max-width: 820px) {
+  .compare-card {
+    flex: 0 0 40%;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .compare-card {
+    flex: 0 0 100%;
+  }
+}
+.compare-card img {
+  flex-grow: 0;
+  height: 16rem;
+}
+
 a {
   text-decoration: none;
 }

@@ -1,0 +1,102 @@
+@use "utils";
+@use "vars";
+@use "color-themes";
+
+
+.comparison {
+    @include utils.main-page-container;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: vars.$padding-small;
+    overflow-y: visible;
+    height: 100px;
+    //justify-content: center;
+
+    &__select {
+        position: relative;
+        margin: vars.$padding-big;
+        width: 20%;
+
+        &::-ms-expand {
+            display: none;
+        }
+
+        &:after {
+            color:#333;
+            content: '<>';
+            
+            font: 17px "Consolas", monospace;
+            -webkit-transform: rotate(90deg);
+            -moz-transform: rotate(90deg);
+            -ms-transform: rotate(90deg);
+            transform: rotate(90deg);
+            right: 11px;
+
+            top: 18px;
+            padding: 0 0 2px;
+            border-bottom: 1px solid #777777;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        select {
+            border-radius: 0px;
+            appearance: none;
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            height: 50px;
+            float: right;
+            margin: 5px 0px;
+            padding: 0px 24px;
+            font-size: 16px;
+            line-height: 1.75;
+            color: #333;
+            background-color: #ffffff;
+            background-image: none;
+            border: 1px solid #cccccc;
+            -ms-word-break: normal;
+            word-break: normal;
+        }
+    }
+
+    option {
+        border-radius: 0;
+    }
+
+    &__target {
+        display: flex;
+    }
+
+    &__results {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: vars.$padding-small;
+    }
+}
+
+.compare-card {
+    display: border-box;
+    flex: 0 0 30%;
+    @media only screen and (max-width: vars.$media-query-size-big) {
+        flex: 0 0 40%;
+    }
+    @media only screen and (max-width: vars.$media-query-size-small) {
+        flex: 0 0 100%;
+    }
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: stretch;
+    border-radius: vars.$border-radius;
+    box-shadow: 0px 0px 2px transparentize($color: #777777, $amount: 0.2);
+    padding: vars.$padding-small;
+    gap: vars.$padding-small;
+
+    img {
+        flex-grow: 0;
+        height: 16rem;
+    }
+}
