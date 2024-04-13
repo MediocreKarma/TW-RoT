@@ -16,6 +16,9 @@ window.onload = (function() {
         id = `option-${ch}`;
         let cbox    = document.getElementById(id);
         let label   = document.getElementById(id + '-label');
+        if (cbox == null || label == null) {
+            continue;
+        }
         label.cbox  = cbox;
         label.label = label;
         label.addEventListener("mouseover", assignHoverColor, false);

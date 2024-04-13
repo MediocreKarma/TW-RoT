@@ -1,0 +1,9 @@
+@use "vars";
+@use "color-themes";
+@use "utils";
+
+.reset-container {
+    @include utils.main-page-container;
+    justify-content: center;
+    align-items: center;
+}

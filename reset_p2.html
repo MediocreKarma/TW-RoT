@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="js/darkModeSwitch.js"></script>
-  <script src="js/navbar.js"></script>
+  
   <script src="js/backToTop.js"></script>
 </head>
 
@@ -47,6 +47,18 @@
 
   <div class="main-container">
     <!--reset password-->
+    <div class="reset-container">
+      <div class="login-card">
+        <h2 class="login-card__title">Resetează parola</h2>
+        <form id="login-form" class="login-form" action="./index.html" method="post">
+          <div class="login-form__group">
+            <label for="password" class="login-form__label">Parolă</label>
+            <input type="password" id="password" name="password" class="login-form__input" placeholder="Scrie-ți parola nouă" required>
+          </div>
+          <button type="submit" class="login-form__button">Resetează</button>
+        </form>
+      </div>
+    </div>
   </div>
 
   <footer class="footer" id="footer">

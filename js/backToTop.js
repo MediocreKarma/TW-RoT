@@ -1,5 +1,8 @@
 window.onload = function() {
     const backToTop = document.getElementById("back-to-top");
+    if (backToTop == null) {
+        return;
+    }
     const bttMarginBottom = parseInt(window.getComputedStyle(backToTop).getPropertyValue('bottom'));
 
     const footer = document.getElementById("footer");

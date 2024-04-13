@@ -2,7 +2,9 @@ window.onload = function() {
     let elem = document.getElementById("select-id");
     let target  = document.getElementById("comparison__target");
     let results = document.getElementById("comparison__results");
-    
+    if (elem == null || target == null || results == null) {
+        return;
+    }
     
     target.style["display"] = "none";
     results.style["display"] = "none";
