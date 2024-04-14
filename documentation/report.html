@@ -12,7 +12,9 @@
     <header>
         <h1>RoT (Romanian Traffic Signs Tutor)</h1>
     </header>
-    <h1 class="todo">Toate partile highlight-uite in rosu sunt TODO si trebuie verificate/modificate/eventual sterse.</h1>
+    <h1 class="todo">informatii pt cat timp editam:</h1>
+    <h1 class="todo">Toate partile highlight-uite in rosu sunt marcate cu TODO (class="todo") si trebuie modificate/eventual sterse.</h1>
+    <h1 class="check">Toate partile highlight-uite in cyan sunt in stadiul CHECK (class="check") si sunt probabil ok, dar trebuie verificate. Daca ti se pare ca suna ok ceva cu cyan poti oricand sa scoti clasa "check" de pe el, dar vreau macar unul din noi sa reciteasca</h1>
     <div role="contentinfo">
         <section typeof="sa:AuthorsList">
             <h2>Autori</h2>
@@ -53,7 +55,8 @@
         </section>
         <section>
             <h3>2.2. Convenții ale documentului</h3>
-            <p> Fontul utilizat în acest document este Arial. Termenii importanți din cadrul listelor vor fi evidențiate în bold.
+            <p>
+                Fontul utilizat în acest document este Arial. Termenii importanți din cadrul listelor vor fi evidențiate în bold.
             </p>
         </section>
         <section>
@@ -123,13 +126,16 @@
                 Există diverse tipuri de utilizatori care ar putea folosi aplicația RoT:
                 <ul>
                     <li>
-                        <b>Utilizatori în procesul de a obține permisul de conducere: </b>Această clasă include persoanele interesate de învățarea semnelor rutiere și a regulilor de circulație pentru a trece de examenul teoretic auto din România și pentru a deveni șoferi responsabili. Acești utilizatori pot avea diferite nivele de cunoștințe teoretice.
+                        <b>Utilizatori în procesul de a obține permisul de conducere: </b>această clasă include persoanele interesate de învățarea semnelor rutiere și a regulilor de circulație pentru a trece de examenul teoretic auto din România și pentru a deveni șoferi responsabili. Acești utilizatori pot avea diferite nivele de cunoștințe teoretice.
                     </li>
                     <li>
-                        <b>Instructori auto: </b>Instructorii de conducere sau școlile de șoferi pot utiliza site-ul RoT pentru a oferi materiale suplimentare de învățare și exerciții cursanților.
+                        <b>Instructori auto: </b>instructorii de conducere sau școlile de șoferi pot utiliza site-ul RoT pentru a oferi materiale suplimentare de învățare și exerciții cursanților.
                     </li>
                     <li>
-                        <b>Utilizatori pasionați: </b> Această clasă poate include persoanele cu interese în domeniul rutier, precum activiștii pentru siguranța în trafic, sau persoanele pasionate, fie șoferi sau pietoni.
+                        <b>Utilizatori pasionați: </b> această clasă poate include persoanele cu interese în domeniul rutier, precum activiștii pentru siguranța în trafic sau persoanele pasionate, fie șoferi sau pietoni.
+                    </li>
+                    <li>
+                        <b>Administratorii site-ului: </b> întrucât baza de date cu utilizatori a site-ului poate fi administrată prin intermediul unui modul specializat, <a href="../admin_dashboard.html">Admin Dashboard</a>, administratorii pot utiliza în mod direct site-ul în acest scop.
                     </li>
                 </ul>
             </p>
@@ -138,7 +144,7 @@
             <h3>3.4. Mediul de rulare</h3>
             <p> Vedem la sfarsit daca ne trebuie...</p>
         </section>
-        <section class="todo">
+        <section class="check">
             <h3>3.5. Constrângeri de proiectare și implementare</h3>
             <p>
                 În timpul dezvoltării proiectului se vor lua în calcul următoarele constrângeri:
@@ -161,15 +167,76 @@
                 </ul>
             </p>
         </section>
-        <section class="todo">
-            <h3>Documentația utilizatorului</h3>
+        <section class="check">
+            <h3>3.6. Documentația utilizatorului</h3>
             <p>
-                Utilizatorul are la dispoziție pagina <a href="../help.html">"Help"</a>
+                Utilizatorul are la dispoziție pagina "Help", inclusă în site-ul web și accesibilă din footer (partea de jos) de pe oricare pagină de pe site. Pe această pagină se regăsesc informații despre navigarea site-ului și funcționalitățile acestuia, în format Frequently Asked Questions (Întrebări frecvente).
             </p>
         </section>
-        <section>
-            <h3>mai sunt multe sectiuni de adaugat</h3>
+        <section class="todo">
+            <h3>3.7. Asumpții și dependențe</h3>
         </section>
+    </section>
+    <section>
+        <h2>4. Cerințe externe de interfață</h2>
+        <section class="todo">
+            <h3>4.1. Interfețe pentru utilizator</h3>
+            <p>AICI trebuie cu poze. nu stiu cat avem voie cu linkuri de la pagini actually... dar oricum scriem macar "./admin_dashboard.html" langa ca sa stie unde gaseste efectiv fisierul. sau cel putin la astea inaccesibile punem si n footeru aplicatiei. Nu stiu</p>
+        </section>
+        <section class="check">
+            <h3>4.2. Interfețe hardware</h3>
+            <p>
+                Dispozitivele care vor putea utiliza aplicația sunt:
+                <ul>
+                    <li>
+                        <b>Desktop-uri și laptop-uri</b> cu un browser web și acces la Internet;
+                    </li>
+                    <li>
+                        <b>Telefoane mobile și tablete</b> cu un browser web și access la Internet.
+                    </li>
+                </ul>
+            </p>
+            <p>
+                Interacțiunea dintre software și hardware va avea loc prin intermediul browser-ului web prin care este accesat site-ul web. Se va putea interacționa cu site-ul prin intermediul mouse-ului și tastaturii (în cazul desktop-urilor și laptop-urilor) sau a ecranului (în cazul tabletelor și telefoanelor mobile).
+            </p>
+            <p>
+                Protocolul de comunicare utilizat pentru interacțiunea utilizatorului cu site-ul este HTTP.
+            </p>
+        </section>
+        <section class="todo">
+            <h3>4.3. Interfețe software</h3>
+            <p>
+                aici tre sa vorbim despre... ?? nici eu nu stiu
+            </p>
+        </section>
+        <section class="check">
+            <h3>4.4. Interfețe de comunicare</h3>
+            <p>
+                Se vor utiliza următoarele modalități de comunicare:
+                <ul>
+                    <li>
+                        comunicare prin email, pentru înregistrarea de utilizatori și resetarea parolei la cerere;
+                    </li>
+                    <li>
+                        comunicare prin HTTP într-un browser web, pentru transmiterea de date atât de la server web la utilizator, cât și între frontend și backend;
+                    </li>
+                    <li>
+                        comunicare prin interfața API REST, pentru a transmite informații cerute de utilizatori.
+                    </li>
+                </ul>
+            </p>
+            <p>
+                
+                Protocolul de comunicare care stă la baza aplicației este HTTP.
+            </p>
+            <p>
+                Din punct de vedere al securității se vor implementa diverse măsuri, precum criptarea datelor, autentificarea și autorizarea utilizatorilor, protejarea împotriva a diverse vulnerabilități comune, etc. 
+            </p>
+        </section>
+    </section>
+    <section class="todo">
+        <h2>5. Caracteristicile sistemului</h2>
+        ma inspaimanta ideea de a mai face si aici...
     </section>
 </body>
 </html>
