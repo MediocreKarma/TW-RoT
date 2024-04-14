@@ -112,12 +112,11 @@
 }
 
 .chapter-content {
+    @include utils.card;
+
     flex: 1;
     padding: vars.$padding-small;
-    border-radius: vars.$border-radius;
     // background-color: red;flex: 1;
-    box-shadow: vars.$box-shadow;
-    box-sizing: border-box;
 
     @media only screen and (max-width: vars.$media-query-size-big) {
         

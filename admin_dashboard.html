@@ -40,14 +40,152 @@
       <li><a href="./cod_rutier.html">Cod rutier</a></li>
       <li><a href="./indicatoare.html">Indicatoare</a></li>
       <li><a href="./exerseaza.html">Exersează</a></li>
-      <li><a href="./login.html">Autentificare</a></li>
+      <li><a href="./profile.html" class="header__profile-info">
+        Profilul meu (<h4>@<span id="username">admin2</span></h6>)
+      </a></li>
     </ul>
 
   </header>
 
   <div class="main-container">
-    <!--o lista de useri pe care sa i poti sterge, ca mai mult ce sa le faci-->
-    <div class="admin-dashboard"></div>
+    <button class="back-to-top" id="back-to-top">Înapoi sus</button>
+    <div class="admin-dashboard">
+      <h1 class="admin-dashboard__title">Admin Dashboard</h1>
+      <div class="users-container">
+        <div class="users-container__header">
+          <div class="users-container__header__item">Utilizator</div>
+          <div class="users-container__header__item">Rol</div>
+          <div class="users-container__header__item">Statistici</div>
+          <div class="users-container__header__item">Acțiuni</div>
+        </div>
+        <div class="user-card">
+          <div class="user-card__info">
+            <div class="user-card__label">Utilizator</div>
+            <div class="user-card__username">@invatacel_rot</div>
+            <div class="user-card__email">sabina@mail.ro</div>
+          </div>
+          <div class="user-card__role">
+            <div class="user-card__label">Rol</div>
+            <p>Utilizator</p>
+          </div>
+          <div class="user-card__stats">
+            <div class="user-card__label">Statistici</div>
+            <div class="user-card__stats__row">
+              % întrebări corecte: <span>98.7%</span>
+            </div>
+            <div class="user-card__stats__row">
+              Nr. răspunsuri corecte: <span>1021</span>
+            </div>
+            <div class="user-card__stats__row">
+              Nr. chestionare admise: <span>69</span>
+            </div>
+          </div>
+          <div class="user-card__actions">
+            <div class="user-card__label">Acțiuni</div>
+            <button class="user-card__action">Restricționează</button>
+            <button class="user-card__action">Resetează progres</button>
+            <button class="user-card__action">Șterge contul</button>
+          </div>
+        </div>
+        
+        <div class="user-card">
+          <div class="user-card__info">
+            <div class="user-card__label">Utilizator</div>
+            <div class="user-card__username">@admin2</div>
+            <div class="user-card__email">admin@mail.ro</div>
+          </div>
+          <div class="user-card__role">
+            <div class="user-card__label">Rol</div>
+            <p>Administrator</p>
+          </div>
+          <div class="user-card__stats">
+            <div class="user-card__label">Statistici</div>
+            <div class="user-card__stats__row">
+              % întrebări corecte: <span>0.00%</span>
+            </div>
+            <div class="user-card__stats__row">
+              Nr. răspunsuri corecte: <span>0</span>
+            </div>
+            <div class="user-card__stats__row">
+              Nr. chestionare admise: <span>0</span>
+            </div>
+          </div>
+          <div class="user-card__actions">
+            <div class="user-card__label">Acțiuni</div>
+            <p>Indisponibile pentru un cont de administrator</p>
+          </div>
+        </div>
+        <div class="user-card">
+          <div class="user-card__info">
+            <div class="user-card__label">Utilizator</div>
+            <div class="user-card__username">@random_username123</div>
+            <div class="user-card__email">matt@mail2.co.uk</div>
+          </div>
+          <div class="user-card__role">
+            <div class="user-card__label">Rol</div>
+            <p>Utilizator</p>
+          </div>
+          <div class="user-card__stats">
+            <div class="user-card__label">Statistici</div>
+            <div class="user-card__stats__row">
+              % întrebări corecte: <span>23.7%</span>
+            </div>
+            <div class="user-card__stats__row">
+              Nr. răspunsuri corecte: <span>345</span>
+            </div>
+            <div class="user-card__stats__row">
+              Nr. chestionare admise: <span>25</span>
+            </div>
+          </div>
+          <div class="user-card__actions">
+            <div class="user-card__label">Acțiuni</div>
+            <button class="user-card__action">Restricționează</button>
+            <button class="user-card__action">Resetează progres</button>
+            <button class="user-card__action">Șterge contul</button>
+          </div>
+        </div>
+
+        <div class="user-card">
+          <div class="user-card__info">
+            <div class="user-card__label">Utilizator</div>
+            <div class="user-card__username">@admin</div>
+            <div class="user-card__email">admin@mail.com</div>
+          </div>
+          <div class="user-card__role">
+            <div class="user-card__label">Rol</div>
+            <p>Administrator</p>
+          </div>
+          <div class="user-card__stats">
+            <div class="user-card__label">Statistici</div>
+            <div class="user-card__stats__row">
+              % întrebări corecte: <span>23.7%</span>
+            </div>
+            <div class="user-card__stats__row">
+              Nr. răspunsuri corecte: <span>345</span>
+            </div>
+            <div class="user-card__stats__row">
+              Nr. chestionare admise: <span>25</span>
+            </div>
+          </div>
+          <div class="user-card__actions">
+            <div class="user-card__label">Acțiuni</div>
+            <p>Indisponibile pentru un cont de administrator</p>
+          </div>
+        </div>
+
+        <div class="users-container__pagination">
+          <a href="?page=1">&lt;&lt;</a>
+          <a href="?page=1">&lt;</a>
+          <a href="?page=3">3</a>
+          <a href="?page=4">4</a>
+          <a href="?page=5" selected="true">5</a>
+          <a href="?page=6">6</a>
+          <a href="?page=7">7</a>
+          <a href="?page=25">&gt;&gt;</a>
+          <a href="?page=25">&gt;</a>
+        </div>
+      </div>
+    </div>
   </div>
 
   <footer class="footer" id="footer">

@@ -2,8 +2,117 @@
 @use "color-themes";
 @use "utils";
 
+$smaller-padding: calc(vars.$padding-small / 2);
+$grid-cols-desktop: 2fr 1fr 2fr 2fr;
+
 .admin-dashboard {
     @include utils.main-page-container;
 
+    .users-container {
+        display: flex;
+        flex-direction: column;
+        gap: vars.$padding-small;
 
+        &__header {
+            display: grid;
+            grid-template-columns: $grid-cols-desktop;
+            border-radius: vars.$border-radius;
+            box-sizing: border-box;
+            color: color-themes.$text-color--dark;
+            background-color: color-themes.$primary-color;
+            padding: vars.$padding-small;
+
+            @media only screen and (max-width: vars.$media-query-size-big) {
+                display: none;
+            }
+        }
+
+        &__pagination {
+            @include utils.card;
+
+            background-color: color-themes.$primary-color;
+            width: max-content;
+            align-self: center;
+            display: flex;
+
+            a {
+                flex: 1;
+                padding: vars.$padding-small;
+                line-height: 100%;
+                display: block;
+                color: color-themes.$text-color--dark;
+                &:hover {
+                    background-color: color-themes.$primary-color--hover;
+                }
+
+                &[selected="true"] {
+                    background-color: color-themes.$secondary-color;
+
+                    &:hover {
+                        background-color: color-themes.$secondary-color--hover;
+                    }
+                }
+            }
+        }
+    }
+
+    .user-card {
+        @include utils.card;
+
+        width: 100%;
+        padding: vars.$padding-small;
+
+        display: grid;
+        grid-template-columns: $grid-cols-desktop;
+
+        button {
+            padding: $smaller-padding;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        > * {
+            display: flex;
+            flex-direction: column;
+            // align-items: center;
+            justify-content: center;
+        }
+
+        &__label {
+            display: none;
+        }
+
+        @media only screen and (max-width: vars.$media-query-size-big) {
+            // background-color: red;
+            grid-template-columns: 1fr 1fr;
+            gap: vars.$padding-small;
+
+            > * {
+                display: flex;
+                flex-direction: column;
+                // align-items: center;
+                justify-content: unset;
+            }
+
+            &__label {
+                display: unset;
+                font-weight: bold;
+
+            }
+        }
+
+        &__email {
+            font-style: italic;
+        }
+
+        &__actions {
+            @include color-themes.secondary;
+            display: flex;
+            // flex-direction: row;
+            gap: $smaller-padding;
+            flex-wrap: wrap;
+        }
+    }
 }

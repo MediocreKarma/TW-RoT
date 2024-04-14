@@ -10,13 +10,13 @@
     align-items: center;
     padding-bottom: vars.$padding-small;
     &__card {
+        @include utils.card;
+
         max-width: 80%;
         @media only screen and (max-width: vars.$media-query-size-big) {
             max-width: 100%;
         }
 
-        box-shadow: vars.$box-shadow;
-        border-radius: vars.$border-radius;
         // padding: vars.$padding-small;
         margin: 0;
         padding: 0;

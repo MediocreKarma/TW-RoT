@@ -7,13 +7,13 @@
 }
 
 .question-categories {
+    @include utils.card;
+
     text-align: center;
     // border: 3px solid red; // for testing purposes
-    box-shadow: vars.$box-shadow;
     padding: vars.$padding-small;
     gap: vars.$padding-small;
     // background-color: blue;
-    border-radius: vars.$border-radius;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -40,9 +40,7 @@
 }
 
 .question-category {
-    box-sizing: border-box;
-    box-shadow: vars.$box-shadow;
-    border-radius: vars.$border-radius;
+    @include utils.card;
     
     display: flex;
     align-items: center;

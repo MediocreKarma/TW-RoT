@@ -86,9 +86,10 @@
         justify-content: stretch;
         
         .feature-card {
+            @include utils.card;
+            
             color: var(--text-color);
             flex: 1;
-            box-shadow: vars.$box-shadow;
             gap: vars.$padding-small;
             display: flex;
             justify-content: stretch;

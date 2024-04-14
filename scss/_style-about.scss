@@ -22,6 +22,8 @@
     }
 
     &__info-card {
+        @include utils.card;
+
         flex: 1;
         & > * { 
             margin: 0;
@@ -31,10 +33,6 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        border-radius: vars.$border-radius;
-        
-        box-sizing: border-box;
-        box-shadow: vars.$box-shadow;
         // background-color: red;
         padding: vars.$padding-small;
         gap: vars.$padding-small;

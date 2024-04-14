@@ -14,6 +14,7 @@
 @use "style-about";
 @use "style-help";
 @use "style-login-signup";
+@use "style-admin-dashboard";
 // ------
 @use "style-cod-rutier";
 @use "style-indicatoare";
@@ -24,8 +25,7 @@
 @use "style-leaderboard";
 @use "style-intrebare";
 @use "style-banned";
-// ------
-@use "style-reset-password";
+@use "style-reset";
 
 a {
   text-decoration: none;

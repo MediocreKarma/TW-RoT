@@ -82,7 +82,9 @@
 }
 
 .compare-card {
-    display: border-box;
+    @include utils.card;
+    
+    display: flex;
     flex: 0 0 30%;
     @media only screen and (max-width: vars.$media-query-size-big) {
         flex: 0 0 40%;
@@ -94,8 +96,6 @@
     align-items: center;
     text-align: center;
     justify-content: stretch;
-    border-radius: vars.$border-radius;
-    box-shadow: vars.$box-shadow;
     padding: vars.$padding-small;
     gap: vars.$padding-small;
 

@@ -7,6 +7,12 @@
     box-sizing: border-box;
 }
 
+@mixin card {
+    box-shadow: vars.$box-shadow;
+    border-radius: vars.$border-radius;
+    box-sizing: border-box;
+}
+
 @mixin button {
     padding: vars.$padding-small;
     font-family: vars.$font;

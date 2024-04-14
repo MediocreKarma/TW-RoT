@@ -9,11 +9,12 @@
 }
 
 .banned-card {
+    @include utils.card;
+
     justify-content: center;
     align-items: center;
-    padding: vars.$padding-small;
+    padding: calc(vars.$padding-small * 2);
     margin-top: vars.$padding-big;
-    border: 1px solid #777777;
     width: auto;
 
     h1 {

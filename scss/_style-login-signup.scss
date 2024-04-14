@@ -31,12 +31,12 @@
 
 
 .login-card, .signup-card {
+    @include utils.card;
+
     position: relative;
     z-index: 1;
     background-color: var(--background-color);
     margin: vars.$padding-small;
-    box-shadow: vars.$box-shadow;
-    border-radius: vars.$border-radius;
     padding: vars.$padding-small;
     &__title {
         text-align: center;
