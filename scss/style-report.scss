@@ -1,5 +1,8 @@
 .todo {
     background-color: red;
+    & * > {
+        background-color: red;
+    }
 }
 
 * {
