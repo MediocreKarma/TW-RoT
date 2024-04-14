@@ -6,4 +6,8 @@
     @include utils.main-page-container;
     justify-content: center;
     align-items: center;
+
+    & .confirmation-container {
+        display: none;
+    }
 }

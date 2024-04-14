@@ -40,13 +40,60 @@
       <li><a href="./cod_rutier.html">Cod rutier</a></li>
       <li><a href="./indicatoare.html">Indicatoare</a></li>
       <li><a href="./exerseaza.html">Exersează</a></li>
-      <li><a href="./login.html">Autentificare</a></li>
+      <li><a href="./profil.html" class="header__profile-info">
+        Profilul meu (<h4>@<span id="username">random_username123</span></h6>)
+      </a></li>
     </ul>
 
   </header>
 
   <div class="main-container">
-    <!--profilul meu-->
+    
+    <button class="back-to-top" id="back-to-top">Înapoi sus</button>
+    <div class="profile">
+      <h1 class="profile__title">Profilul meu</h1>
+      <div class="profile-card">
+        <h2 class="profile-card__title">Informații personale</h2>
+        <div class="profile-card__row">
+          <p>Nume utilizator</p>
+          <p>random_username123</p>
+        </div>
+        <div class="profile-card__row">
+          <p>Email</p>
+          <p>user@mail.com</p>
+        </div>
+        <div class="profile-card__row">
+          <p>Parolă</p>
+          <a href="">
+            <button>Resetează parola</button>
+          </a>
+        </div>
+        <div class="profile-card__buttons">
+          <a><button>Delogare</button></a>
+          <a><button>Șterge contul</button></a>
+        </div>
+      </div>
+      <div class="profile-card">
+        <h2 class="profile-card__title">Progres</h2>
+        <div class="profile-card__row">
+          <p>% întrebări corecte</p>
+          <p><span>25.33</span>%</p>
+        </div>
+        <div class="profile-card__row">
+          <p>Nr. răspunsuri corecte</p>
+          <p>341</p>
+        </div>
+        <div class="profile-card__row">
+          <p>Nr. chestionare admise</p>
+          <p>1</p>
+        </div>
+        
+        <div class="profile-card__buttons">
+          <a><button>Resetează progres</button></a>
+        </div>
+        
+      </div>
+    </div>
   </div>
 
   <footer class="footer" id="footer">

@@ -31,7 +31,6 @@
 
     li {
         position: relative;
-        z-index: 999;
     }
 
     li a {
@@ -39,7 +38,6 @@
         padding: 20px 20px;
         text-decoration: none;
         position: relative;
-        z-index: 999;
 
         &:hover {
             background-color: color-themes.$primary-color--hover;
@@ -98,12 +96,19 @@
 
     }
 
+    &__list {
+        clear: both;
+        max-height: 0;
+        transition: max-height .3s ease-out;
+        position: relative;
+    }
+
     &__button {
         display: none;
 
         &:checked {
             ~ .header__list {
-                max-height: 240px;
+                max-height: 40rem;
             }
 
 
@@ -131,14 +136,6 @@
 
         }
 
-    }
-
-    &__list {
-        clear: both;
-        max-height: 0;
-        transition: max-height .2s ease-out;
-        position: relative;
-        z-index: 999;
     }
 
     &__profile-info {

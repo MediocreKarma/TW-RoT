@@ -37,6 +37,17 @@
         }
         gap: vars.$padding-small;
     }
+
+    a {
+        // width: unset;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        button {
+            width: 100%;
+        }
+    }
 }
 
 .question-category {

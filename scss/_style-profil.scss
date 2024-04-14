@@ -1,0 +1,35 @@
+@use "vars";
+@use "color-themes";
+@use "utils";
+
+.profile {
+    @include utils.main-page-container;
+}
+
+.profile-card {
+    @include color-themes.secondary;
+    
+    @include utils.card;
+
+    display: flex;
+    flex-direction: column;
+    padding: vars.$padding-small;
+    gap: vars.$padding-small;
+
+    button {
+        width: 100%;
+        height: 100%;
+    }
+
+    &__buttons {
+        display: flex;
+        padding: vars.$padding-small;
+        gap: vars.$padding-small;
+        justify-content: center;
+    }
+
+    &__row {
+        display: flex;
+        justify-content: space-between;
+    }
+}
