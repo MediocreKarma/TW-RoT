@@ -1400,8 +1400,17 @@ body[data-theme=dark] {
     width: 80%;
   }
 }
-.comparison__select::-ms-expand {
-  display: none;
+.comparison__select:after {
+  color: #333;
+  content: "<>";
+  font: 17px "Consolas", monospace;
+  transform: rotate(90deg);
+  right: 11px;
+  top: 18px;
+  padding: 0 0 2px;
+  border-bottom: 1px solid #777777;
+  position: absolute;
+  pointer-events: none;
 }
 .comparison__select select {
   -webkit-appearance: none;
@@ -1421,7 +1430,6 @@ body[data-theme=dark] {
   background-color: #ffffff;
   background-image: none;
   border: 1px solid #cccccc;
-  -ms-word-break: normal;
   word-break: normal;
 }
 .comparison option {
