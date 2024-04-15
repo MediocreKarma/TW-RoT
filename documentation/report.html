@@ -12,8 +12,6 @@
     <header>
         <h1>RoT (Romanian Traffic Signs Tutor)</h1>
     </header>
-    <h1 class="todo">informatii pt cat timp editam:</h1>
-    <h1 class="todo">Toate partile highlight-uite in rosu sunt marcate cu TODO (class="todo") si trebuie modificate/eventual sterse.</h1>
     <div role="contentinfo">
         <section typeof="sa:AuthorsList">
             <h2>Autori</h2>
@@ -238,7 +236,7 @@
                         <b>Utilizatori pasionați: </b> această clasă poate include persoanele cu interese în domeniul rutier, precum activiștii pentru siguranța în trafic sau persoanele pasionate, fie șoferi sau pietoni.
                     </li>
                     <li>
-                        <b>Administratorii site-ului: </b> întrucât baza de date cu utilizatori a site-ului poate fi administrată prin intermediul unui modul specializat, <a href="../admin_dashboard.html">Admin Dashboard</a>, administratorii pot utiliza în mod direct site-ul în acest scop.
+                        <b>Administratorii site-ului: </b> întrucât baza de date cu utilizatori și întrebăro a site-ului poate fi administrată prin intermediul unor module speciale, administratorii pot utiliza în mod direct site-ul în acest scop.
                     </li>
                 </ul>
             </p>
@@ -278,9 +276,6 @@
                 Utilizatorul are la dispoziție pagina Ajutor (Help), inclusă în site-ul web și accesibilă din footer (partea de jos) de pe oricare pagină de pe site. Pe această pagină se regăsesc informații despre navigarea site-ului și funcționalitățile acestuia, în format Frequently Asked Questions (Întrebări frecvente). De asemenea, utilizatorul poate consulta secțiunea <a href="#user-interfaces">Interfețe pentru utilizator</a> pentru a înțelege în detaliu cum poate fi navigată aplicația.
             </p>
         </section>
-        <!-- <section class="todo">
-            <h3>3.7. Asumpții și dependențe</h3>
-        </section> -->
     </section>
     <section id="interface-requirements">
         <h2>4. Cerințe externe de interfață</h2>
@@ -301,80 +296,92 @@
                         <img src="img/footer_light_desktop.png" typeof="sa:image" />
                     </li>
                     <li>
-                        Pagina <b>index</b> introduce utilizatorul în aplicație și oferă link-uri către paginile importante ale aplicației (Despre noi, Ajutor, Cod Rutier, Indicatoare, Exersează).
+                        Pagina <b>index</b> (<a href="../index.html">index.html</a>) introduce utilizatorul în aplicație și oferă link-uri către paginile importante ale aplicației (Despre noi, Ajutor, Cod Rutier, Indicatoare, Exersează).
                         
                         <img src="img/index_1.png" typeof="sa:image" />
                         <img src="img/index_2.png" typeof="sa:image" />
                     </li>
                     <li>
-                        Pagina <b>Despre noi</b> prezintă informații despre motivația aplicației și despre autorii acesteia.
+                        Pagina <b>Despre noi</b> (<a href="../about.html">about.html</a>) prezintă informații despre motivația aplicației și despre autorii acesteia.
                         <img src="img/about.png" typeof="sa:image" />
                     </li>
                     <li>
-                        Pe pagina <b>Help</b> se regăsesc explicații despre cum trebuie navigată aplicația, prezentate în formatul Frequently Asked Questions (Întrebări frecvente).
+                        Pe pagina <b>Help</b> (<a href="../help.html">help.html</a>) se regăsesc explicații despre cum trebuie navigată aplicația, prezentate în formatul Frequently Asked Questions (Întrebări frecvente).
                         <img src="img/help.png" typeof="sa:image" />
                     </li>
                     <li>
-                        Pagina <b>Cod rutier</b> conține o listă de capitole din Codul Rutier. Această pagină poate fi accesată chiar dacă utilizatorul nu este înregistrat.
+                        Pagina <b>Cod rutier</b> (<a href="../cod_rutier.html">cod_rutier.html</a>) conține o listă de capitole din Codul Rutier. Această pagină poate fi accesată chiar dacă utilizatorul nu este înregistrat.
                         <img src="img/cod_rutier.png" typeof="sa:image">
                     </li>
                     <li>
-                        Fiecărui capitol din Codul Rutier îi corespunde o pagină de tip <b>Capitol</b> care afișează conținutul textual al capitolului. Aceste pagini pot fi accesate chiar dacă utilizatorul nu este înregistrat.
+                        Fiecărui capitol din Codul Rutier îi corespunde o pagină de tip <b>Capitol</b> (ex.: <a href="../capitole/capitol_1.html">capitole/capitol_1.html</a>) care afișează conținutul textual al capitolului. Aceste pagini pot fi accesate chiar dacă utilizatorul nu este înregistrat.
                         <img src="img/capitol_1.png">
                     </li>
                     <li>
-                        Pagina <b>Indicatoare</b> conține o listă de categorii de indicatoare din România. Această pagină poate fi accesată chiar dacă utilizatorul nu este înregistrat. Pe această pagină se află și un link către pagina Compară, detaliată mai jos.
+                        Pagina <b>Indicatoare</b> (<a href="../indicatoare.html">indicatoare.html</a>) conține o listă de categorii de indicatoare din România. Această pagină poate fi accesată chiar dacă utilizatorul nu este înregistrat. Pe această pagină se află și un link către pagina Compară, detaliată mai jos.
                         <img src="img/indicatoare.png" typeof="sa:image">
                     </li>
                     <li>
-                        Pagina <b>Categorie de indicatoare</b> cuprinde informații despre o categorie selectată de indicatoare rutiere și o listă cu toate indicatoarele care se află sub acea categorie.
+                        Pagina <b>Categorie de indicatoare</b> (ex.: <a href="../indicatoare/indicatoare_de_avertizare.html">indicatoare/indicatoare_de_avertizare.html</a>) cuprinde informații despre o categorie selectată de indicatoare rutiere și o listă cu toate indicatoarele care se află sub acea categorie.
                         <img src="img/avertizare_1.png" typeof="sa:image">
                         <img src="img/avertizare_2.png" typeof="sa:image">
                     </li>
                     <li>
-                        Pagina <b>Compară</b> oferă o interfață atractivă prin care pot fi comparate aspectual indicatoare din România cu echivalentele acestora din alte țări din Europa. Se va alege prin drop-down menu indicatorul dorit și apoi va apărea pe ecran atât indicatorul românesc, cât și cele din alte țări.
+                        Pagina <b>Compară</b> (<a href="../compare.html">compare.html</a>) oferă o interfață atractivă prin care pot fi comparate aspectual indicatoare din România cu echivalentele acestora din alte țări din Europa. Se va alege prin drop-down menu indicatorul dorit și apoi va apărea pe ecran atât indicatorul românesc, cât și cele din alte țări.
                         <img src="img/compara.png" typeof="sa:image">
                     </li>
                     <li>
-                        Pagina <b>Exersează</b> oferă la dispoziția utilizatorului abilitatea de a răspunde la întrebări pe site, cu scopul de a se pregăti pentru examenul auto. Dacă utilizatorul nu este autentificat, pagina va redirecta la cea de Autentificare. Utilizatorul are opțiunea de a răspunde la întrebări fără a fi cronometrat, sau de a genera un chestionar, unde acesta va răspunde la 26 de întrebări în limita de 30 de minute, la fel ca la chestionarul auto din România. De asemenea, utilizatorul poate alege să răspundă la întrebări doar dintr-o anumită categorie (de exemplu, Indicatoare, Sancțiuni și infracțiuni, Conducerea preventivă, etc).
+                        Pagina <b>Exersează</b> (<a href="../exerseaza.html">exerseaza.html</a>) oferă la dispoziția utilizatorului abilitatea de a răspunde la întrebări pe site, cu scopul de a se pregăti pentru examenul auto. Dacă utilizatorul nu este autentificat, pagina va redirecta la cea de Autentificare. Utilizatorul are opțiunea de a răspunde la întrebări fără a fi cronometrat, sau de a genera un chestionar, unde acesta va răspunde la 26 de întrebări în limita de 30 de minute, la fel ca la chestionarul auto din România. De asemenea, utilizatorul poate alege să răspundă la întrebări doar dintr-o anumită categorie (de exemplu, Indicatoare, Sancțiuni și infracțiuni, Conducerea preventivă, etc).
                         <img src="img/exerseaza.png" typeof="sa:image">
                     </li>
                     <li>
-                        Paginile <b>Întrebare</b> și <b>Întrebare chestionar</b> sunt cele prin care utilizatorul va putea să răspundă la întrebări în aplicație, în funcție de ce a selectat în pagina Exersează.
+                        Paginile <b>Întrebare</b> (<a href="../intrebare.html">intrebare.html</a>) și <b>Întrebare chestionar</b> (<a href="../intrebare_chestionar.html">intrebare_chestionar.html</a>) sunt cele prin care utilizatorul va putea să răspundă la întrebări în aplicație, în funcție de ce a selectat în pagina Exersează.
                         <img src="img/intrebare.png" typeof="sa:image">
                         <img src="img/intrebare_chestionar.png" typeof="sa:image">
                         
                     </li>
                     <li>
-                        Pagina <b>Leaderboard</b> (Scoruri obținute) prezintă o listă cu topul utilizatorilor din aplicație cu procentele cele mai mari de întrebări la care au răspuns corect, alături de alte statistici despre utilizatori. Această listă este de asemenea exportabilă prin RSS.
+                        Pagina <b>Leaderboard</b> (<a href="../leaderboard.html">leaderboard.html</a>) prezintă o listă cu topul utilizatorilor din aplicație cu procentele cele mai mari de întrebări la care au răspuns corect, alături de alte statistici despre utilizatori. Această listă este de asemenea exportabilă prin RSS.
                         <img src="img/leaderboard.png" typeof="sa:image">
                     </li>
                     <li>
-                        <p>
-                            Pentru a se autentifica în aplicație, utilizatorul poate apăsa pe link-ul "Autentificare" din bara de navigație care îl va conduce către pagina <b>Autentificare</b>, unde își poate introduce email-ul și parola utilizate la crearea contului. De asemenea, dacă cel care dorește să se autentifice și-a uitat parola, acesta poate apăsa pe "Resetează parola", moment în care va fi redirectat la o pagină unde își poate introduce adresa de email pentru a își reseta parola.
+                        <p id="login">
+                            Pentru a se autentifica în aplicație, utilizatorul poate apăsa pe link-ul "Autentificare" din bara de navigație care îl va conduce către pagina <b>Autentificare</b> (<a href="../login.html">login.html</a>), unde își poate introduce email-ul și parola utilizate la crearea contului. De asemenea, dacă cel care dorește să se autentifice și-a uitat parola, acesta poate apăsa pe "Resetează parola", moment în care va fi redirectat la o pagină unde își poate introduce adresa de email pentru a își reseta parola, trimițându-i-se apoi un link de verificare pe adresa introdusă dacă aceasta corespunde unui cont.
                         </p>
                         <img src="img/login.png" typeof="sa:image">
                         <img src="img/reset_p1.png" typeof="sa:image">
                         <p>
-                            În cazul în care utilizatorul nu are un cont în aplicație, acesta poate apăsa pe link-ul "Înregistrează-te", care îl va conduce la pagina <b>Înregistrare</b>, unde își poate introduce adresa de email, parola dorită, și username-ul (numele de utilizator) dorit.
+                            În cazul în care utilizatorul nu are un cont în aplicație, acesta poate apăsa pe link-ul "Înregistrează-te", care îl va conduce la pagina <b>Înregistrare</b> (<a href="../signup.html">signup.html</a>), unde își poate introduce adresa de email, parola dorită, și username-ul (numele de utilizator) dorit.
                         </p>
                         <img src="img/signup.png" typeof="sa:image">
 
                     </li>
-                    <li class="todo">
-                        RESET P2
+                    <li>
+                        Pagina <b>Resetează parola</b>  (<a href="../reset_p2.html">reset_p2.html</a>) va fi cea la care va fi redirectat utilizatorul dintr-un link primit pe adresa de email, în urma solicitării acestui lucru în aplicație (fie din pagina <a href="#login">Autentificare</a>, fie din pagina <a href="#profile">Profilul meu</a>). Utilizatorul își va putea introduce noua parolă dorită, fiind apoi redirectat la pagina de <a href="#confirm-change">Confirmare schimbare</a>.
+                        <img src="img/reset_p2.png" typeof="sa:image">
+                        
                     </li>
-                    <li class="todo">
-                        Profil
+                    <li id="profile">
+                        Pagina <b>Profilul meu</b> (<a href="../profil.html">profil.html</a>) permite utilizatorului să își schimbe datele personale precum adresa de email, parola, numele de utilizator, dar și să își vizualizeze și reseteze progresul.
+                        <img src="img/profil.png" typeof="sa:image">
                     </li>
-                    <li class="todo">
-                        Detaliem pagini resetari. aici va redirecta si aia cu loginu
+                    <li>
+                        Pagina <b>Resetează email</b> (<a href="../reset_e1.html">reset_e1.html</a>) va fi cea la care va fi redirectat utilizatorul dintr-un link primit pe adresa de email curentă, în urma solicitării acestui lucru în aplicație, din pagina <a href="#profile">Profilul meu</a>. Utilizatorul își va putea introduce noua adresă de email dorită, fiind apoi redirectat la pagina de <a href="#confirm-change">Confirmare schimbare</a>.
+                        <img src="img/reset_e1.png" typeof="sa:image">
                     </li>
-                    <li class="todo">
-                        Admin dashboard pt USERI
+                    <li id="confirm-change">
+                        Pagina <b>Confirmare schimbare</b>  (<a href="../confirm_change.html">confirm_change.html</a>) va apărea în urma unei schimbări a datelor personale de către utilizator, fie email, parolă sau nume de utilizator. Pe pagină se află un buton care, când este apăsat, va redirecta la pagina <a href="#login">Autentificare</a>.
+                        <img src="img/confirm_change.png" typeof="sa:image">
                     </li>
-                    <li class="todo">
-                        Admin dashboard pt INTREBARI
+                    <li>
+                        Pagina <b>Dashboard utilizatori</b>  (<a href="../dashboard_users.html">dashboard_users.html</a>) permite administratorilor să gestioneze utilizatorii aplicației. Se pot căuta anumiți utilizatori după numele de utilizator prin bara de căutare de sus. Lista este paginată, iar în dreptul fiecărui utilizator (non-admin) se află diverse butoane de acțiune.
+                        <img src="img/dashboard_users_1.png" typeof="sa:image">
+                        <img src="img/dashboard_users_2.png" typeof="sa:image">
+                    </li>
+                    <li>
+                        Pagina <b>Dashboard întrebări</b>  (<a href="../dashboard_exercises.html">dashboard_exercises.html</a>) permite administratorilor să gestioneze întrebările aplicației. Se pot căuta anumite întrebări după conținut prin bara de căutare de sus. Lista este paginată, iar în dreptul fiecărei întrebări se află diverse butoane de acțiune.
+                        <img src="img/dashboard_exercises_1.png" typeof="sa:image">
+                        <img src="img/dashboard_exercises_2.png" typeof="sa:image">
                     </li>
                 </ul>
             </p>
@@ -522,7 +529,7 @@
                     Trebuie ca datele utilizatorului să poată fi adăugate în baza de date, și apoi modificate la cerere.
                 </li>
                 <li>
-                    Trebuie implementat flow-ul în cazul schimbării de date personale (email, parolă, nume de utilizator), care va implica trimiterea unor coduri de verificare (sau link-uri) pentru a putea executa schimbările dorite.
+                    Trebuie implementat flow-ul în cazul schimbării de date personale (email, parolă, nume de utilizator), care va implica trimiterea unor link-uri de verificare prin email pentru a putea executa schimbările dorite.
                 </li>
             </ul>
         </section>
@@ -602,17 +609,17 @@
                 Această caracteristică este de prioritate Înaltă.
             </p>
             <p>
-                Administratorii trebuie să poată să gestioneze lista de utilizatori a site-ului, având abilitatea să restricționeze conturi (în cazul comportamentului inadecvat), să șteargă conturi, sau să reseteze progresul utilizatorilor (în caz de suspiciuni legate de scoruri).
+                Administratorii trebuie să poată să gestioneze lista de utilizatori a site-ului, având abilitatea să restricționeze conturi (în cazul comportamentului inadecvat), să șteargă conturi, să reseteze progresul utilizatorilor (în caz de suspiciuni legate de scoruri), sau să le schimbe adresa de email (în cazul în care un utilizator nu mai are acces la adresa de email asociată contului).
             </p>
             <h4>5.6.2. Listă de secvențe de stimuli/răspunsuri</h4>
             <p>
-                Un administrator se autentifică în manieră similară cu un utilizator normal, fapt în urma căruia apare în bara de navigare pagina <span class="todo">Dashboard utilizatori</span> pe care poate naviga pentru a gestiona utilizatorii aplicației.
+                Un administrator se autentifică în manieră similară cu un utilizator normal, fapt în urma căruia apare în bara de navigație pagina Dashboard utilizatori, pe care poate naviga pentru a gestiona utilizatorii aplicației.
             </p>
             <p>
-                Pe pagină va apărea inițial un număr redus de utilizatori (5-10), administratorul putând să navigheze prin multiplele pagini de utilizatori. Alternativ, se poate utiliza bara de căutare pentru a căuta anumiți utilizatori după numele de utilizator.
+                Pe pagină va apărea inițial un număr redus de utilizatori, administratorul putând să navigheze prin multiplele pagini de utilizatori. Alternativ, se poate utiliza bara de căutare pentru a căuta anumiți utilizatori după numele de utilizator.
             </p>
             <p>
-                În dreptul fiecărui utilizator, administratorul poate avea anumite butoane: Restricționează, Șterge contul, Resetează progres. Totuși, aceste acțiuni nu pot fi efectuate și pentru alte conturi de utilizator.
+                În dreptul fiecărui utilizator, administratorul poate avea anumite butoane: Restricționează, Șterge contul, Resetează progres, Schimbă email. Totuși, aceste acțiuni nu pot fi efectuate și pentru alte conturi de utilizator. La apăsarea butonului Șterge contul se va șterge întrebarea din baza de date.
             </p>
 
             <h4>5.6.3. Cerințe funcționale</h4>
@@ -621,7 +628,7 @@
                     Trebuie să se poată gestiona sesiunea curentă a administratorului, pentru a stabili dacă este sau nu logat într-un cont cu drepturi de administrator.
                 </li>
                 <li>
-                    Trebuie să se poată realiza în baza de date operațiile corespunzătoare pentru utilizator, precum ștergere, restricționare, sau resetarea progresului în aplicație.
+                    Trebuie să se poată realiza în baza de date operațiile corespunzătoare pentru utilizator, precum ștergere, restricționare, schimbare de email, sau resetarea progresului în aplicație.
                 </li>
             </ul>
         </section>
@@ -638,13 +645,13 @@
             </p>
             <h4>5.7.2. Listă de secvențe de stimuli/răspunsuri</h4>
             <p>
-                Un administrator se autentifică în manieră similară cu un utilizator normal, fapt în urma căruia apare în bara de navigare pagina <span class="todo">Dashboard întrebări</span>, pe care poate naviga pentru a gestiona întrebările din aplicație.
+                Un administrator se autentifică în manieră similară cu un utilizator normal, fapt în urma căruia apare în bara de navigație pagina Dashboard întrebări, pe care poate naviga pentru a gestiona întrebările din aplicație.
             </p>
             <p>
-                Pe pagină va apărea inițial un număr redus de întrebări, administratorul putând să navigheze prin multiplele pagini de întrebări. Alternativ, se poate utiliza bara de căutare pentru a căuta anumite întrebări după ID sau conținut. De asemenea, în partea de sus a paginii se va afla un buton care trimite la un formular prin care se poate adăuga o întrebare nouă.
+                Pe pagină va apărea inițial un număr redus de întrebări, administratorul putând să navigheze prin multiplele pagini de întrebări. Alternativ, se poate utiliza bara de căutare pentru a căuta anumite întrebări după ID sau conținut. De asemenea, în partea de sus a paginii se va afla un buton care deschide un formular prin care se poate adăuga o întrebare nouă.
             </p>
             <p>
-                În dreptul fiecărei întrebări se vor afla butoanele Modifică și Șterge. Apăsarea butonului Modifică va duce la un formular similar cu cel de adăugare a unei noi întrebări, dar cu informațiile existente deja completate.
+                În dreptul fiecărei întrebări se vor afla butoanele Modifică întrebarea și Șterge întrebarea. Apăsarea butonului Modifică va deschide un formular similar cu cel de adăugare a unei noi întrebări, dar cu informațiile existente deja completate. La apăsarea butonului Șterge întrebarea, se va șterge întrebarea din baza de date.
             </p>
 
             <h4>5.7.3. Cerințe funcționale</h4>
