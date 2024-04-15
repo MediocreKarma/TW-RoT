@@ -53,11 +53,14 @@
 .question-category {
     @include utils.card;
     
+    width: 100%;
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    //justify-content: center;
+    //flex-direction: column;
     padding: vars.$padding-small;
+    position: relative;
 
     background-color: color-themes.$secondary-color;
     transition: all 0.2s ease-in-out;
@@ -65,8 +68,31 @@
         background-color: color-themes.$secondary-color--hover;
     }
     color: white;
+
+    span {
+        padding: 0;
+    }
     
-    p {
+    &__title {
+        flex-grow: 1;
+        text-align: center;
         margin: 0;
+        z-index: 5;
+    }
+
+    &__value {
+        margin: 0;
+        align-self: flex-end;
+        width: 20%;
+        z-index: 5;
+    }
+
+    &__filler {
+        content: '\A';
+        background: color-themes.$primary-color;
+        position: absolute;
+        top: 0; bottom: 0;
+        left: 0; 
+        width: 99%;
     }
 }
