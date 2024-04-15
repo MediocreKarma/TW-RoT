@@ -1,6 +1,31 @@
 @use "vars";
 @use "color-themes";
 
+@mixin header-mobile-view {
+    .header {
+        &__dark-switch {
+            position: relative;
+            padding-right: 1rem;
+            float: right;
+        }
+    
+        li {
+            position: relative;
+        }
+    
+        &__list {
+            clear: both;
+            max-height: 0;
+            transition: max-height .3s ease-out;
+            position: relative;
+        }
+    
+        &__icon {
+            display: block;
+        }
+    }
+}
+
 .header {
 
     a {
@@ -8,10 +33,11 @@
     }
 
     &__dark-switch {
+        top: 0.1rem;
         position: relative;
+        float: left;
+        margin: vars.$padding-small;
         padding-right: 1rem;
-        top: 1rem;
-        float: right;
     }
 
     background-color: color-themes.$primary-color;
@@ -30,7 +56,7 @@
     }
 
     li {
-        position: relative;
+        float: left;
     }
 
     li a {
@@ -65,6 +91,7 @@
         padding: 28px 20px;
         position: relative;
         user-select: none;
+        display: none;
 
         .navicon {
             background-color: #FFF;
@@ -93,14 +120,12 @@
                 top: -5px;
             }
         }
-
     }
 
     &__list {
-        clear: both;
-        max-height: 0;
-        transition: max-height .3s ease-out;
-        position: relative;
+        clear: none;
+        float: right;
+        max-height: none;
     }
 
     &__button {
@@ -142,37 +167,12 @@
         h4 {display: inline;}
     }
 
+    &--mobile-view {
+        @include header-mobile-view;
+    }
+
 }
 
-@media only screen and (min-width: vars.$media-query-size-big) {
-    .header {
-
-        &__dark-switch {
-            top: 0.1rem;
-            position: relative;
-            float: left;
-            margin: vars.$padding-small;
-            
-            padding-right: 1rem;
-        }
-    
-
-        li {
-            float: left;
-
-            a {
-                padding: 20px 30px;
-            }
-        }
-        
-        &__list {
-            clear: none;
-            float: right;
-            max-height: none;
-        }
-
-        &__icon {
-            display: none;
-        }
-    }
+@media only screen and (max-width: vars.$media-query-size-big) {
+    @include header-mobile-view;
 }

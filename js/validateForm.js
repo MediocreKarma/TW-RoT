@@ -1,4 +1,4 @@
-window.onload = function () {
+window.addEventListener("load", function () {
     let loginForm = document.getElementById("login-form");
     loginForm.addEventListener("submit", function () {
         let allRequiredFilled = true;
@@ -17,5 +17,5 @@ window.onload = function () {
         }
 
     }, false);
-}
+}, false);
 

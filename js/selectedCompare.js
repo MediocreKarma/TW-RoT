@@ -1,4 +1,4 @@
-window.onload = function() { 
+window.addEventListener("load", function () {
     let elem = document.getElementById("select-id");
     let target  = document.getElementById("comparison__target");
     let results = document.getElementById("comparison__results");
@@ -20,4 +20,4 @@ window.onload = function() {
             results.style["display"] = "flex";
         }
     }, false);
-}
+}, false);

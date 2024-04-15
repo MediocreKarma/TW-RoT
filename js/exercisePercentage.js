@@ -1,4 +1,4 @@
-window.onload = function () {
+window.addEventListener("load", function () {
     const elems = document.getElementsByClassName("question-category");
     for (let i = 0; i < elems.length; ++i) {
         const elem = elems.item(i);
@@ -25,4 +25,4 @@ window.onload = function () {
         }
         fillerData.item(0).style.width = percentage + "%";
     }
-}
+}, false);

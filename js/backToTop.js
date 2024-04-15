@@ -1,4 +1,4 @@
-window.onload = function() {
+window.addEventListener("load", function () {
     const backToTop = document.getElementById("back-to-top");
     if (backToTop == null) {
         return;
@@ -39,5 +39,5 @@ window.onload = function() {
     };
 
     backToTop.addEventListener("click", scrollToTop);
-}
+}, false);
 

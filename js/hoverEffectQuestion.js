@@ -11,7 +11,7 @@ function unassignHoverColor(evt) {
     label.style["background-color"] = null;
 }
 
-window.onload = (function() {
+window.addEventListener("load", function () {
     for (const ch of ['a', 'b', 'c']) {
         id = `option-${ch}`;
         let cbox    = document.getElementById(id);
@@ -27,4 +27,4 @@ window.onload = (function() {
             label.style["background-color"] = null;
         }, false);
     }
-})
+}, false);
