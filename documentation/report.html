@@ -14,7 +14,6 @@
     </header>
     <h1 class="todo">informatii pt cat timp editam:</h1>
     <h1 class="todo">Toate partile highlight-uite in rosu sunt marcate cu TODO (class="todo") si trebuie modificate/eventual sterse.</h1>
-    <h1 class="check">Toate partile highlight-uite in cyan sunt in stadiul CHECK (class="check") si sunt probabil ok, dar trebuie verificate. Daca ti se pare ca suna ok ceva cu cyan poti oricand sa scoti clasa "check" de pe el, dar vreau macar unul din noi sa reciteasca</h1>
     <div role="contentinfo">
         <section typeof="sa:AuthorsList">
             <h2>Autori</h2>
@@ -89,10 +88,104 @@
                 </ul>
             </p>
         </section>
-        <section>
+        <section role="doc-bibliography" id="references">
             <h3>2.5. Referințe</h3>
-            <p class="todo">linkuri la: labu de web, scoalarutiera.ro ca referinta, codrutier.ro ca referinta, formatu scholarly HTML.
-            </p>
+            <ul>
+                <li typeof="schema:WebPage" role="doc-biblioentry" resource="http://semver.org/" property="schema:citation" id="some-id">
+                    <cite property="schema:name">
+                        <a href="https://edu.info.uaic.ro/web-technologies/">Tehnologii Web (pagina cursului)</a>
+                    </cite>,
+                    de <span property="schema:author" typeof="schema:Person">
+                        <span property="schema:givenName">Andrei</span>
+                        <span property="schema:familyName">Panu</span>
+                    </span> și 
+                    <span property="schema:author" typeof="schema:Person">
+                        <meta property="schema:givenName" content="Sabin">
+                        <meta property="schema:additionalName" content="Corneliu">
+                        Sabin-Corneliu
+                        <span property="schema:familyName">Buraga</span>
+                    </span>
+                    <span property="schema:potentialAction" typeof="schema:ReadAction">
+                        <meta property="schema:actionStatus" content="CompletedActionStatus">
+                        (accesat pe
+                        <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
+                    </span>
+                </li>
+
+                <li typeof="schema:WebPage" role="doc-biblioentry" resource="http://semver.org/" property="schema:citation" id="some-id">
+                    <cite property="schema:name">
+                        <a href="https://tehnologii-web.vercel.app/">Tehnologii Web (pagina laboratorului)</a>
+                    </cite>,
+                    de <span property="schema:author" typeof="schema:Person">
+                        <span property="schema:givenName">Victor</span>
+                        <span property="schema:familyName">Vlad</span>
+                    </span>
+                    <span property="schema:potentialAction" typeof="schema:ReadAction">
+                        <meta property="schema:actionStatus" content="CompletedActionStatus">
+                        (accesat pe
+                        <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
+                    </span>
+                </li>
+
+                <li typeof="schema:WebPage" role="doc-biblioentry" resource="http://semver.org/" property="schema:citation" id="some-id">
+                    <cite property="schema:name">
+                        <a href="https://github.com/rick4470/IEEE-SRS-Tempate">IEEE SRS Template</a>
+                    </cite>,
+                    de <span property="schema:author" typeof="schema:Person">
+                        <span property="schema:givenName">Rick</span>
+                    </span>
+                    <span property="schema:potentialAction" typeof="schema:ReadAction">
+                        <meta property="schema:actionStatus" content="CompletedActionStatus">
+                        (accesat pe
+                        <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
+                    </span>
+                </li>
+
+                <li typeof="schema:WebPage" role="doc-biblioentry" resource="http://semver.org/" property="schema:citation" id="some-id">
+                    <cite property="schema:name">
+                        <a href="https://w3c.github.io/scholarly-html/">Scholarly HTML</a>
+                    </cite>,
+                    de <span property="schema:author" typeof="schema:Person">
+                        <span property="schema:givenName">Tzviya</span>
+                        <span property="schema:familyName">Siegman</span>
+                    </span> și 
+                    <span property="schema:author" typeof="schema:Person">
+                        <span property="schema:givenName">Robin</span>
+                        <span property="schema:familyName">Berjon</span>
+                    </span>
+                    <span property="schema:potentialAction" typeof="schema:ReadAction">
+                        <meta property="schema:actionStatus" content="CompletedActionStatus">
+                        (accesat pe
+                        <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
+                    </span>
+                </li>
+
+                <li typeof="schema:WebPage" role="doc-biblioentry" resource="http://semver.org/" property="schema:citation" id="some-id">
+                    <cite property="schema:name">
+                        <a href="https://www.codrutier.ro/">Cod Rutier</a>
+                    </cite>
+                    <span property="schema:potentialAction" typeof="schema:ReadAction">
+                        <meta property="schema:actionStatus" content="CompletedActionStatus">
+                        (accesat pe
+                        <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
+                    </span>
+                </li>
+
+                <li typeof="schema:WebPage" role="doc-biblioentry" resource="http://semver.org/" property="schema:citation" id="some-id">
+                    <cite property="schema:name">
+                        <a href="https://www.scoalarutiera.ro/">Școala Rutieră</a>
+                    </cite>
+                    <span property="schema:potentialAction" typeof="schema:ReadAction">
+                        <meta property="schema:actionStatus" content="CompletedActionStatus">
+                        (accesat pe
+                        <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
+                    </span>
+                </li>
+
+
+            
+                
+            </ul>
         </section>
     </section>
     <section>
@@ -246,11 +339,15 @@
                         Pagina <b>Exersează</b> oferă la dispoziția utilizatorului abilitatea de a răspunde la întrebări pe site, cu scopul de a se pregăti pentru examenul auto. Dacă utilizatorul nu este autentificat, pagina va redirecta la cea de Autentificare. Utilizatorul are opțiunea de a răspunde la întrebări fără a fi cronometrat, sau de a genera un chestionar, unde acesta va răspunde la 26 de întrebări în limita de 30 de minute, la fel ca la chestionarul auto din România. De asemenea, utilizatorul poate alege să răspundă la întrebări doar dintr-o anumită categorie (de exemplu, Indicatoare, Sancțiuni și infracțiuni, Conducerea preventivă, etc).
                         <img src="img/exerseaza.png" typeof="sa:image">
                     </li>
-                    <li class="todo">
-                        INTREBARI SI INTREBARI CHESTIONAR
+                    <li>
+                        Paginile <b>Întrebare</b> și <b>Întrebare chestionar</b> sunt cele prin care utilizatorul va putea să răspundă la întrebări în aplicație, în funcție de ce a selectat în pagina Exersează.
+                        <img src="img/intrebare.png" typeof="sa:image">
+                        <img src="img/intrebare_chestionar.png" typeof="sa:image">
+                        
                     </li>
-                    <li class="todo">
-                        LEADERBOARD
+                    <li>
+                        Pagina <b>Leaderboard</b> (Scoruri obținute) prezintă o listă cu topul utilizatorilor din aplicație cu procentele cele mai mari de întrebări la care au răspuns corect, alături de alte statistici despre utilizatori. Această listă este de asemenea exportabilă prin RSS.
+                        <img src="img/leaderboard.png" typeof="sa:image">
                     </li>
                     <li>
                         <p>
@@ -430,7 +527,7 @@
             </ul>
         </section>
 
-        <section class="check">
+        <section>
             <h3>5.4. Exersarea prin întrebări</h3>
   
             <h4>5.4.1. Descriere și prioritate</h4>
@@ -466,7 +563,7 @@
         </section>
 
         
-        <section class="check">
+        <section>
             <h3>5.5. Accesarea Leaderboard-ului</h3>
             <h4>5.5.1. Descriere și prioritate</h4>
             <p>
@@ -497,7 +594,7 @@
 
         </section>
 
-        <section class="check">
+        <section>
             <h3>5.6. Gestionarea utilizatorilor (pentru administratori)</h3>
   
             <h4>5.6.1. Descriere și prioritate</h4>
@@ -508,8 +605,8 @@
                 Administratorii trebuie să poată să gestioneze lista de utilizatori a site-ului, având abilitatea să restricționeze conturi (în cazul comportamentului inadecvat), să șteargă conturi, sau să reseteze progresul utilizatorilor (în caz de suspiciuni legate de scoruri).
             </p>
             <h4>5.6.2. Listă de secvențe de stimuli/răspunsuri</h4>
-            <p class="todo">
-                Un administrator se autentifică în manieră similară cu un utilizator normal, fapt în urma căruia apare în bara de navigare pagina ????????????????????, pe care poate naviga pentru a gestiona utilizatorii aplicației.
+            <p>
+                Un administrator se autentifică în manieră similară cu un utilizator normal, fapt în urma căruia apare în bara de navigare pagina <span class="todo">Dashboard utilizatori</span> pe care poate naviga pentru a gestiona utilizatorii aplicației.
             </p>
             <p>
                 Pe pagină va apărea inițial un număr redus de utilizatori (5-10), administratorul putând să navigheze prin multiplele pagini de utilizatori. Alternativ, se poate utiliza bara de căutare pentru a căuta anumiți utilizatori după numele de utilizator.
@@ -529,7 +626,7 @@
             </ul>
         </section>
 
-        <section class="check">
+        <section>
             <h3>5.7. Gestionarea întrebărilor (pentru administratori)</h3>
   
             <h4>5.7.1. Descriere și prioritate</h4>
@@ -540,8 +637,8 @@
                 Administratorii trebuie să poată să gestioneze lista de întrebări care apar în lista de întrebări sau în chestionare; trebuie să se poată adăuga întrebări noi, să se modifice întrebări existente (în caz de greșeli), sau să se șteargă întrebări.
             </p>
             <h4>5.7.2. Listă de secvențe de stimuli/răspunsuri</h4>
-            <p class="todo">
-                Un administrator se autentifică în manieră similară cu un utilizator normal, fapt în urma căruia apare în bara de navigare pagina <span class="todo">????????</span>, pe care poate naviga pentru a gestiona întrebările din aplicație.
+            <p>
+                Un administrator se autentifică în manieră similară cu un utilizator normal, fapt în urma căruia apare în bara de navigare pagina <span class="todo">Dashboard întrebări</span>, pe care poate naviga pentru a gestiona întrebările din aplicație.
             </p>
             <p>
                 Pe pagină va apărea inițial un număr redus de întrebări, administratorul putând să navigheze prin multiplele pagini de întrebări. Alternativ, se poate utiliza bara de căutare pentru a căuta anumite întrebări după ID sau conținut. De asemenea, în partea de sus a paginii se va afla un buton care trimite la un formular prin care se poate adăuga o întrebare nouă.
