@@ -9,146 +9,181 @@
     flex-direction: column;
     align-items: center;
     padding-bottom: vars.$padding-small;
-    &__card {
-        @include utils.card;
+    
+}
 
-        max-width: 80%;
-        @media only screen and (max-width: vars.$media-query-size-big) {
-            max-width: 100%;
-        }
+.intrebare-card {
+    @include utils.card;
 
-        // padding: vars.$padding-small;
-        margin: 0;
-        padding: 0;
+    max-width: 80%;
+    @media only screen and (max-width: vars.$media-query-size-big) {
+        max-width: 100%;
+    }
+
+    // padding: vars.$padding-small;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &__header {
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        align-items: center;
 
-        &__header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: calc(vars.$padding-small / 2);
-            
-            > div {
+        .header {
+            &__upper, &__lower {
                 display: flex;
-                flex-direction: column;
-                gap: calc(vars.$padding-small / 4);
-            }
-
-            h2 {
-                margin-top: calc(vars.$padding-small / 4);
-                margin-bottom: calc(vars.$padding-small / 4);
-            }
-
-            @media only screen and (max-width: 330px) {
-                h2 {
-                    line-height: 100%;
-                }
-            }
-
-            color: color-themes.$text-color--dark;
-            background-color: color-themes.$primary-color;
-            
-            padding: vars.$padding-small;
-            line-height: 100%;
-        }
-
-        &__body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            padding: vars.$padding-small;
-            gap: vars.$padding-small;
-            display: flex;
-            flex-direction: column;
-        }
-
-        &__title {
-            margin: 0;
-            margin-top: vars.$padding-small;
-            text-align: center;
-        }
-
-        &__contents {
-            display: flex;
-            width: 100%;
-            gap: vars.$padding-small;
-
-            @media only screen and (max-width: vars.$media-query-size-small) {
-                flex-direction: column-reverse;
-            }
-        }
-
-        &__image-wrapper {
-            flex: 0 1 40%;
-            padding: 0;
-
-            img {
-                border-radius: vars.$border-radius;
-                box-shadow: vars.$box-shadow;
+                flex-direction: row;
                 width: 100%;
-                height: auto;
-            }
-        }
-
-        &__answers-list {
-            flex: 0 1 60%;
-            margin: 0;
-            padding: 0;
-            list-style-type: none;
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: vars.$padding-small;
-            flex: 1;
-        }
-
-        &__answer {
-            box-sizing: border-box;
-            width: 100%;
-            // padding: vars.$padding-small;
-            
-            label {
-                // &:hover {
-                //     background-color: color-themes.$secondary-color--hover;
-                // }
-                transition: all 0.2s ease-in-out;
-                border-radius: vars.$border-radius;
-                cursor: pointer;
-                box-shadow: vars.$box-shadow;
-                display: block;
-                box-sizing: border-box;
+                justify-content: space-between;
                 padding: vars.$padding-small;
-                min-width: 100%;
-                // background-color: red;
-                min-height: 100%;
+                padding-bottom: 0;
             }
 
-            input[type="checkbox"] {
-                display: none;
-                cursor: pointer;
-                width: 0;
+            &__upper {
+                padding-bottom: vars.$padding-small;
+            }
 
-                &:checked ~ label {
-                    background-color: color-themes.$secondary-color;
-                    color: color-themes.$text-color--dark;
+            &__lower {
+                padding-top: 0;
+                border-top: 1px solid #777;
+                display: flex;
+                p:not(:first-child) {
+                    border-left: 1px solid #777;
                 }
-                
+
+                p {
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    flex: 100%;
+                    margin: 0;
+                    padding: vars.$padding-small;
+
+                    span {
+                        padding-top: vars.$padding-small;
+                        font-size: 20px;
+                    }
+                }
             }
 
+        }
+
+        h2 {
+            margin-top: calc(vars.$padding-small / 4);
+            margin-bottom: calc(vars.$padding-small / 4);
+        }
+
+        @media only screen and (max-width: 330px) {
+            h2 {
+                line-height: 100%;
+            }
+        }
+
+        color: color-themes.$text-color--dark;
+        background-color: color-themes.$primary-color;
+        
+        padding-left: vars.$padding-small;
+        padding-right: vars.$padding-small;
+        line-height: 100%;
+    }
+
+    &__title {
+        display: flex;
+        flex-direction: column;
+        //gap: calc(vars.$padding-small / 4);
+    }
+
+    &__body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        padding: vars.$padding-small;
+        //gap: vars.$padding-small;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__contents {
+        display: flex;
+        width: 100%;
+        gap: vars.$padding-small;
+
+        @media only screen and (max-width: vars.$media-query-size-small) {
+            flex-direction: column-reverse;
+        }
+    }
+
+    &__image-wrapper {
+        flex: 0 1 40%;
+        padding: 0;
+
+        img {
+            border-radius: vars.$border-radius;
+            box-shadow: vars.$box-shadow;
+            width: 100%;
+            height: auto;
+        }
+    }
+
+    &__answers-list {
+        flex: 0 1 60%;
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: vars.$padding-small;
+        flex: 1;
+    }
+
+    &__answer {
+        box-sizing: border-box;
+        width: 100%;
+        // padding: vars.$padding-small;
+        
+        label {
+            // &:hover {
+            //     background-color: color-themes.$secondary-color--hover;
+            // }
+            transition: all 0.2s ease-in-out;
+            border-radius: vars.$border-radius;
+            cursor: pointer;
+            box-shadow: vars.$box-shadow;
+            display: block;
+            box-sizing: border-box;
+            padding: vars.$padding-small;
+            min-width: 100%;
+            // background-color: red;
+            min-height: 100%;
+        }
+
+        input[type="checkbox"] {
+            display: none;
+            cursor: pointer;
+            width: 0;
+
+            &:checked ~ label {
+                background-color: color-themes.$secondary-color;
+                color: color-themes.$text-color--dark;
+            }
             
         }
 
-        &__buttons {
-            align-self: center;
-            justify-self: center;
-            display: flex;
-            gap: vars.$padding-small;
-            
+        
+    }
 
-            @media only screen and (max-width: vars.$media-query-size-small) {
-                flex-direction: column;
-            }
+    &__buttons {
+        align-self: center;
+        justify-self: center;
+        display: flex;
+        gap: vars.$padding-small;
+        
+
+        @media only screen and (max-width: vars.$media-query-size-small) {
+            flex-direction: column;
         }
     }
 }
