@@ -801,7 +801,7 @@ body[data-theme=dark] {
   display: grid;
   grid-template-columns: 2fr 1fr 2fr 2fr;
 }
-.admin-dashboard .dashboard-card button {
+.admin-dashboard .dashboard-card__action {
   width: 100%;
   padding: 0.5rem;
 }
