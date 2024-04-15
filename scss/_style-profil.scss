@@ -9,6 +9,11 @@
         display: none;
         text-align: center;
     }
+
+    .button {
+        display: flex;
+        background-color: var(--link-color);
+    }
 }
 
 .profile-card {
@@ -22,15 +27,11 @@
     gap: vars.$padding-small;
 
     &__buttons {
-        display: inline-flex;
+        display: flex;
         //padding: vars.$padding-small;
         gap: vars.$padding-small;
         justify-content: center;
         height: 100%;
-
-        a {
-            display: inline-flex;
-        }
     }
 
     &__row {
@@ -70,11 +71,15 @@
     &__content {
         font-size: 1rem;
         justify-content: right;
+
+        
+        max-width: 200px;
+        width: 200px;
         
         p {
             text-align: center;
         }
-
+        
         button {
             width: 200px;
         }

@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RoT - Romanian Traffic Signs Tutor</title>
   <link rel="stylesheet" href="style/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -16,7 +16,7 @@
 <body>
   <header class="header header--no-js" id="header">
     <a href="./index.html" class="logo">RoT</a>
-    <input class="header__button" type="checkbox" id="header__button" />
+    <input class="header__button" type="checkbox" id="header__button">
     <label class="header__icon" for="header__button">
       <span class="navicon"></span>
     </label>
@@ -49,7 +49,10 @@
   <div class="main-container">
     <button class="back-to-top" id="back-to-top">Înapoi sus</button>
     <div class="indicatoare">
-      <h1 class="indicatoare__title">Pasul 2: Indicatoarele rutiere</h1>
+      <div class="indicatoare__info">
+        <h1 class="indicatoare__title">Pasul 2: Indicatoarele rutiere</h1>
+        <a href="./compare.html" class="button">Compară indicatoare din alte țări</a>
+      </div>
       <div class="category-container">
         <a class="category-card" href="indicatoare/indicatoare_de_avertizare.html">
 
@@ -57,7 +60,7 @@
               <img src="https://www.codrutier.ro/storage/images/4a0e77a8746e40fafe38002ca66e9b24.jpeg" alt="De avertizare"
                 class="category-card__img">
               <h3 class="category-card__title">De avertizare</h3>
-              <button type="button">Învață</button>
+              <div class="button">Învață</div>
             </div>
 
         </a>
@@ -67,7 +70,7 @@
               <img src="https://www.codrutier.ro/storage/images/3dc2a1a5238da0e6f01b83c2c193b45d.jpeg"
                 alt="De interzicere sau restrictie" class="category-card__img">
               <h3 class="category-card__title">De interzicere sau restrictie</h3>
-              <button type="button">Învață</button>
+              <div class="button">Învață</div>
             </div>
 
         </a>
@@ -77,7 +80,7 @@
               <img src="https://www.codrutier.ro/storage/images/b89569bb33ad9984692cac61b080c295.jpeg" alt="De prioritate"
                 class="category-card__img">
               <h3 class="category-card__title">De prioritate</h3>
-              <button type="button">Învață</button>
+              <div class="button">Învață</div>
             </div>
 
         </a>
@@ -87,7 +90,7 @@
               <img src="https://www.codrutier.ro/storage/images/96ed6e3779da56f2dd618faba36f9cb9.jpeg" alt="De obligare"
                 class="category-card__img">
               <h3 class="category-card__title">De obligare</h3>
-              <button type="button">Învață</button>
+              <div class="button">Învață</div>
             </div>
 
         </a>
@@ -96,7 +99,7 @@
             <img src="https://www.codrutier.ro/storage/images/3424094f22c582f77057f33bfaf44dbb.jpeg" alt="De informare"
               class="category-card__img">
             <h3 class="category-card__title">De informare</h3>
-            <button type="button">Învață</button>
+            <div class="button">Învață</div>
           </div>
         </a>
         <a href="indicatoare/indicatoare_de_avertizare.html" class="category-card">
@@ -105,7 +108,7 @@
               <img src="https://www.codrutier.ro/storage/images/7129722202b22ba0994be461eba1e2a1.jpeg" alt="De orientare"
                 class="category-card__img">
               <h3 class="category-card__title">De orientare</h3>
-              <button type="button">Învață</button>
+              <div class="button">Învață</div>
             </div>
 
         </a>
@@ -115,7 +118,7 @@
               <img src="https://www.codrutier.ro/storage/images/74ce230360da1e48438abcc213cc72d1.jpeg"
                 alt="De informare  turistica" class="category-card__img">
               <h3 class="category-card__title">De informare turistica</h3>
-              <button type="button">Învață</button>
+              <div class="button">Învață</div>
             </div>
 
         </a>
@@ -125,7 +128,7 @@
               <img src="https://www.codrutier.ro/storage/images/007889111d3483a8c4b42eb2d339b3ae.jpeg"
                 alt="Panouri aditionale" class="category-card__img">
               <h3 class="category-card__title">Panouri aditionale</h3>
-              <button type="button">Învață</button>
+              <div class="button">Învață</div>
             </div>
 
         </a>
@@ -135,7 +138,7 @@
               <img src="https://www.codrutier.ro/storage/images/04669a28c6ac706035449c3e7659fe34.jpeg"
                 alt="Semnale luminoase" class="category-card__img">
               <h3 class="category-card__title">Semnale luminoase</h3>
-              <button type="button">Învață</button>
+              <div class="button">Învață</div>
             </div>
 
         </a>
@@ -145,7 +148,7 @@
               <img src="https://www.codrutier.ro/storage/images/3a7124b7af3f2340268a10120b1d79ae.png"
                 alt="Indicatoare instalate la trecerea cu calea ferată" class="category-card__img">
               <h3 class="category-card__title">Indicatoare instalate la trecerea cu calea ferată</h3>
-              <button type="button">Învață</button>
+              <div class="button">Învață</div>
             </div>
 
         </a>
@@ -155,7 +158,7 @@
               <img src="https://www.codrutier.ro/storage/images/7411c2bc0d95e9141e8e5ac2b565e519.png"
                 alt="Indicatoare kilometrice" class="category-card__img">
               <h3 class="category-card__title">Indicatoare kilometrice</h3>
-              <button type="button">Învață</button>
+              <div class="button">Învață</div>
             </div>
 
         </a>
@@ -164,7 +167,7 @@
               <img src="https://www.codrutier.ro/storage/images/969b82489eb2c8d430c2abaa12d73547.png"
                 alt="Mijloace auxiliare de semnalizare a lucrărilor" class="category-card__img">
               <h3 class="category-card__title">Mijloace auxiliare de semnalizare a lucrărilor</h3>
-              <button type="button">Învață</button>
+              <div class="button">Învață</div>
             </div>
         </a>
         <a href="indicatoare/indicatoare_de_avertizare.html" class="category-card">
@@ -173,7 +176,7 @@
               alt="Dispozitive luminoase pentru dirijarea circulației pe benzi reversibile" class="category-card__img">
             <h3 class="category-card__title">Dispozitive luminoase pentru dirijarea circulației pe benzi
               reversibile</h3>
-            <button type="button">Învață</button>
+            <div class="button">Învață</div>
           </div>
         </a>
         <a href="indicatoare/indicatoare_de_avertizare.html" class="category-card">
@@ -181,7 +184,7 @@
             <img src="https://www.codrutier.ro/storage/images/001cdd2fb1e8240790091aa91b0aa97e.png"
               alt="Marcaje longitudinale" class="category-card__img">
             <h3 class="category-card__title">Marcaje longitudinale</h3>
-            <button type="button">Învață</button>
+            <div class="button">Învață</div>
           </div>
         </a>
         <a href="indicatoare/indicatoare_de_avertizare.html" class="category-card">
@@ -189,7 +192,7 @@
             <img src="https://www.codrutier.ro/storage/images/c8e9843b1db2ef542b997b2cd287fa0e.png"
               alt="Marcaje transversale" class="category-card__img">
             <h3 class="category-card__title">Marcaje transversale</h3>
-            <button type="button">Învață</button>
+            <div class="button">Învață</div>
           </div>
         </a>
         <a href="indicatoare/indicatoare_de_avertizare.html" class="category-card">
@@ -197,7 +200,7 @@
             <img src="https://www.codrutier.ro/storage/images/3187ebe9b39627efec8ec14523461aa1.jpeg" alt="Marcaje diverse"
               class="category-card__img">
             <h3 class="category-card__title">Marcaje diverse</h3>
-            <button type="button">Învață</button>
+            <div class="button">Învață</div>
           </div>
         </a>
         <a href="indicatoare/indicatoare_de_avertizare.html" class="category-card">
@@ -205,7 +208,7 @@
             <img src="https://www.codrutier.ro/storage/images/9a92ca22dd607cf9d2b178590aa18fd2.jpeg" alt="Marcaje laterale"
               class="category-card__img">
             <h3 class="category-card__title">Marcaje laterale</h3>
-            <button type="button">Învață</button>
+            <div class="button">Învață</div>
           </div>
         </a>
         <a href="indicatoare/indicatoare_de_avertizare.html" class="category-card">
@@ -214,7 +217,7 @@
               alt="Marcaje temporare pentru semnalizarea lucrărilor în zona drumului public" class="category-card__img">
             <h3 class="category-card__title">Marcaje temporare pentru semnalizarea lucrărilor în zona
               drumului public</h3>
-            <button type="button">Învață</button>
+            <div class="button">Învață</div>
           </div>
         </a>
         <a href="indicatoare/indicatoare_de_avertizare.html" class="category-card">
@@ -222,7 +225,7 @@
             <img src="https://www.codrutier.ro/storage/images/3be2befd058f675b17be9fce3f2abf16.jpeg"
               alt="Indicatoare rutiere temporare" class="category-card__img">
             <h3 class="category-card__title">Indicatoare rutiere temporare</h3>
-            <button type="button">Învață</button>
+            <div class="button">Învață</div>
           </div>
         </a>
         <a href="indicatoare/indicatoare_de_avertizare.html" class="category-card">
@@ -230,7 +233,7 @@
             <img src="https://www.codrutier.ro/storage/images/9c1bff733c46ae33dcf5a1d605a34dd1.png"
               alt="Semnalele polițistului rutier" class="category-card__img">
             <h3 class="category-card__title">Semnalele polițistului rutier</h3>
-            <button type="button">Învață</button>
+            <div class="button">Învață</div>
           </div>
         </a>
       </div>

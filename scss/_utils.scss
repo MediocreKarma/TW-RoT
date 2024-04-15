@@ -13,6 +13,24 @@
     box-sizing: border-box;
 }
 
+.button {
+    padding: vars.$padding-small;
+    font-family: vars.$font;
+    font-size: vars.$font-size;
+    border-radius: vars.$border-radius;
+    background-color: color-themes.$primary-color;
+    color: color-themes.$text-color--dark;
+    border: none;
+    // border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+
+    &:hover {
+        background-color: color-themes.$primary-color--hover;
+    }
+}
+
 @mixin button {
     padding: vars.$padding-small;
     font-family: vars.$font;
