@@ -49,7 +49,7 @@
         justify-content: center;
         max-width: max-content;
         margin: vars.$padding-small 0;
-        padding-right: 0 vars.$padding-small;
+        padding-right: vars.$padding-small;
     }
 
     ul {
