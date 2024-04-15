@@ -8,9 +8,16 @@
             padding-right: 1rem;
             float: right;
         }
+
+        ul {
+            width: 100%;
+        }
     
         li {
-            position: relative;
+            display: block;
+            //position: relative;
+            width: 100%;
+            float: left;
         }
     
         &__list {
@@ -63,7 +70,6 @@
         display: block;
         padding: 20px 20px;
         text-decoration: none;
-        position: relative;
 
         &:hover {
             background-color: color-themes.$primary-color--hover;
