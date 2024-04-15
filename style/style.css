@@ -1275,7 +1275,7 @@ body[data-theme=dark] {
   justify-content: center;
   gap: 1rem;
 }
-.category-container *:not(button) {
+.category-container *:not(.button) {
   color: var(--text-color);
 }
 
