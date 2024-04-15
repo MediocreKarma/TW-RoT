@@ -702,6 +702,11 @@ body[data-theme=dark] {
     max-width: 100rem;
   }
 }
+.admin-dashboard button {
+  width: -moz-max-content;
+  width: max-content;
+  align-self: center;
+}
 .admin-dashboard__search {
   display: flex;
   justify-content: center;
@@ -771,6 +776,7 @@ body[data-theme=dark] {
   grid-template-columns: 2fr 1fr 2fr 2fr;
 }
 .admin-dashboard .dashboard-card button {
+  width: 100%;
   padding: 0.5rem;
 }
 .admin-dashboard .dashboard-card p {

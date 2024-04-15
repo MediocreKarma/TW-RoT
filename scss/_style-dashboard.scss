@@ -11,6 +11,11 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
 .admin-dashboard {
     @include utils.main-page-container;
 
+    button {
+        width: max-content;
+        align-self: center;
+    }
+
     &__search {
         display: flex;
         justify-content: center;
@@ -87,6 +92,7 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
         grid-template-columns: $grid-cols-desktop;
 
         button {
+            width: 100%;
             padding: $smaller-padding;
         }
 
