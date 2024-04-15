@@ -5,8 +5,28 @@
 $smaller-padding: calc(vars.$padding-small / 2);
 $grid-cols-desktop: 2fr 1fr 2fr 2fr;
 
+// TODO: 
+// DASHBOARD-ADMIN WIDTH 1000px BUG
+
 .admin-dashboard {
     @include utils.main-page-container;
+
+    &__search {
+        display: flex;
+        justify-content: center;
+        //height: 100%;
+
+        input[type=text] {
+            padding: vars.$padding-small;
+            float: left;
+            font-size: 1rem;
+        }
+
+        p {
+            margin: 0;
+            transform: scale(1.5) rotate(36deg);
+        }
+    }
 
     .users-container {
         display: flex;

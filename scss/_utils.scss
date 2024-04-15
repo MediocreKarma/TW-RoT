@@ -55,10 +55,10 @@
         text-align: center;
     }
 
-    // @media only screen and (max-width: vars.$media-query-size-small) {
-    //     padding: vars.$padding-small;
-        // padding-bottom: calc(vars.$padding-big + 2rem);
-    // }
+    @media only screen and (max-width: vars.$media-query-size-small) {
+        padding: vars.$padding-small;
+        padding-bottom: calc(vars.$padding-big + 2rem);
+    }
 
     @media only screen and (min-width: vars.$media-query-size-biggest) {
         max-width: 100rem;

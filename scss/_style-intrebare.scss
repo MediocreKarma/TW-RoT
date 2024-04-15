@@ -44,6 +44,12 @@
 
             &__upper {
                 padding-bottom: vars.$padding-small;
+
+                @media only screen and (max-width: vars.$media-query-size-small) {
+                    text-align: center;
+                    gap: vars.$padding-small;
+                    flex-direction: column;
+                }
             }
 
             &__lower {
@@ -67,6 +73,14 @@
                         font-size: 20px;
                     }
                 }
+
+                @media only screen and (max-width: vars.$media-query-size-small) {
+                    flex-wrap: wrap;
+
+                    p:not(:first-child) {
+                        border-left: 0;
+                    }
+                }
             }
 
         }
@@ -74,12 +88,7 @@
         h2 {
             margin-top: calc(vars.$padding-small / 4);
             margin-bottom: calc(vars.$padding-small / 4);
-        }
-
-        @media only screen and (max-width: 330px) {
-            h2 {
-                line-height: 100%;
-            }
+            line-height: 100%;
         }
 
         color: color-themes.$text-color--dark;
@@ -180,7 +189,7 @@
         justify-self: center;
         display: flex;
         gap: vars.$padding-small;
-        
+        padding-top: vars.$padding-small;
 
         @media only screen and (max-width: vars.$media-query-size-small) {
             flex-direction: column;
