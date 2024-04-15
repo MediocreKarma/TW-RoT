@@ -1440,6 +1440,9 @@ body[data-theme=dark] {
 .question-category:hover {
   background-color: #f0c395;
 }
+.question-category:hover .question-category__filler {
+  background-color: #8a7cd1;
+}
 .question-category span {
   padding: 0;
 }
@@ -1456,6 +1459,7 @@ body[data-theme=dark] {
   z-index: 5;
 }
 .question-category__filler {
+  transition: all 0.2s ease-in-out;
   content: "\a";
   background: #6353aa;
   position: absolute;

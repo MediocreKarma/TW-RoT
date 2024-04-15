@@ -66,6 +66,10 @@
     transition: all 0.2s ease-in-out;
     &:hover {
         background-color: color-themes.$secondary-color--hover;
+
+        .question-category__filler {
+            background-color: color-themes.$primary-color--hover;
+        }
     }
     color: white;
 
@@ -88,6 +92,7 @@
     }
 
     &__filler {
+        transition: all 0.2s ease-in-out;
         content: '\A';
         background: color-themes.$primary-color;
         position: absolute;
