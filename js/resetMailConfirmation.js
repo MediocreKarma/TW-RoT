@@ -1,6 +1,9 @@
 window.addEventListener("load", () => {
-    console.log("woooooo");
-    document.getElementById("submit-button").onclick = () => {
+    let button = document.getElementById("submit-button");
+    if (button == null) {
+        return;
+    }
+    button.onclick = () => {
         document.getElementById("confirmation-container").style = "display: unset";
     }
 })

@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="style/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="js/darkModeSwitch.js"></script>
+  <script src="js/backToTop.js"></script>
+  <script src="js/validateForm.js"></script>
 </head>
 
 <body>
@@ -40,25 +42,30 @@
       <li><a href="./exerseaza.html">Exersează</a></li>
       <li><a href="./login.html">Autentificare</a></li>
     </ul>
+
   </header>
 
   <div class="main-container">
-
-    <div class="single-card__container">
-      <div class="single-card__body">
-        <h1>Ne pare rău, contul tău a fost restricționat</h1>
-        <h3>De ce mi-a fost restricționat contul?</h3>
+    <!--reset email-->
+    <div class="reset-container">
+      <div class="login-card">
+        <h2 class="login-card__title">Resetează-ți email-ul</h2>
         <p>
-          Cele mai întalnite motive pentru a avea contul restricționat includ:
+          Scrie noua adresă de email, iar noi îți vom trimite
+          un link de verificare pentru a confirma că adresa a fost introdusă corect.
         </p>
-        <ul>
-          <li>Nume de utilizator inadecvat</li>
-          <li>Încercări de a manipula sau de a exploata informații de pe site prin posibile vulnerabilități</li>
-          <li>Încercări de a suprasolicita site-ul prin cereri excesive într-un timp scurt</li>
-        </ul>
+        <form id="login-form" class="login-form" action="javascript:void(0);">
+          <div class="login-form__group">
+            <label for="email" class="login-form__label">Email-ul Nou</label>
+            <input type="email" id="email" name="email" class="login-form__input" placeholder="Scrie-ți noua adresa de email aici" required>
+          </div>
+          <button type="submit" id="submit-button" class="login-form__button">Trimite noua adresă de email</button>
+        </form>
+      </div>
+      <div id="confirmation-container" class="confirmation-container">
+        <p>Un link a fost trimis către adresa ta nouă de email.</p>
       </div>
     </div>
-
   </div>
 
   <footer class="footer" id="footer">
@@ -96,9 +103,7 @@
         </ul>
       </li>
       <li class="nav__item">
-        <a href="./help.html">
-          <h2 class="nav__title">Ajutor</h2>
-        </a>
+        <a href="./help.html"><h2 class="nav__title">Ajutor</h2></a>
       </li>
     </ul>
 
@@ -111,5 +116,4 @@
 
   </footer>
 </body>
-
 </html>

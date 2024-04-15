@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="js/darkModeSwitch.js"></script>
   <script src="js/backToTop.js"></script>
-  <script src="js/resetMailConfirmation.js"></script>
+  <script src="js/validateForm.js"></script>
 </head>
 
 <body>
@@ -54,12 +54,12 @@
           Scrie adresa de email pe care ai folosit-o pentru înregistrare, iar noi îți vom trimite
           un link de resetare a parolei.
         </p>
-        <form id="login-form" class="login-form" action="">
+        <form id="login-form" class="login-form" action="javascript:void(0);">
           <div class="login-form__group">
             <label for="email" class="login-form__label">Email</label>
             <input type="email" id="email" name="email" class="login-form__input" placeholder="Scrie-ți email-ul aici" required>
           </div>
-          <button type="button" id="submit-button" class="login-form__button">Trimite email de resetare</button>
+          <button type="submit" id="submit-button" class="login-form__button">Trimite email de resetare</button>
         </form>
       </div>
       <div id="confirmation-container" class="confirmation-container">

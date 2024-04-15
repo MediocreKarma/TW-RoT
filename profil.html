@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="js/darkModeSwitch.js"></script>
-  
+  <script src="js/resetMailConfirmation.js"></script>
   <script src="js/backToTop.js"></script>
 </head>
 
@@ -67,8 +67,8 @@
           <div class="profile-field__title"><p>Email</p></div>
           <div class="profile-field__content">
             <p>user@mail.com</p>
-            <a href="reset_e1.html">
-              <button>Resetează email-ul</button>
+            <a>
+              <button id="submit-button">Resetează email-ul</button>
             </a>
           </div>
         </div>
@@ -84,6 +84,9 @@
           <a><button>Delogare</button></a>
           <a><button>Șterge contul</button></a>
         </div>
+      </div>
+      <div id="confirmation-container" class="confirmation-container">
+        <p>Link-ul a fost trimis! Verifică adresa de email.</p>
       </div>
       <div class="profile-card">
         <h2 class="profile-card__title"><p>Progres</p></h2>

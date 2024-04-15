@@ -8,6 +8,11 @@
     @media only screen and (max-width: vars.$media-query-size-big) {
         padding: vars.$padding-small;
     }
+
+    .confirmation-container {
+        display: none;
+        text-align: center;
+    }
 }
 
 .profile-card {

@@ -8,6 +8,7 @@
     align-items: center;
 
     & .confirmation-container {
+        padding-top: vars.$padding-small;
         display: none;
     }
 }
