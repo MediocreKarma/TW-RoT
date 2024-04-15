@@ -27,8 +27,8 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
             font-size: 1rem;
         }
 
-        p {
-            margin: 0;
+        span {
+            display: inline-block;
             transform: scale(1.5) rotate(36deg);
         }
     }
@@ -70,7 +70,7 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
                     background-color: color-themes.$primary-color--hover;
                 }
 
-                &[selected="true"] {
+                &.selected {
                     background-color: color-themes.$secondary-color;
 
                     &:hover {

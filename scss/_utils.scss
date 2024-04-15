@@ -19,8 +19,12 @@
     font-size: vars.$font-size;
     border-radius: vars.$border-radius;
     background-color: color-themes.$primary-color;
-    color: color-themes.$text-color--dark;
+    box-sizing: border-box;
+    color: #fff;
     border: none;
+    display: flex;
+    justify-content: center;
+    text-align: center;
     // border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;

@@ -4,10 +4,6 @@
 
 .welcome-container {
     @include utils.full-screen;
-    
-    * {
-        color: var(--text-color);
-    }
 
     display: flex;
 

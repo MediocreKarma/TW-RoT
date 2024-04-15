@@ -33,6 +33,10 @@
         }
 
         .chapter-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
             .chapter-card__title {
                 margin: 0;
             }
@@ -46,6 +50,10 @@
             // grid-template-columns: 1fr 1fr;
             flex-direction: column;
         } 
+
+        .button {
+            width: fit-content;
+        }
     }
 }
 

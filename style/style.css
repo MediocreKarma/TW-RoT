@@ -24,8 +24,12 @@ body[data-theme=dark] {
   font-size: 1rem;
   border-radius: 3px;
   background-color: #6353aa;
+  box-sizing: border-box;
   color: #fff;
   border: none;
+  display: flex;
+  justify-content: center;
+  text-align: center;
   cursor: pointer;
   transition: background-color 0.3s ease;
   text-align: center;
@@ -358,9 +362,6 @@ body[data-theme=dark] {
   width: 100%;
   box-sizing: border-box;
   display: flex;
-}
-.welcome-container * {
-  color: var(--text-color);
 }
 .welcome-container > * {
   flex-grow: 1;
@@ -732,8 +733,8 @@ body[data-theme=dark] {
   float: left;
   font-size: 1rem;
 }
-.admin-dashboard__search p {
-  margin: 0;
+.admin-dashboard__search span {
+  display: inline-block;
   transform: scale(1.5) rotate(36deg);
 }
 .admin-dashboard .dashboard-container {
@@ -775,10 +776,10 @@ body[data-theme=dark] {
 .admin-dashboard .dashboard-container__pagination a:hover {
   background-color: #8a7cd1;
 }
-.admin-dashboard .dashboard-container__pagination a[selected=true] {
+.admin-dashboard .dashboard-container__pagination a.selected {
   background-color: #ea9a4b;
 }
-.admin-dashboard .dashboard-container__pagination a[selected=true]:hover {
+.admin-dashboard .dashboard-container__pagination a.selected:hover {
   background-color: #f0c395;
 }
 .admin-dashboard .dashboard-card {
@@ -829,11 +830,11 @@ body[data-theme=dark] {
   gap: 0.5rem;
   flex-wrap: wrap;
 }
-.admin-dashboard .dashboard-card__actions button {
+.admin-dashboard .dashboard-card__actions .button {
   background-color: #ea9a4b;
   color: #fff;
 }
-.admin-dashboard .dashboard-card__actions button:hover {
+.admin-dashboard .dashboard-card__actions .button:hover {
   background-color: #f0c395;
 }
 
@@ -990,11 +991,11 @@ body[data-theme=dark] {
   padding: 1rem;
   gap: 1rem;
 }
-.profile-card button {
+.profile-card .button {
   background-color: #ea9a4b;
   color: #fff;
 }
-.profile-card button:hover {
+.profile-card .button:hover {
   background-color: #f0c395;
 }
 .profile-card__buttons {
@@ -1096,20 +1097,29 @@ body[data-theme=dark] {
   padding: 1rem;
   gap: 1rem;
 }
+.cod-rutier .chapters-container .chapter-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .cod-rutier .chapters-container .chapter-card .chapter-card__title {
   margin: 0;
 }
-.cod-rutier .chapters-container .chapter-card--anexa button {
+.cod-rutier .chapters-container .chapter-card--anexa .button {
   background-color: #ea9a4b;
   color: #fff;
 }
-.cod-rutier .chapters-container .chapter-card--anexa button:hover {
+.cod-rutier .chapters-container .chapter-card--anexa .button:hover {
   background-color: #f0c395;
 }
 @media only screen and (max-width: 800px) {
   .cod-rutier .chapters-container {
     flex-direction: column;
   }
+}
+.cod-rutier .chapters-container .button {
+  width: -moz-fit-content;
+  width: fit-content;
 }
 
 .capitol {
