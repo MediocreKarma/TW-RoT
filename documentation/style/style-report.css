@@ -13,5 +13,6 @@
 img {
   display: block;
   margin: 2em;
-  width: 60%;
+  max-width: 1000px;
+  width: 80vw;
 }

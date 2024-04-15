@@ -167,10 +167,10 @@
                 </ul>
             </p>
         </section>
-        <section class="todo">
+        <section>
             <h3>3.6. Documentația utilizatorului</h3>
             <p>
-                Utilizatorul are la dispoziție pagina Ajutor (Help), inclusă în site-ul web și accesibilă din footer (partea de jos) de pe oricare pagină de pe site. Pe această pagină se regăsesc informații despre navigarea site-ului și funcționalitățile acestuia, în format Frequently Asked Questions (Întrebări frecvente). TODO redirect la interfetele utilizatorului
+                Utilizatorul are la dispoziție pagina Ajutor (Help), inclusă în site-ul web și accesibilă din footer (partea de jos) de pe oricare pagină de pe site. Pe această pagină se regăsesc informații despre navigarea site-ului și funcționalitățile acestuia, în format Frequently Asked Questions (Întrebări frecvente). De asemenea, utilizatorul poate consulta secțiunea <a href="#user-interfaces">Interfețe pentru utilizator</a> pentru a înțelege în detaliu cum poate fi navigată aplicația.
             </p>
         </section>
         <!-- <section class="todo">
@@ -179,7 +179,7 @@
     </section>
     <section>
         <h2>4. Cerințe externe de interfață</h2>
-        <section class="">
+        <section id="user-interfaces">
             <h3>4.1. Interfețe pentru utilizator</h3>
             <p>
                 Utilizatorul poate interacționa cu aplicația RoT prin diversele interfețe puse la dispoziție.
@@ -192,7 +192,7 @@
                         <img src="img/navbar_admin.png" typeof="sa:image" />
                     </li>
                     <li>
-                        <b>Footer-ul</b> este prezent pe toate paginile proiectului și conține link-uri la pagini precum Despre noi (About), Ajutor (Help), și nu numai.
+                        <b>Footer-ul</b> este prezent pe toate paginile proiectului și conține link-uri la pagini precum Despre noi (About), Ajutor (Help), și altele.
                         <img src="img/footer_light_desktop.png" typeof="sa:image" />
                     </li>
                     <li>
@@ -200,6 +200,14 @@
                         
                         <img src="img/index_1.png" typeof="sa:image" />
                         <img src="img/index_2.png" typeof="sa:image" />
+                    </li>
+                    <li>
+                        Pagina <b>Despre noi</b> prezintă informații despre motivația aplicației și despre autorii acesteia.
+                        <img src="img/about.png" typeof="sa:image" />
+                    </li>
+                    <li>
+                        Pe pagina <b>Help</b> se regăsesc explicații despre cum trebuie navigată aplicația, prezentate în formatul Frequently Asked Questions (Întrebări frecvente).
+                        <img src="img/help.png" typeof="sa:image" />
                     </li>
                     <li>
                         Pagina <b>Cod rutier</b> conține o listă de capitole din Codul Rutier. Această pagină poate fi accesată chiar dacă utilizatorul nu este înregistrat.
@@ -219,7 +227,42 @@
                         <img src="img/avertizare_2.png" typeof="sa:image">
                     </li>
                     <li>
-                        Pagina <b>Compară</b> oferă o interfață atractivă prin care pot fi comparate aspectual indicatoare din România cu echivalentele acestora din alte țări din România.
+                        Pagina <b>Compară</b> oferă o interfață atractivă prin care pot fi comparate aspectual indicatoare din România cu echivalentele acestora din alte țări din Europa. Se va alege prin drop-down menu indicatorul dorit și apoi va apărea pe ecran atât indicatorul românesc, cât și cele din alte țări.
+                        <img src="img/compara.png" typeof="sa:image">
+                    </li>
+                    <li>
+                        Pagina <b>Exersează</b> oferă la dispoziția utilizatorului abilitatea de a răspunde la întrebări pe site, cu scopul de a se pregăti pentru examenul auto. Dacă utilizatorul nu este autentificat, pagina va redirecta la cea de Autentificare. Utilizatorul are opțiunea de a răspunde la întrebări fără a fi cronometrat, sau de a genera un chestionar, unde acesta va răspunde la 26 de întrebări în limita de 30 de minute, la fel ca la chestionarul auto din România. De asemenea, utilizatorul poate alege să răspundă la întrebări doar dintr-o anumită categorie (de exemplu, Indicatoare, Sancțiuni și infracțiuni, Conducerea preventivă, etc).
+                        <img src="img/exerseaza.png" typeof="sa:image">
+                    </li>
+                    <li class="todo">
+                        INTREBARI SI INTREBARI CHESTIONAR
+                    </li>
+                    <li class="todo">
+                        LEADERBOARD
+                    </li>
+                    <li>
+                        <p>
+                            Pentru a se autentifica în aplicație, utilizatorul poate apăsa pe link-ul "Autentificare" din bara de navigație care îl va conduce către pagina <b>Autentificare</b>, unde își poate introduce email-ul și parola utilizate la crearea contului. De asemenea, dacă cel care dorește să se autentifice și-a uitat parola, acesta poate apăsa pe "Resetează parola", moment în care va fi redirectat la o pagină unde își poate introduce adresa de email pentru a își reseta parola.
+                        </p>
+                        <img src="img/login.png" typeof="sa:image">
+                        <img src="img/reset_p1.png" typeof="sa:image">
+                        <p>
+                            În cazul în care utilizatorul nu are un cont în aplicație, acesta poate apăsa pe link-ul "Înregistrează-te", care îl va conduce la pagina <b>Înregistrare</b>, unde își poate introduce adresa de email, parola dorită, și username-ul (numele de utilizator) dorit.
+                        </p>
+                        <img src="img/signup.png" typeof="sa:image">
+
+                    </li>
+                    <li class="todo">
+                        RESET P2
+                    </li>
+                    <li class="todo">
+                        Profil
+                    </li>
+                    <li class="todo">
+                        Detaliem pagini resetari. aici va redirecta si aia cu loginu
+                    </li>
+                    <li class="todo">
+                        Admin dashboard. care cred ca e si ultima din lista asta
                     </li>
                 </ul>
             </p>
@@ -291,7 +334,9 @@
     </section>
     <section class="todo">
         <h2>5. Caracteristicile sistemului</h2>
-        ma inspaimanta ideea de a mai face si aici...
+        <p>
+            Descriem asa vag ca putem sa citim, sa ne autentificam, sa raspundem la intrebari, iar adminii pot sa administreze userii
+        </p>
     </section>
 </body>
 </html>
