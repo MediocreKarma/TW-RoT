@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RoT - Raport</title>
-    <link rel="stylesheet" href="../style/style-report.css">
+    <link rel="stylesheet" href="style/style-report.css">
 </head>
 
 
@@ -56,7 +56,7 @@
         <section>
             <h3>2.2. Convenții ale documentului</h3>
             <p>
-                Fontul utilizat în acest document este Arial. Termenii importanți din cadrul listelor vor fi evidențiate în bold.
+                Fontul utilizat în acest document este Arial. Termenii importanți din cadrul listelor vor fi evidențiați în bold.
             </p>
         </section>
         <section>
@@ -86,7 +86,7 @@
     </section>
     <section>
         <h2>3. Descriere generală</h2>
-        <section>
+        <section id="product-perspective">
             <h3>3.1. Perspectiva produsului</h3>
             <p>
                 <!-- site web standalone, pt vizualizare info rutiere. descriem componentele principale: frontend, API-ul REST, backend-ul, baza de date, si rolul fiecarora. -->
@@ -144,7 +144,7 @@
             <h3>3.4. Mediul de rulare</h3>
             <p> Vedem la sfarsit daca ne trebuie...</p>
         </section>
-        <section class="check">
+        <section>
             <h3>3.5. Constrângeri de proiectare și implementare</h3>
             <p>
                 În timpul dezvoltării proiectului se vor lua în calcul următoarele constrângeri:
@@ -167,21 +167,62 @@
                 </ul>
             </p>
         </section>
-        <section class="check">
+        <section class="todo">
             <h3>3.6. Documentația utilizatorului</h3>
             <p>
-                Utilizatorul are la dispoziție pagina "Help", inclusă în site-ul web și accesibilă din footer (partea de jos) de pe oricare pagină de pe site. Pe această pagină se regăsesc informații despre navigarea site-ului și funcționalitățile acestuia, în format Frequently Asked Questions (Întrebări frecvente).
+                Utilizatorul are la dispoziție pagina Ajutor (Help), inclusă în site-ul web și accesibilă din footer (partea de jos) de pe oricare pagină de pe site. Pe această pagină se regăsesc informații despre navigarea site-ului și funcționalitățile acestuia, în format Frequently Asked Questions (Întrebări frecvente). TODO redirect la interfetele utilizatorului
             </p>
         </section>
-        <section class="todo">
+        <!-- <section class="todo">
             <h3>3.7. Asumpții și dependențe</h3>
-        </section>
+        </section> -->
     </section>
     <section>
         <h2>4. Cerințe externe de interfață</h2>
-        <section class="todo">
+        <section class="">
             <h3>4.1. Interfețe pentru utilizator</h3>
-            <p>AICI trebuie cu poze. nu stiu cat avem voie cu linkuri de la pagini actually... dar oricum scriem macar "./admin_dashboard.html" langa ca sa stie unde gaseste efectiv fisierul. sau cel putin la astea inaccesibile punem si n footeru aplicatiei. Nu stiu</p>
+            <p>
+                Utilizatorul poate interacționa cu aplicația RoT prin diversele interfețe puse la dispoziție.
+                <ul>
+                    <li>
+                        <b>Bara de navigație</b> este prezentă pe toate paginile proiectului și conține diverse link-uri utile pentru utilizator. Acestea sunt dinamice în funcție de statusul utilizatorului (nelogat, logat în cont de utilizator, logat în cont de administrator). Bara conține și un "dark switch", menit să fie folosit pentru a activa modul întunecat al aplicației. De asemenea, bara este adaptabilă în funcție de dimensiunea ecranului (spre exemplu, desktop vs. mobil).
+                        <img src="img/navbar_unlogged.png" typeof="sa:image" />
+                        <img src="img/navbar_logged.png" typeof="sa:image" />
+                        <img src="img/navbar_mobile.png" typeof="sa:image" />
+                        <img src="img/navbar_admin.png" typeof="sa:image" />
+                    </li>
+                    <li>
+                        <b>Footer-ul</b> este prezent pe toate paginile proiectului și conține link-uri la pagini precum Despre noi (About), Ajutor (Help), și nu numai.
+                        <img src="img/footer_light_desktop.png" typeof="sa:image" />
+                    </li>
+                    <li>
+                        Pagina <b>index</b> introduce utilizatorul în aplicație și oferă link-uri către paginile importante ale aplicației (Despre noi, Ajutor, Cod Rutier, Indicatoare, Exersează).
+                        
+                        <img src="img/index_1.png" typeof="sa:image" />
+                        <img src="img/index_2.png" typeof="sa:image" />
+                    </li>
+                    <li>
+                        Pagina <b>Cod rutier</b> conține o listă de capitole din Codul Rutier. Această pagină poate fi accesată chiar dacă utilizatorul nu este înregistrat.
+                        <img src="img/cod_rutier.png" typeof="sa:image">
+                    </li>
+                    <li>
+                        Fiecărui capitol din Codul Rutier îi corespunde o pagină de tip <b>Capitol</b> care afișează conținutul textual al capitolului. Aceste pagini pot fi accesate chiar dacă utilizatorul nu este înregistrat.
+                        <img src="img/capitol_1.png">
+                    </li>
+                    <li>
+                        Pagina <b>Indicatoare</b> conține o listă de categorii de indicatoare din România. Această pagină poate fi accesată chiar dacă utilizatorul nu este înregistrat. Pe această pagină se află și un link către pagina Compară, detaliată mai jos.
+                        <img src="img/indicatoare.png" typeof="sa:image">
+                    </li>
+                    <li>
+                        Pagina <b>Categorie de indicatoare</b> cuprinde informații despre o categorie selectată de indicatoare rutiere și o listă cu toate indicatoarele care se află sub acea categorie.
+                        <img src="img/avertizare_1.png" typeof="sa:image">
+                        <img src="img/avertizare_2.png" typeof="sa:image">
+                    </li>
+                    <li>
+                        Pagina <b>Compară</b> oferă o interfață atractivă prin care pot fi comparate aspectual indicatoare din România cu echivalentele acestora din alte țări din România.
+                    </li>
+                </ul>
+            </p>
         </section>
         <section class="check">
             <h3>4.2. Interfețe hardware</h3>
@@ -203,10 +244,21 @@
                 Protocolul de comunicare utilizat pentru interacțiunea utilizatorului cu site-ul este HTTP.
             </p>
         </section>
-        <section class="todo">
+        <section class="check">
             <h3>4.3. Interfețe software</h3>
             <p>
-                aici tre sa vorbim despre... ?? nici eu nu stiu
+                La nivel software, aplicația este împărțită în componentele amintite în secțiunea <a href="#product-perspective">Perspectiva produsului</a>. Acestea vor interacționa între ele astfel:
+                <ul>
+                    <li>
+                        Baza de date, de tip relațional, conține datele propriu-zise ale aplicației (Codul Rutier, indicatoarele și categoriile asociate, imaginile corespunzătoare, întrebările de tip chestionar), dar și datele despre utilizatorii aplicației.
+                    </li>
+                    <li>
+                        Backend-ul este scris în limbajul de programare PHP. Acesta oferă către client componenta frontend a aplicației prin browser-ul web prin intermediul unui API de tip REST, și comunică cu baza de date în privința obținerii datelor, la cererea frontend-ului, în funcție de interacțiunea utilizatorilor cu site-ul.
+                    </li>
+                    <li>
+                        Frontend-ul este scris folosind HTML, CSS și preprocesorul SCSS în baza metodologiei BEM, și JavaScript. Interacțiunea efectivă a utilizatorilor cu aplicația se face prin intermediul frontend-ului. Acesta comunică cu backend-ul prin intermediul API-ului amintit anterior.
+                    </li>
+                </ul>
             </p>
         </section>
         <section class="check">
@@ -215,13 +267,16 @@
                 Se vor utiliza următoarele modalități de comunicare:
                 <ul>
                     <li>
-                        comunicare prin email, pentru înregistrarea de utilizatori și resetarea parolei la cerere;
+                        comunicare prin email, pentru înregistrarea de utilizatori și resetarea informațiilor personale la cerere;
                     </li>
                     <li>
                         comunicare prin HTTP într-un browser web, pentru transmiterea de date atât de la server web la utilizator, cât și între frontend și backend;
                     </li>
                     <li>
-                        comunicare prin interfața API REST, pentru a transmite informații cerute de utilizatori.
+                        comunicare prin interfața API REST, pentru a transmite informații cerute de utilizatori;
+                    </li>
+                    <li>
+                        comunicare printr-un feed RSS, prin care utilizatorii pot urmări lista de utilizatori care se află în topul site-ului prin procentul de întrebări la care au răspuns corect.
                     </li>
                 </ul>
             </p>
