@@ -28,7 +28,7 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
         }
     }
 
-    .users-container {
+    .dashboard-container {
         display: flex;
         flex-direction: column;
         gap: vars.$padding-small;
@@ -76,11 +76,12 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
         }
     }
 
-    .user-card {
+    .dashboard-card {
         @include utils.card;
 
         width: 100%;
         padding: vars.$padding-small;
+        gap: vars.$padding-small;
 
         display: grid;
         grid-template-columns: $grid-cols-desktop;

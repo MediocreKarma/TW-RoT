@@ -701,12 +701,12 @@ body[data-theme=dark] {
   margin: 0;
   transform: scale(1.5) rotate(36deg);
 }
-.admin-dashboard .users-container {
+.admin-dashboard .dashboard-container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-.admin-dashboard .users-container__header {
+.admin-dashboard .dashboard-container__header {
   display: grid;
   grid-template-columns: 2fr 1fr 2fr 2fr;
   border-radius: 3px;
@@ -716,11 +716,11 @@ body[data-theme=dark] {
   padding: 1rem;
 }
 @media only screen and (max-width: 820px) {
-  .admin-dashboard .users-container__header {
+  .admin-dashboard .dashboard-container__header {
     display: none;
   }
 }
-.admin-dashboard .users-container__pagination {
+.admin-dashboard .dashboard-container__pagination {
   box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
   border-radius: 3px;
   box-sizing: border-box;
@@ -730,73 +730,74 @@ body[data-theme=dark] {
   align-self: center;
   display: flex;
 }
-.admin-dashboard .users-container__pagination a {
+.admin-dashboard .dashboard-container__pagination a {
   flex: 1;
   padding: 1rem;
   line-height: 100%;
   display: block;
   color: #fff;
 }
-.admin-dashboard .users-container__pagination a:hover {
+.admin-dashboard .dashboard-container__pagination a:hover {
   background-color: #8a7cd1;
 }
-.admin-dashboard .users-container__pagination a[selected=true] {
+.admin-dashboard .dashboard-container__pagination a[selected=true] {
   background-color: #ea9a4b;
 }
-.admin-dashboard .users-container__pagination a[selected=true]:hover {
+.admin-dashboard .dashboard-container__pagination a[selected=true]:hover {
   background-color: #f0c395;
 }
-.admin-dashboard .user-card {
+.admin-dashboard .dashboard-card {
   box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
   border-radius: 3px;
   box-sizing: border-box;
   width: 100%;
   padding: 1rem;
+  gap: 1rem;
   display: grid;
   grid-template-columns: 2fr 1fr 2fr 2fr;
 }
-.admin-dashboard .user-card button {
+.admin-dashboard .dashboard-card button {
   padding: 0.5rem;
 }
-.admin-dashboard .user-card p {
+.admin-dashboard .dashboard-card p {
   margin: 0;
 }
-.admin-dashboard .user-card > * {
+.admin-dashboard .dashboard-card > * {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
-.admin-dashboard .user-card__label {
+.admin-dashboard .dashboard-card__label {
   display: none;
 }
 @media only screen and (max-width: 820px) {
-  .admin-dashboard .user-card {
+  .admin-dashboard .dashboard-card {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
-  .admin-dashboard .user-card > * {
+  .admin-dashboard .dashboard-card > * {
     display: flex;
     flex-direction: column;
     justify-content: unset;
   }
-  .admin-dashboard .user-card__label {
+  .admin-dashboard .dashboard-card__label {
     display: unset;
     font-weight: bold;
   }
 }
-.admin-dashboard .user-card__email {
+.admin-dashboard .dashboard-card__email {
   font-style: italic;
 }
-.admin-dashboard .user-card__actions {
+.admin-dashboard .dashboard-card__actions {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
-.admin-dashboard .user-card__actions button {
+.admin-dashboard .dashboard-card__actions button {
   background-color: #ea9a4b;
   color: #fff;
 }
-.admin-dashboard .user-card__actions button:hover {
+.admin-dashboard .dashboard-card__actions button:hover {
   background-color: #f0c395;
 }
 
@@ -1540,7 +1541,7 @@ body[data-theme=dark] {
   top: 0;
   bottom: 0;
   left: 0;
-  width: 99%;
+  width: 0%;
 }
 
 .leaderboard {
