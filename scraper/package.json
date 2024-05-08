@@ -10,7 +10,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "request": "^2.88.2",
     "xmldom": "^0.6.0",
     "xpath": "^0.0.34"
   }

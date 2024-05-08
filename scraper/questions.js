@@ -1,8 +1,12 @@
-import { getContent, silencedDomParser } from "./utils.js";
+import { DOMParser } from "xmldom";
+import { getContent, silencedDOMParserOptions } from "./utils.js";
 import xpath from "xpath";
 
+// each module has its own DOM parser
+const silencedDOMParser = new DOMParser(silencedDOMParserOptions);
+
 const getQuestionData = (content) => {
-  let doc = silencedDomParser.parseFromString(content);
+  let doc = silencedDOMParser.parseFromString(content);
 
   let questionData = {};
 
@@ -45,7 +49,7 @@ const getQuestionData = (content) => {
 
 const getNextQuestionLink = (content) => {
   try {
-    let doc = silencedDomParser.parseFromString(content);
+    let doc = silencedDOMParser.parseFromString(content);
     const xmlResult = xpath.select(
       "//*[contains(concat(' ', normalize-space(@class), ' '), ' next_url ')]/@href",
       doc
@@ -69,15 +73,17 @@ const getNextQuestionLink = (content) => {
 
 // get the "incepe intrebari" tag
 const getFirstQuestionLink = (content) => {
-  let doc = silencedDomParser.parseFromString(content);
+  let doc = silencedDOMParser.parseFromString(content);
   return xpath.select(
     "//span[contains(text(), 'mediul GENERAL')]/parent::*/@href",
     doc
   )[0].nodeValue;
 };
 
-export const scrapeQuestions = async (url) => {
+export const scrapeQuestions = async () => {
   try {
+    let url =
+      "https://www.scoalarutiera.ro/intrebari-posibile-drpciv-categoria-b/";
     let data = await getContent(url);
 
     let dataUrl = getFirstQuestionLink(data);

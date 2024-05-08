@@ -1,7 +1,7 @@
 import { DOMParser } from "xmldom";
 import https from "https";
 
-export const silencedDomParser = new DOMParser({
+export const silencedDOMParserOptions = {
   locator: {},
   errorHandler: {
     warning: function (w) {},
@@ -10,7 +10,7 @@ export const silencedDomParser = new DOMParser({
       console.error(e);
     },
   },
-});
+};
 
 export const getContent = async (url) => {
   let data = "";
