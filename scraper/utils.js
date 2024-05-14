@@ -32,3 +32,15 @@ export const getContent = async (url) => {
 
   return data;
 };
+
+export const stringToKebabCase = (string) =>
+  string
+    .toLowerCase()
+    .replace(/[ăâ]/g, "a") // replace ă and â with a
+    .replace(/[șş]/g, "s") // replace s-comma and s-cedilla with s
+    .replace(/[ţț]/g, "t") // replace t-comma and t-cedilla with t
+    .replace(/[î]/g, "i") // replace i circonflex with i
+    .replace(/[^\w\s]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .trim();

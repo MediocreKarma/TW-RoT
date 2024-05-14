@@ -1,5 +1,9 @@
 import { DOMParser } from "xmldom";
-import { getContent, silencedDOMParserOptions } from "./utils.js";
+import {
+  getContent,
+  silencedDOMParserOptions,
+  stringToKebabCase,
+} from "./utils.js";
 import xpath from "xpath";
 
 // each module has its own DOM parser
@@ -69,24 +73,39 @@ const getSignCategoryData = (content) => {
   const signCategoryTitle = signCategoryTitleNode[0].childNodes[0].nodeValue;
   // signNode.childNodes
 
-  const signs = signNodes.map((signNode) => {
-    let signData = {};
-    signData.image = signNode
-      .getElementsByTagName("img")[0]
-      .getAttribute("src");
-    signData.title =
-      signNode.getElementsByTagName("h2")[0].childNodes[0].nodeValue;
+  const count = {};
 
-    try {
-      signData.description =
-        signNode.getElementsByTagName("p")[0].childNodes[0].nodeValue;
-    } catch (error) {
-      signData.description = "";
-    }
+  const signs = signNodes
+    .map((signNode) => {
+      let signData = {};
 
-    // signData.category = signCategoryTitle;
-    return signData;
-  });
+      signData.title =
+        signNode.getElementsByTagName("h2")[0].childNodes[0].nodeValue;
+
+      if (!signData.title) {
+        return null;
+      }
+
+      if (count[signData.id] == undefined) {
+        count[signData.id] = 1;
+      } else {
+        count[signData.id] += 1;
+      }
+
+      try {
+        signData.image = signNode
+          .getElementsByTagName("img")[0]
+          .getAttribute("src");
+      } catch (error) {}
+
+      try {
+        signData.description =
+          signNode.getElementsByTagName("p")[0].childNodes[0].nodeValue;
+      } catch (error) {}
+
+      return signData;
+    })
+    .filter(Boolean); // should remove non-truey values like the null returned if the title is falsy
 
   return {
     title: signCategoryTitle,
@@ -100,7 +119,7 @@ export const scrapeSigns = async () => {
     const indexData = await getContent(url);
     const signCategoryLinks = getSignCategoryLinks(indexData);
     let result = await processLinks(signCategoryLinks);
-    console.log(result);
+    console.log(result[0].signs);
   } catch (error) {
     console.error(`Error: ${error.message}`);
   }
