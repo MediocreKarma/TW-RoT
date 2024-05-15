@@ -33,9 +33,16 @@ const processSignRow = (signRow) => {
     (node) => node.nodeName === "td"
   );
 
-  signRowData.signTitle = valuableItems[0].textContent.trim();
+  let startingIndex = 1;
 
-  const signImageNodes = valuableItems.slice(1).map((tdNode) => {
+  const signName = valuableItems[0].textContent.trim();
+  if (signName === "") {
+    startingIndex = 0;
+  } else {
+    signRowData.signName = signName;
+  }
+
+  const signImageNodes = valuableItems.slice(startingIndex).map((tdNode) => {
     let tdData = {};
 
     let tdNodeString = tdNode.toString();
@@ -66,41 +73,112 @@ const processSignRow = (signRow) => {
   });
 
   signRowData.nodes = signImageNodes;
-  console.log(signImageNodes);
+  // console.log(signImageNodes);
 
   return signRowData;
 };
 
-const processTableNode = (tableNode) => {
+const processTableNode = (tableNode, index) => {
+  console.log("Processing table node");
+
+  let timesWhenDifferent = 0;
   const tableNodeDoc = silencedDOMParser.parseFromString(tableNode.toString());
 
-  const xPathRows = "//tr[not(th)]";
-  const xPathHeader = "//tr[th[not(descendant::img)]]";
+  const xPathRows = "//tr[not(.//small) and not(th)]";
+  const xPathHeader =
+    "//tr[(td[not(.//a) and not(.//img) and .//small]) or (th[not(.//a) and not(.//img) and .//small])]";
 
   const signRows = xpath.select(xPathRows, tableNodeDoc);
-  const signHeader = xpath.select(xPathHeader, tableNodeDoc)[0];
+  const signHeaders = xpath.select(xPathHeader, tableNodeDoc);
+  const signHeader = signHeaders[signHeaders.length - 1];
+  // console.log(signHeader.toString());
 
-  const countryNodes = Object.keys(signHeader.childNodes)
-    .filter((key) => key !== "length")
-    .map((key) => signHeader.childNodes[key])
-    .filter((node) => node.nodeName === "th");
+  let countryNodes = [];
+
+  try {
+    countryNodes = getChildNodes(signHeader).filter(
+      (node) => node.nodeName === "th" || node.nodeName === "td"
+    );
+  } catch (error) {
+    return null;
+  }
 
   const countries = countryNodes
     .map((node) => node.textContent.trim())
     .filter(Boolean);
 
+  console.log(countries);
+
   let infoMatrix = signRows.map((_) => []);
 
   const signRowData = signRows.map(processSignRow);
+
+  for (let i = 0; i < infoMatrix.length; ++i) {
+    // console.log("------------------- " + i);
+    const cellsOnCurrentRow = signRowData[i].nodes;
+    // console.log(signRowData[i].signName);
+    let dataIndex = 0;
+    // console.log("countries length " + countries.length);
+    // console.log("nodes on row length " + nodesOnCurrentRow.length);
+
+    for (let j = 0; j < countries.length; ++j) {
+      // console.log("J " + j);
+      if (infoMatrix[i][j] !== undefined) {
+        // se afla deja ceva aici. skip
+        // console.log("SKIPPING");
+        continue;
+      }
+      // console.log("data index " + dataIndex);
+      const cellData = cellsOnCurrentRow[dataIndex];
+      ++dataIndex;
+      if (cellData === undefined) {
+        console.log(
+          "table index : " +
+            index +
+            "; i j = " +
+            i +
+            " " +
+            j +
+            "; dataIndex: " +
+            dataIndex +
+            "; countries length: " +
+            countries.length +
+            "; rowData len " +
+            cellsOnCurrentRow.length
+        );
+      }
+      infoMatrix[i][j] = cellData.images;
+      if (cellData.rowspan == 2) {
+        // nu putem avea 3. Nu cred anyway. te rog eu sa inlocuiesti cu un loop daca gresesc ca eu nu mai pot cu spaghetti code ul istav
+        infoMatrix[i + 1][j] = cellData.images;
+      }
+    }
+    if (cellsOnCurrentRow.length != dataIndex) {
+      // console.log(
+      //   nodesOnCurrentRow.length +
+      //     " <- rowdata length; dataIndex -> " +
+      //     dataIndex
+      // );
+      timesWhenDifferent++;
+    }
+  }
+
+  console.log(timesWhenDifferent);
   // console.log(signRowData[0]);
+
+  return infoMatrix;
 };
 
-const processCategory = (tableNode) => {
+const processCategory = (tableNode, index) => {
   const tableTitleNode = tableNode.previousSibling.previousSibling;
   const tableTitle = processTableTitleNode(tableTitleNode);
-  const tableData = processTableNode(tableNode);
+  const tableData = processTableNode(tableNode, index);
+  if (tableData === null) {
+    return null;
+  }
   return {
     category: tableTitle,
+    data: tableData,
   };
 };
 
@@ -112,7 +190,7 @@ const processWikiPage = (content) => {
     doc
   );
 
-  return [tableNodes[1]].map(processCategory);
+  return tableNodes.map(processCategory).filter(Boolean);
 };
 
 export const scrapeWikiTables = async () => {
