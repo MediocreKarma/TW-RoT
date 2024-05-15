@@ -78,12 +78,8 @@ const processSignRow = (signRow) => {
   return signRowData;
 };
 
-const processTableNode = (tableNode, index) => {
-  console.log("Processing table node");
-
-  let timesWhenDifferent = 0;
+const processTableNode = (tableNode) => {
   const tableNodeDoc = silencedDOMParser.parseFromString(tableNode.toString());
-
   const xPathRows = "//tr[not(.//small) and not(th)]";
   const xPathHeader =
     "//tr[(td[not(.//a) and not(.//img) and .//small]) or (th[not(.//a) and not(.//img) and .//small])]";
@@ -91,7 +87,6 @@ const processTableNode = (tableNode, index) => {
   const signRows = xpath.select(xPathRows, tableNodeDoc);
   const signHeaders = xpath.select(xPathHeader, tableNodeDoc);
   const signHeader = signHeaders[signHeaders.length - 1];
-  // console.log(signHeader.toString());
 
   let countryNodes = [];
 
@@ -107,78 +102,70 @@ const processTableNode = (tableNode, index) => {
     .map((node) => node.textContent.trim())
     .filter(Boolean);
 
-  console.log(countries);
+  // console.log(countries);
 
+  // create matrix of arrays of imagese
   let infoMatrix = signRows.map((_) => []);
 
-  const signRowData = signRows.map(processSignRow);
+  let signRowData = signRows.map(processSignRow);
 
   for (let i = 0; i < infoMatrix.length; ++i) {
-    // console.log("------------------- " + i);
     const cellsOnCurrentRow = signRowData[i].nodes;
-    // console.log(signRowData[i].signName);
     let dataIndex = 0;
-    // console.log("countries length " + countries.length);
-    // console.log("nodes on row length " + nodesOnCurrentRow.length);
 
     for (let j = 0; j < countries.length; ++j) {
-      // console.log("J " + j);
       if (infoMatrix[i][j] !== undefined) {
-        // se afla deja ceva aici. skip
-        // console.log("SKIPPING");
         continue;
       }
-      // console.log("data index " + dataIndex);
       const cellData = cellsOnCurrentRow[dataIndex];
       ++dataIndex;
-      if (cellData === undefined) {
-        console.log(
-          "table index : " +
-            index +
-            "; i j = " +
-            i +
-            " " +
-            j +
-            "; dataIndex: " +
-            dataIndex +
-            "; countries length: " +
-            countries.length +
-            "; rowData len " +
-            cellsOnCurrentRow.length
-        );
-      }
       infoMatrix[i][j] = cellData.images;
       if (cellData.rowspan == 2) {
-        // nu putem avea 3. Nu cred anyway. te rog eu sa inlocuiesti cu un loop daca gresesc ca eu nu mai pot cu spaghetti code ul istav
         infoMatrix[i + 1][j] = cellData.images;
       }
     }
-    if (cellsOnCurrentRow.length != dataIndex) {
-      // console.log(
-      //   nodesOnCurrentRow.length +
-      //     " <- rowdata length; dataIndex -> " +
-      //     dataIndex
-      // );
-      timesWhenDifferent++;
-    }
   }
 
-  console.log(timesWhenDifferent);
-  // console.log(signRowData[0]);
+  // console.log("finishing up signRowData sign names...");
+  // process signRowData to fill in missing names
+  signRowData.forEach((rowData, index) => {
+    if (index == signRowData.length - 1) {
+      return;
+    }
 
-  return infoMatrix;
+    if (rowData.signName === undefined) {
+      rowData.signName = "Indicator fără titlu";
+      return;
+    }
+    if (signRowData[index + 1].signName === undefined) {
+      signRowData[index + 1].signName = rowData.signName;
+    }
+  });
+
+  // link infoMatrix data to signs and all
+  // console.log("creating final data obj...");
+  let finalData = signRowData.map((rowData, rowIndex) => ({
+    name: rowData.signName,
+    // array of objects of type {country: "Belgia", images: <array of images>}
+    variants: infoMatrix[rowIndex].map((cell, columnIndex) => ({
+      country: countries[columnIndex],
+      images: cell,
+    })),
+  }));
+
+  return finalData;
 };
 
-const processCategory = (tableNode, index) => {
+const processCategory = (tableNode) => {
   const tableTitleNode = tableNode.previousSibling.previousSibling;
   const tableTitle = processTableTitleNode(tableTitleNode);
-  const tableData = processTableNode(tableNode, index);
+  const tableData = processTableNode(tableNode);
   if (tableData === null) {
     return null;
   }
   return {
     category: tableTitle,
-    data: tableData,
+    signs: tableData,
   };
 };
 
@@ -199,8 +186,10 @@ export const scrapeWikiTables = async () => {
       "https://ro.wikipedia.org/wiki/Compara%C8%9Bie_%C3%AEntre_indicatoarele_rutiere_din_Europa";
     const data = await getContent(url);
     const result = processWikiPage(data);
+
+    // do something with the result
     console.log(result);
   } catch (error) {
-    console.error(`Error: ${error.message}`);
+    console.error(`[Wiki Tables] Error: ${error.message}`);
   }
 };
