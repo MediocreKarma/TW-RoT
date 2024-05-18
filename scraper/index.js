@@ -4,5 +4,5 @@ import { scrapeTheory } from "./theory.js";
 import { scrapeWikiTables } from "./wikipediaTables.js";
 
 (async () => {
-  scrapeWikiTables();
+  scrapeQuestions();
 })();

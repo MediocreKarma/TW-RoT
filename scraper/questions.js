@@ -14,6 +14,7 @@ const getQuestionData = (content) => {
     "//*[contains(concat(' ', normalize-space(@class), ' '), ' question-title ')]",
     doc
   );
+
   const question = questionNodes[0].textContent;
   questionData.question = question;
 
@@ -71,13 +72,45 @@ const getNextQuestionLink = (content) => {
   }
 };
 
-// get the "incepe intrebari" tag
 const getFirstQuestionLink = (content) => {
   let doc = silencedDOMParser.parseFromString(content);
   return xpath.select(
-    "//span[contains(text(), 'mediul GENERAL')]/parent::*/@href",
+    "//a[contains(text(), 'Începe acest mediu')]/@href",
     doc
-  )[0].nodeValue;
+  )[0].value;
+};
+
+const getCategoryLinks = (content) => {
+  let doc = silencedDOMParser.parseFromString(content);
+  const xCategories = xpath.select(
+    "//a[contains(concat(' ', normalize-space(@class), ' '), ' progress-bar ')]/@href",
+    doc
+  );
+
+  return xCategories.slice(1).map((category) => category.value);
+};
+
+const processCategoryLink = async (link) => {
+  const splitLink = link.split("/");
+  const categoryId = splitLink[splitLink.length - 2];
+  let content = await getContent(link);
+  let questionLink = getFirstQuestionLink(content);
+
+  let questions = [];
+
+  while (questionLink !== undefined) {
+    content = await getContent(questionLink);
+    let questionData = getQuestionData(content);
+    questionData.categoryId = categoryId;
+    questions.push(questionData);
+
+    questionLink = getNextQuestionLink(content);
+  }
+
+  return {
+    id: categoryId,
+    questions: questions,
+  };
 };
 
 export const scrapeQuestions = async () => {
@@ -86,21 +119,11 @@ export const scrapeQuestions = async () => {
       "https://www.scoalarutiera.ro/intrebari-posibile-drpciv-categoria-b/";
     let data = await getContent(url);
 
-    let dataUrl = getFirstQuestionLink(data);
-    while (dataUrl !== undefined) {
-      //   writeStream.write(dataUrl + "\n");
-      // URL of question on scoalarutiera.ro
-      console.log(dataUrl);
-
-      data = await getContent(dataUrl);
-      // question data, as scraped from scoalarutiera.ro. can be then added to a database or whatever
-      // (as long as the image content is also saved, because getContent only returns the image url)
-      console.log(getQuestionData(data));
-
-      dataUrl = getNextQuestionLink(data);
-    }
-
-    // writeStream.end();
+    const links = getCategoryLinks(data);
+    const questionData = await Promise.all(
+      links.map((link) => processCategoryLink(link))
+    );
+    console.log(questionData);
   } catch (error) {
     console.error(`Error: ${error.message}`);
   }
