@@ -5,7 +5,7 @@ window.addEventListener("load", function () {
         const valueData = elem.getElementsByClassName("question-category__value");
         if (valueData.length > 1) {
             console.log("Error! Question category has too many values");
-            continueș
+            continue;
         }
         if (valueData.length == 0) {
             continue;
