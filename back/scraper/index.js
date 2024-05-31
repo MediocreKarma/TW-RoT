@@ -1,10 +1,11 @@
 import {populateQuestions, scrapeQuestions} from "./questions.js";
 import {populateSigns, scrapeSigns} from "./signs.js";
-import { scrapeTheory } from "./theory.js";
-import { scrapeWikiTables } from "./wikipediaTables.js";
-import { pool } from "./db.js";
+import {populateTheory, scrapeTheory} from "./theory.js";
+import {populateComparisonTables, scrapeWikiTables} from "./wikipediaTables.js";
 
 (async () => {
     //wait populateQuestions();
-    await populateSigns();
+    //await populateSigns();
+    //await populateTheory();
+    await populateComparisonTables();
 })();

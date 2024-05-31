@@ -1,6 +1,7 @@
-import { DOMParser } from "xmldom";
-import { getContent, silencedDOMParserOptions } from "./utils.js";
+import {DOMParser} from "xmldom";
+import {getContent, silencedDOMParserOptions} from "./utils.js";
 import xpath from "xpath";
+import {pool} from "./db.js";
 
 const silencedDOMParser = new DOMParser(silencedDOMParserOptions);
 
@@ -42,19 +43,19 @@ const processSignRow = (signRow) => {
     signRowData.signName = signName;
   }
 
-  const signImageNodes = valuableItems.slice(startingIndex).map((tdNode) => {
+  signRowData.nodes = valuableItems.slice(startingIndex).map((tdNode) => {
     let tdData = {};
 
     let tdNodeString = tdNode.toString();
     let tdNodeDoc = silencedDOMParser.parseFromString(tdNodeString);
 
-    const xImageNodes = "//a[contains(@class, 'mw-file-description')]/@href"; // get node.value
+    const xImageNodes = "//a[contains(@class, 'mw-file-description')]//img/@src"; // get node.value
 
     const imageNodes = xpath.select(xImageNodes, tdNodeDoc);
 
     const sau = tdNode.textContent.trim();
 
-    let images = [];
+    let images;
     if (sau === "sau") {
       images = [imageNodes[0].value];
     } else {
@@ -71,8 +72,6 @@ const processSignRow = (signRow) => {
 
     return tdData;
   });
-
-  signRowData.nodes = signImageNodes;
   // console.log(signImageNodes);
 
   return signRowData;
@@ -104,7 +103,7 @@ const processTableNode = (tableNode) => {
 
   // console.log(countries);
 
-  // create matrix of arrays of imagese
+  // create matrix of arrays of images
   let infoMatrix = signRows.map((_) => []);
 
   let signRowData = signRows.map(processSignRow);
@@ -120,7 +119,7 @@ const processTableNode = (tableNode) => {
       const cellData = cellsOnCurrentRow[dataIndex];
       ++dataIndex;
       infoMatrix[i][j] = cellData.images;
-      if (cellData.rowspan == 2) {
+      if (cellData.rowspan === 2) {
         infoMatrix[i + 1][j] = cellData.images;
       }
     }
@@ -129,7 +128,7 @@ const processTableNode = (tableNode) => {
   // console.log("finishing up signRowData sign names...");
   // process signRowData to fill in missing names
   signRowData.forEach((rowData, index) => {
-    if (index == signRowData.length - 1) {
+    if (index === signRowData.length - 1) {
       return;
     }
 
@@ -144,7 +143,7 @@ const processTableNode = (tableNode) => {
 
   // link infoMatrix data to signs and all
   // console.log("creating final data obj...");
-  let finalData = signRowData.map((rowData, rowIndex) => ({
+  return signRowData.map((rowData, rowIndex) => ({
     name: rowData.signName,
     // array of objects of type {country: "Belgia", images: <array of images>}
     variants: infoMatrix[rowIndex].map((cell, columnIndex) => ({
@@ -152,8 +151,6 @@ const processTableNode = (tableNode) => {
       images: cell,
     })),
   }));
-
-  return finalData;
 };
 
 const processCategory = (tableNode) => {
@@ -185,11 +182,27 @@ export const scrapeWikiTables = async () => {
     const url =
       "https://ro.wikipedia.org/wiki/Compara%C8%9Bie_%C3%AEntre_indicatoarele_rutiere_din_Europa";
     const data = await getContent(url);
-    const result = processWikiPage(data);
-
-    // do something with the result
-    console.log(result);
+    return processWikiPage(data);
   } catch (error) {
     console.error(`[Wiki Tables] Error: ${error.message}`);
   }
 };
+
+export const populateComparisonTables = async () => {
+  const comparisonTables = await scrapeWikiTables();
+  const client = await pool.connect();
+  for (const comparisonTable of comparisonTables) {
+    process.stdout.write(`Add new comparison category: ${comparisonTable.category}...`);
+    try {
+      await client.query(
+          'call insert_comparison_category($1::jsonb)',
+          [JSON.stringify(comparisonTable)],
+      );
+    } catch (e) {
+      console.error(e);
+    }
+    process.stdout.write('Done\n');
+  }
+  client.release();
+  console.log("Done populating comparison tables");
+}

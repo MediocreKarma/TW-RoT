@@ -1,123 +1,138 @@
 set schema 'tw_rot';
 
 drop table chapter cascade;
+
 drop table sign_category cascade;
+
 drop table sign cascade;
+
 drop table user_account cascade;
+
 drop table user_token cascade;
+
 drop table question_category cascade;
+
 drop table question cascade;
+
 drop table answer cascade;
+
 drop table answered_question cascade;
+
 drop table comparison_category cascade;
+
 drop table comparison cascade;
+
 drop table comparison_sign cascade;
+
 drop table generated_questionnaire cascade;
+
 drop table generated_question cascade;
 
-create table chapter(
-	id serial primary key,
-	number int,
-	title varchar(128),
-	content text
+create table chapter (
+    id serial primary key,
+    number int,
+    title varchar(128),
+    content text
 );
 
-create table sign_category(
-	id serial primary key,
-	title varchar(256) unique not null,
-	image_id varchar(64),
-	design text,
-	purpose text,
-	suggestion text
+create table sign_category (
+    id serial primary key,
+    title varchar(256) unique not null,
+    image_id varchar(64),
+    design text,
+    purpose text,
+    suggestion text
 );
 
 create table sign(
-	id serial primary key,
-	category_id int references sign_category(id),
-	title varchar(256) unique not null,
-	description varchar(2048),
-	image_id varchar(64)
+    id serial primary key,
+    category_id int references sign_category (id),
+    title varchar(256) unique not null,
+    description varchar(2048),
+    image_id varchar(64)
 );
 
-create table user_account(
-	id serial primary key,
-	username varchar(256),
-	email varchar(256),
-	hash varchar(128),
-	salt varchar(128),
-	updated_at timestamp,
-	roles int,
-	solved_questionnaires int,
-	total_questionnaires int,
-	solved_questions int,
-	total_questions int
+create table user_account (
+    id serial primary key,
+    username varchar(256),
+    email varchar(256),
+    hash varchar(128),
+    salt varchar(128),
+    updated_at timestamp,
+    roles int,
+    solved_questionnaires int,
+    total_questionnaires int,
+    solved_questions int,
+    total_questions int
 );
 
-create table user_token(
-	id serial primary key,
-	user_id int references user_account(id),
-	token_type varchar(32) check (token_type in ('session', 'change_password')),
-	token_value varchar(128) unique not null,
-	created_at timestamp
+create table user_token (
+    id serial primary key,
+    user_id int references user_account (id),
+    token_type varchar(32) check (
+        token_type in ('session', 'change_password')
+    ),
+    token_value varchar(128) unique not null,
+    created_at timestamp
 );
 
-create table question_category(
-	id serial primary key,
-	title varchar(256)
-);
-	
-create table question(
-	id serial primary key,
-	category_id int references question_category(id),
-	text varchar(4096),
-	image_id varchar(64)
-);
-	
-create table answer(
-	id serial primary key,
-	question_id int references question(id),
-	description varchar(4096),
-	correct bool
-);
-	
-create table generated_questionnaire(
-	id serial primary key,
-	generated_time timestamp,
-	user_id int references user_account(id) unique
+create table question_category (
+    id serial primary key,
+    title varchar(256)
 );
 
-create table generated_question(
-	id serial primary key,
-	questionnaire_id int references generated_questionnaire(id),
-	question_id int references question(id),
-	selected_fields int, 
-	sent bool,
-	solved bool
-);
-	
-create table answered_question(
-	id bigserial primary key,
-	user_id int references user_account(id),
-	question_id int references question(id),
-	answered_correctly bool
+create table question (
+    id serial primary key,
+    category_id int references question_category (id),
+    text varchar(4096),
+    image_id varchar(64)
 );
 
-create table comparison_category(
-	id serial primary key,
-	title varchar(256)
+create table answer (
+    id serial primary key,
+    question_id int references question (id),
+    description varchar(4096),
+    correct bool
 );
-	
-create table comparison(
-	id serial primary key,
-	category_id int references comparison_category(id),
-	title varchar(256)
+
+create table generated_questionnaire (
+    id serial primary key,
+    generated_time timestamp,
+    user_id int references user_account (id) unique
 );
-	
-create table comparison_sign(
-	id serial primary key,
-	comparison_id int references comparison(id),
-	image_id varchar(64),
-	country varchar(128)
+
+create table generated_question (
+    id serial primary key,
+    questionnaire_id int references generated_questionnaire (id),
+    question_id int references question (id),
+    selected_fields int,
+    sent bool,
+    solved bool
+);
+
+create table answered_question (
+    id bigserial primary key,
+    user_id int references user_account (id),
+    question_id int references question (id),
+    answered_correctly bool
+);
+
+create table comparison_category (
+    id serial primary key,
+    title varchar(256)
+);
+
+create table comparison (
+    id serial primary key,
+    category_id int references comparison_category (id),
+    title varchar(256)
+);
+
+create table comparison_sign (
+    id serial primary key,
+    comparison_id int references comparison (id),
+    image_id varchar(64),
+    country varchar(128)
 );
 
 create or replace procedure insert_question_category(category_data jsonb) as $$
@@ -245,7 +260,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 create or replace function get_users(start int, count int, search_query varchar = '') returns table(
 	id int,
 	username varchar(256),
@@ -277,7 +291,6 @@ begin
 end;
 $$ language plpgsql;
 
-
 do $$
 declare
 	user_id integer;
@@ -285,4 +298,3 @@ begin
 	insert into user_account values(default, 'name', 'email', 'hash', 'salt', current_timestamp, 0, 0, 0, 0, 0) returning id into user_id;
 	insert into user_token   values(default, user_id, 'session', 'aaaaaa', current_timestamp);
 end $$;
-

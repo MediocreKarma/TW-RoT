@@ -129,16 +129,15 @@ export const populateSigns = async () => {
     for (const scrapedCategory of scrapedCategories) {
         process.stdout.write(`Adding new sign category: ${scrapedCategory.title}...`);
         try {
-            await client.query('begin');
             await client.query(
                 'call insert_sign_category($1::jsonb)',
                 [JSON.stringify(scrapedCategory)],
             );
-            await client.query('commit');
         } catch (e) {
             console.error(e);
-            await client.query('rollback');
         }
         process.stdout.write('Done\n');
     }
+    client.release();
+    console.log("Done populating signs");
 }

@@ -41,7 +41,6 @@ begin
 end;
 $$ language plpgsql;
 
-
 create or replace procedure insert_sign_category(
     category_data jsonb
 )
@@ -76,6 +75,39 @@ begin
         insert into sign_to_category_relation values (
             default, category_id, sign_id
         );
+
+    end loop;
+
+end;
+$$ language plpgsql;
+
+create or replace procedure insert_comparison_category(
+    category_data jsonb
+)
+as
+$$
+declare
+    category_id int;
+    signs_record jsonb;
+    sign_variant jsonb;
+    comparison_id int;
+    sign_image varchar(512);
+begin
+    insert into comparison_category values (default, category_data ->> 'category')
+        returning id into category_id;
+
+    for signs_record in select * from jsonb_array_elements(category_data -> 'signs') loop
+
+        insert into comparison values (default, category_id, signs_record ->> 'name')
+            returning id into comparison_id;
+        
+        for sign_variant in select * from jsonb_array_elements(signs_record -> 'variants') loop
+            
+            select * into sign_image from jsonb_array_elements(sign_variant -> 'images') limit 1;
+
+            insert into comparison_sign values (default, comparison_id, sign_image, sign_variant ->> 'country');
+
+        end loop;
 
     end loop;
 

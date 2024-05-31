@@ -137,19 +137,16 @@ export const populateQuestions = async () => {
     for (const questionCategory of questionCategories) {
         process.stdout.write(`Adding new question category: ${questionCategory.id}...`);
         try {
-            await client.query('begin');
             await client.query(
                 'call insert_question_category($1::jsonb)',
                 [JSON.stringify(questionCategory)],
             );
-            await client.query('commit');
         } catch (e) {
             console.error(e);
-            await client.query('rollback');
         }
         process.stdout.write('Done\n');
     }
 
-    client.release()
-    console.log("Finished adding question categories")
+    client.release();
+    console.log("Finished adding question categories");
 }
