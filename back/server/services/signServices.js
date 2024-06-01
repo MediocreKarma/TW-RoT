@@ -16,6 +16,10 @@ export const getSignCategory = withDatabaseOperation(async function (client, id)
             'from sign s join sign_to_category_relation stcr on stcr.sign_id where stcr.category_id = $1::int',
         [id],
     ).rows;
-    return new ServiceResponse(200, {category: categoryInfo, signs: signCategory})
+    return new ServiceResponse(
+        200,
+        {category: categoryInfo, signs: signCategory},
+        'Successfully retrieved sign category'
+    );
 
 })

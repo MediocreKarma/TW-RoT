@@ -9,6 +9,6 @@ export const getAllChapters = withDatabaseOperation(async function (client) {
 export const getChapterContent = withDatabaseOperation(async function (client, id) {
     const chapter = await client.query(
         'select number, title, content from chapter where id=$1::int', [id]
-    ).rows;
+    ).rows[0];
     return new ServiceResponse(200, chapter, 'Chapter content retrieved successfully');
 });
