@@ -62,15 +62,15 @@ create table sign_to_category_relation (
 create table user_account (
     id serial primary key,
     username varchar(256),
-    email varchar(256),
+    email varchar(256) unique not null,
     hash varchar(128),
     salt varchar(128),
-    updated_at timestamp,
-    roles int,
-    solved_questionnaires int,
-    total_questionnaires int,
-    solved_questions int,
-    total_questions int
+    updated_at timestamp default current_timestamp,
+    roles int default 0,
+    solved_questionnaires int default 0,
+    total_questionnaires int default 0,
+    solved_questions int default 0,
+    total_questions int default 0
 );
 
 create table user_token (
@@ -121,7 +121,8 @@ create table answered_question (
     id bigserial primary key,
     user_id int references user_account (id),
     question_id int references question (id),
-    answered_correctly bool
+    answered_correctly bool,
+    unique(user_id, question_id)
 );
 
 create table comparison_category (

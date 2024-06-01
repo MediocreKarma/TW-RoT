@@ -31,3 +31,23 @@ begin
                  offset start limit count;
 end;
 $$ language plpgsql;
+
+create or replace function is_valid_session(p_user_id int, p_token_value varchar) returns bool as $$
+declare
+	token_record record;
+begin
+	select id, created_at into token_record from user_token ut 
+		where ut.user_id = p_user_id and ut.token_type = 'session' and ut.token_value = p_token_value;
+		
+	if token_record is null then
+		return false;
+	end if;
+	
+	if token_record.created_at < (current_timestamp - interval '30 days') then
+		delete from user_token where id = token_record.id;
+		return false;
+	end if;
+	
+	return true;
+end;
+$$ language plpgsql;

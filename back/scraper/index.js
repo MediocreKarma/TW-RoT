@@ -4,8 +4,8 @@ import {populateTheory, scrapeTheory} from "./theory.js";
 import {populateComparisonTables, scrapeWikiTables} from "./wikipediaTables.js";
 
 (async () => {
-    //wait populateQuestions();
-    //await populateSigns();
-    //await populateTheory();
+    await populateQuestions();
+    await populateSigns();
+    await populateTheory();
     await populateComparisonTables();
 })();
