@@ -1,4 +1,4 @@
-import { API_URL } from './constants.js';
+const API_URL = 'http://localhost:12734/api/v1';
 
 const renderChapters = (chapterContainer, chapters) => {
     if (!Array.isArray(chapters)) {
@@ -44,8 +44,10 @@ window.addEventListener('load', async () => {
     } catch (e) {
         // TODO: proper error handling using error codes :)
         console.log(e);
-        chapterContainer.textContent = `Ne pare rău! A intervenit o eroare: ${Object.toString(
-            e
+        chapterContainer.textContent = `Ne pare rău! A intervenit o eroare: ${JSON.stringify(
+            e,
+            null,
+            2
         )}`;
         return;
     }
