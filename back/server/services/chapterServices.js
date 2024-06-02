@@ -3,7 +3,7 @@ import { ServiceResponse } from '../models/serviceResponse.js';
 
 export const getAllChaptersService = withDatabaseOperation(async function (client) {
     const chapters = (
-        await client.query('select id, number, title from chapter')
+        await client.query('select id, number, title, isAddendum from chapter')
     ).rows;
     return new ServiceResponse(
         200,
@@ -18,7 +18,7 @@ export const getChapterContentService = withDatabaseOperation(async function (
 ) {
     const chapter = (
         await client.query(
-            'select number, title, content from chapter where id=$1::int',
+            'select number, title, content, isAddendum from chapter where id=$1::int',
             [id]
         )
     ).rows[0];

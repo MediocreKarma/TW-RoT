@@ -1,0 +1,238 @@
+openapi: 3.0.0
+info:
+  title: My API
+  description: API for managing chapters, sign categories, and exercise categories
+  version: 1.0.0
+servers:
+  - url: http://localhost:12734/api/v1
+    description: Local server
+
+paths:
+  /chapters:
+    get:
+      summary: Get all chapters
+      operationId: getAllChapters
+      tags:
+        - Chapters
+      responses:
+        '200':
+          description: A list of chapters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    number:
+                      type: integer
+                    title:
+                      type: string
+
+  /chapters/{id}:
+    get:
+      summary: Get chapter content
+      operationId: getChapterContent
+      tags:
+        - Chapters
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Chapter content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  number:
+                    type: integer
+                  title:
+                    type: string
+                  content:
+                    type: string
+
+  /sign-categories:
+    get:
+      summary: Get all sign categories
+      operationId: getAllSignCategories
+      tags:
+        - Sign Categories
+      responses:
+        '200':
+          description: A list of sign categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+
+  /sign-categories/{id}:
+    get:
+      summary: Get sign category
+      operationId: getSignCategory
+      tags:
+        - Sign Categories
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Sign category details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+
+  /exercises/categories:
+    get:
+      summary: Get all exercise categories
+      operationId: getAllExerciseCategories
+      tags:
+        - Exercises
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+            description: Bearer token for optional authorization
+      responses:
+        '200':
+          description: A list of exercise categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+
+  /exercises/unsolved/{id}:
+    get:
+      summary: Get unsolved question by category ID
+      operationId: getUnsolvedQuestionByCategory
+      tags:
+        - Exercises
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+            description: Bearer token for optional authorization
+      responses:
+        '200':
+          description: Unsolved question details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  question:
+                    type: string
+                  answers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        description:
+                          type: string
+
+  /exercises/incorrectly-solved:
+    get:
+      summary: Get incorrectly solved questions
+      operationId: getIncorrectlySolvedQuestion
+      tags:
+        - Exercises
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+            description: Bearer token for optional authorization
+      responses:
+        '200':
+          description: Incorrectly solved question details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    question:
+                      type: string
+                    answers:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          description:
+                            type: string
+
+components:
+  schemas:
+    Chapter:
+      type: object
+      properties:
+        id:
+          type: integer
+        number:
+          type: integer
+        title:
+          type: string
+
+    SignCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+
+    ExerciseCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string

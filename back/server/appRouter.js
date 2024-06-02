@@ -3,6 +3,7 @@ import {zip} from './utils.js';
 import {parse} from "node:url";
 import {sendEmptyResponse, sendJsonResponse} from "./response.js";
 import {ErrorCodes} from "./constants.js";
+import {serveDocFile} from "./swagger-ui/docsService.js";
 
 export const Methods = Object.freeze({
     GET: 'GET',
@@ -66,6 +67,10 @@ export class AppRouter extends Server {
             }
             params['authorization'] = this.getIdFromAuthorization(req);
             handler(req, res, params);
+            return;
+        }
+
+        if (serveDocFile(req, res)) {
             return;
         }
 

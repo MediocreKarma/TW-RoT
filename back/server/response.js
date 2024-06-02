@@ -19,3 +19,11 @@ export function sendEmptyResponse(response, status, message = '') {
     response.writeHead(status);
     response.end();
 }
+
+export function sendFileResponse(response, status, file, contentType, message = '') {
+    setCorsHeaders(response);
+    response.writeHead(status, message, {
+        'Content-Type': contentType,
+    });
+    response.end(file);
+}
