@@ -1,4 +1,4 @@
-import { DOMParser } from 'xmldom';
+import { DOMParser, XMLSerializer } from 'xmldom';
 import {
     getContent,
     romanNumeralToInt,
@@ -7,92 +7,68 @@ import {
 import xpath from 'xpath';
 import { pool } from './db.js';
 
-// each module has its own DOM parser
 const silencedDOMParser = new DOMParser(silencedDOMParserOptions);
 
-const getChapterLinks = (content) => {
-    let doc = silencedDOMParser.parseFromString(content);
-    const chapterNodes = xpath.select(
-        "//*[contains(@class, 'codul-rutier')]//*[contains(@class, 'card-link')]/@href",
-        // "//*",
-        doc
-    );
-
-    return [...chapterNodes.map((node) => node.nodeValue)];
-};
-
-const processLinks = async (links) => {
-    return await Promise.all(
-        links.map(async (link) => {
-            const linkParts = link.split('/');
-            const chapterId = linkParts[linkParts.length - 1];
-            const data = await processLink(link);
-            return {
-                id: chapterId,
-                ...data,
-            };
-        })
-    );
-};
-
-const processLink = async (link) => {
-    const data = await getContent(link);
-    return getChapterData(data);
-};
-
-const getChapterData = (content) => {
-    // use XML to get the text of the chapter, or whatever
+const processChapterPage = (content) => {
     let doc = silencedDOMParser.parseFromString(content);
 
-    const chapterContentNode = xpath.select(
-        "//*[@id='content']",
-        // "//*",
-        doc
-    );
+    const buttonXPath = "//button[contains(@class, 'btn-wrap-text')]";
+    const contentXPath =
+        "//button[contains(@class, 'btn-wrap-text')]/following-sibling::div[1]";
 
-    const chapterContent = chapterContentNode[0].toString();
+    const buttons = xpath.select(buttonXPath, doc);
+    const chapters = xpath.select(contentXPath, doc);
 
-    const chapterTitleNode = xpath
-        .select(
-            "//div[contains(@class, 'title')]//span[contains(@class, 'text-cod-red')]",
-            doc
-        )[0]
-        .textContent.trim();
+    const serializer = new XMLSerializer();
+    const chapterData = buttons.map((button, index) => {
+        const innerChapterContent = Array.from(chapters[index].childNodes)
+            .map((child) => serializer.serializeToString(child))
+            .join('');
 
-    return {
-        title: chapterTitleNode,
-        content: chapterContent,
-    };
+        const isAddendum = button.getAttribute('data-target') === '#anexa';
+
+        return {
+            title: button.childNodes[1].textContent
+                .replace(/&raquo;/g, '')
+                .trim(),
+            content: innerChapterContent,
+            isAddendum,
+        };
+    });
+    return chapterData;
 };
 
 export const scrapeTheory = async () => {
     try {
-        const url = 'https://www.codrutier.ro/codul-rutier';
-        const indexData = await getContent(url);
-        return processLinks(getChapterLinks(indexData));
+        const url =
+            'https://www.drpciv-romania.ro/Code/Applications/web/index.cgi?action=codulrutier';
+        const content = await getContent(url);
+
+        const result = processChapterPage(content);
+        return result;
     } catch (error) {
         console.error(`Error: ${error.message}`);
     }
 };
 
 export const populateTheory = async () => {
-    const re =
-        /Cap\. (M{0,3}(CM|CD|D?C{0,3})?(XC|XL|L?X{0,3})?(IX|IV|V?I{0,3})?).*/;
+    const chapterRegex =
+        /CAPITOLUL (M{0,3}(CM|CD|D?C{0,3})?(XC|XL|L?X{0,3})?(IX|IV|V?I{0,3})?):/;
+    const addendumRegex = /ANEXA ([0-9]+?) -/;
+
     const scrapedTheoryChapters = await scrapeTheory();
     const client = await pool.connect();
 
     console.log('Populating theory');
     for (const chapter of scrapedTheoryChapters) {
         process.stdout.write(`Adding new theory chapter: ${chapter.title}...`);
-        const chapterRomanNumber = chapter.title.match(re)[1];
+        const chapterNumber = chapter.isAddendum
+            ? parseInt(chapter.title.match(addendumRegex)[1])
+            : romanNumeralToInt(chapter.title.match(chapterRegex)[1]);
         try {
             await client.query(
                 'insert into chapter values(default, $1::int, $2::varchar, $3::text)',
-                [
-                    romanNumeralToInt(chapterRomanNumber),
-                    chapter.title,
-                    chapter.content,
-                ]
+                [chapterNumber, chapter.title, chapter.content]
             );
         } catch (e) {
             console.error(e);
