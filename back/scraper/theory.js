@@ -53,8 +53,8 @@ export const scrapeTheory = async () => {
 
 export const populateTheory = async () => {
     const chapterRegex =
-        /CAPITOLUL (M{0,3}(CM|CD|D?C{0,3})?(XC|XL|L?X{0,3})?(IX|IV|V?I{0,3})?):/;
-    const addendumRegex = /ANEXA ([0-9]+?) -/;
+        /CAPITOLUL (M{0,3}(?:CM|CD|D?C{0,3})?(?:XC|XL|L?X{0,3})?(?:IX|IV|V?I{0,3})?): (.*)/;
+    const addendumRegex = /ANEXA ([0-9]+?) - (.*)/;
 
     const scrapedTheoryChapters = await scrapeTheory();
     const client = await pool.connect();
@@ -62,13 +62,22 @@ export const populateTheory = async () => {
     console.log('Populating theory');
     for (const chapter of scrapedTheoryChapters) {
         process.stdout.write(`Adding new theory chapter: ${chapter.title}...`);
+
+        const chapterRegexMatch = chapter.title.match(chapterRegex);
+        const addendumRegexMatch = chapter.title.match(addendumRegex);
+
         const chapterNumber = chapter.isAddendum
-            ? parseInt(chapter.title.match(addendumRegex)[1])
-            : romanNumeralToInt(chapter.title.match(chapterRegex)[1]);
+            ? parseInt(addendumRegexMatch[1])
+            : romanNumeralToInt(chapterRegexMatch[1]);
+
+        const chapterTitle = chapter.isAddendum
+            ? addendumRegexMatch[2]
+            : chapterRegexMatch[2];
+
         try {
             await client.query(
                 'insert into chapter values(default, $1::int, $2::varchar, $3::text)',
-                [chapterNumber, chapter.title, chapter.content]
+                [chapterNumber, chapterTitle, chapter.content]
             );
         } catch (e) {
             console.error(e);
