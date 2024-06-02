@@ -6,22 +6,24 @@ import { pool } from './db.js';
 // each module has its own DOM parser
 const silencedDOMParser = new DOMParser(silencedDOMParserOptions);
 
-const getSignCategoryLinks = (content) => {
+const getSignCategoryNodes = (content) => {
     let doc = silencedDOMParser.parseFromString(content);
     const nodes = xpath.select(
-        "//*[contains(@class, 'semne-de-circulatie')]//*[contains(@class, 'card-link')]/@href",
+        "//*[contains(@class, 'semne-de-circulatie')]//*[contains(@class, 'card-link')]",
         // "//*",
         doc
     );
 
-    return [...nodes.map((node) => node.nodeValue)];
+    return nodes;
 };
 
-const processLinks = async (links) => {
+const processNodes = async (nodes) => {
     let linkData = [];
 
-    for (let i = 0; i < links.length; ++i) {
-        const link = links[i];
+    for (let i = 0; i < nodes.length; ++i) {
+        const node = nodes[i];
+        const link = node.getAttribute('href');
+        const categoryImage = node.childNodes[1].getAttribute('src');
 
         const fetch = async () => {
             const linkParts = link.split('/');
@@ -36,6 +38,7 @@ const processLinks = async (links) => {
 
             return {
                 id: categoryId,
+                image: categoryImage,
                 ...data,
             };
         };
@@ -135,8 +138,8 @@ export const scrapeSigns = async () => {
             'https://web.archive.org/web/20240220222115mp_/https://www.codrutier.ro/semne-de-circulatie';
 
         const indexData = await getContent(url);
-        const signCategoryLinks = getSignCategoryLinks(indexData);
-        return await processLinks(signCategoryLinks);
+        const signCategoryNodes = getSignCategoryNodes(indexData);
+        return await processNodes(signCategoryNodes.slice(0, 10));
     } catch (error) {
         console.error(`Error: ${error.message}`);
     }
