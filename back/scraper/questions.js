@@ -62,7 +62,7 @@ const getNextQuestionLink = (content) => {
         if (!firstMatch) {
             return undefined;
         }
-        const hrefRegex = /href="([^"]+)"/gm;
+        const hrefRegex = /href="([^"]+?)"/gm;
         const hrefMatch = hrefRegex.exec(firstMatch[0]);
         if (!hrefMatch) {
             return undefined;
@@ -93,18 +93,29 @@ const processCategoryLink = async (link) => {
     const splitLink = link.split('/');
     const categoryId = splitLink[splitLink.length - 2];
     let content = await getContent(link);
+
+    const titleRegex = /<meta name="keywords" content="([^"]+?)">/gimu;
+    let categoryTitle = undefined;
+    try {
+        categoryTitle = titleRegex.exec(content.slice(0, 1000))[1];
+    } catch (e) {
+        if (!categoryTitle) {
+            categoryTitle = categoryId;
+        }
+    }
+
     let questionLink = getFirstQuestionLink(content);
     let questions = [];
 
     while (questionLink !== undefined) {
         content = await getContent(questionLink);
         let questionData = getQuestionData(content);
-        questionData.categoryId = categoryId;
+        questionData.categoryId = categoryTitle;
         questions.push(questionData);
         questionLink = getNextQuestionLink(content);
     }
     return {
-        id: categoryId,
+        id: categoryTitle,
         questions: questions,
     };
 };
