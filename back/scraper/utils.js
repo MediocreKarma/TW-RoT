@@ -12,26 +12,54 @@ export const silencedDOMParserOptions = {
     },
 };
 
-export const getContent = async (url) => {
-    let data = '';
-    await new Promise((resolve, reject) => {
-        https
-            .get(url, (res) => {
-                res.on('data', (chunk) => {
-                    data += chunk;
-                });
+function getContentUtil(url, resolve, reject) {
+    https.get(url, (res) => {
+        if (res.statusCode === 301 || res.statusCode === 302) {
+            return getContentUtil(res.headers.location, resolve, reject);
+        }
 
-                res.on('end', () => {
-                    resolve(res);
-                });
-            })
-            .on('error', (error) => {
-                reject(error);
-            });
+        let body = [];
+
+        res.on('data', (chunk) => {
+            body.push(chunk);
+        });
+
+        res.on('end', () => {
+            try {
+                resolve(Buffer.concat(body).toString());
+            } catch (err) {
+                reject(err);
+            }
+        });
     });
+}
 
-    return data;
-};
+export async function getContent(url) {
+    return new Promise((resolve, reject) =>
+        getContentUtil(url, resolve, reject)
+    );
+}
+
+function getFinalUrlUtil(url, resolve, reject) {
+    https
+        .get(url, (res) => {
+            console.log('utils final url ' + url);
+            if (res.statusCode === 301 || res.statusCode === 302) {
+                return getFinalUrlUtil(res.headers.location, resolve, reject);
+            }
+
+            resolve(url);
+        })
+        .on('error', (err) => {
+            reject(err);
+        });
+}
+
+export async function getFinalUrl(url) {
+    return new Promise((resolve, reject) =>
+        getFinalUrlUtil(url, resolve, reject)
+    );
+}
 
 export const stringToKebabCase = (string) =>
     string

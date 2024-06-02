@@ -12,6 +12,7 @@
     "dependencies": {
         "dotenv": "^16.4.5",
         "pg": "^8.11.5",
+        "util": "^0.12.5",
         "xmldom": "^0.6.0",
         "xmlserializer": "^0.6.1",
         "xpath": "^0.0.34"
