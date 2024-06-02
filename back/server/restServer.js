@@ -1,6 +1,6 @@
 const { Server } = require('http');
 const url = require('url');
-const {zip} = require("./utils");
+const { zip } = require('./utils');
 
 export const Methods = Object.freeze({
     GET: 'GET',
@@ -11,7 +11,6 @@ export const Methods = Object.freeze({
 });
 
 export class RestServer extends Server {
-
     routes = new Map([
         [Methods.GET, new Map()],
         [Methods.POST, new Map()],
@@ -32,7 +31,6 @@ export class RestServer extends Server {
         this.routes.get(method).set(route, handler);
     }
 
-
     requestHandler(req, res) {
         const method = req.method.toUpperCase();
 
@@ -46,12 +44,15 @@ export class RestServer extends Server {
         if (!methodHandlers) {
             sendJsonResponse(res, 405, {
                 errorCode: ErrorCodes.INVALID_METHOD,
-                errorMessage: `Method ${method} is not allowed`
+                errorMessage: `Method ${method} is not allowed`,
             });
         }
 
         for (const [route, handler] of methodHandlers) {
-            const pathParams = this.matchRoute(route, new URL(req.url()).pathname)
+            const pathParams = this.matchRoute(
+                route,
+                new URL(req.url()).pathname
+            );
             if (!pathParams) {
                 continue;
             }
@@ -61,7 +62,7 @@ export class RestServer extends Server {
 
         sendJsonResponse(res, 404, {
             errorCode: ErrorCodes.ROUTE_NOT_FOUND,
-            errorMessage: `Route ${req.url()} not found`
+            errorMessage: `Route ${req.url()} not found`,
         });
     }
 
@@ -73,17 +74,15 @@ export class RestServer extends Server {
             return null;
         }
 
-        const pathParams = {}
+        const pathParams = {};
         for (const [routePart, urlPart] of zip(splitRoute, splitUrl)) {
             if (routePart.startsWith(':')) {
                 pathParams[routePart.slice(1)] = urlPart;
-            }
-            else if (routePart !== urlPart) {
+            } else if (routePart !== urlPart) {
                 return null;
             }
         }
 
         return pathParams;
     }
-
 }

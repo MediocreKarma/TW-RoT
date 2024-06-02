@@ -1,7 +1,7 @@
-import {DOMParser} from "xmldom";
-import {getContent, silencedDOMParserOptions} from "./utils.js";
-import xpath from "xpath";
-import {pool} from "./db.js";
+import { DOMParser } from 'xmldom';
+import { getContent, silencedDOMParserOptions } from './utils.js';
+import xpath from 'xpath';
+import { pool } from './db.js';
 
 // each module has its own DOM parser
 const silencedDOMParser = new DOMParser(silencedDOMParserOptions);
@@ -36,7 +36,7 @@ const getQuestionData = (content) => {
     );
 
     answerNodes.forEach((node, index) => {
-        const dataCorrectValue = node.getAttribute("data-correct");
+        const dataCorrectValue = node.getAttribute('data-correct');
         const firstChildText = node.childNodes[1].nodeValue.trim();
 
         questionData.answerNodes[index] = {
@@ -90,7 +90,7 @@ const getCategoryLinks = (content) => {
 };
 
 const processCategoryLink = async (link) => {
-    const splitLink = link.split("/");
+    const splitLink = link.split('/');
     const categoryId = splitLink[splitLink.length - 2];
     let content = await getContent(link);
     let questionLink = getFirstQuestionLink(content);
@@ -109,19 +109,17 @@ const processCategoryLink = async (link) => {
     };
 };
 
-const insertQuestionCategoryToDb = async(categoryData) => {
-
-}
+const insertQuestionCategoryToDb = async (categoryData) => {};
 
 export const scrapeQuestions = async () => {
     try {
         let url =
-            "https://www.scoalarutiera.ro/intrebari-posibile-drpciv-categoria-b/";
+            'https://www.scoalarutiera.ro/intrebari-posibile-drpciv-categoria-b/';
         let data = await getContent(url);
 
         const links = getCategoryLinks(data);
         return await Promise.all(
-          links.map((link) => processCategoryLink(link))
+            links.map((link) => processCategoryLink(link))
         );
     } catch (error) {
         console.error(`Error: ${error.message}`);
@@ -129,18 +127,19 @@ export const scrapeQuestions = async () => {
 };
 
 export const populateQuestions = async () => {
-    console.log('Scraping questions')
+    console.log('Scraping questions');
     const questionCategories = await scrapeQuestions();
     const client = await pool.connect();
 
     console.log('Populating question db');
     for (const questionCategory of questionCategories) {
-        process.stdout.write(`Adding new question category: ${questionCategory.id}...`);
+        process.stdout.write(
+            `Adding new question category: ${questionCategory.id}...`
+        );
         try {
-            await client.query(
-                'call insert_question_category($1::jsonb)',
-                [JSON.stringify(questionCategory)],
-            );
+            await client.query('call insert_question_category($1::jsonb)', [
+                JSON.stringify(questionCategory),
+            ]);
         } catch (e) {
             console.error(e);
         }
@@ -148,5 +147,5 @@ export const populateQuestions = async () => {
     }
 
     client.release();
-    console.log("Finished adding question categories");
-}
+    console.log('Finished adding question categories');
+};

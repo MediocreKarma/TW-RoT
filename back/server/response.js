@@ -9,14 +9,13 @@ function setCorsHeaders(response) {
 function sendJsonResponse(response, status, content) {
     setCorsHeaders(response);
     response.writeHead(status, {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
     });
     response.end(content);
 }
 
 function sendEmptyResponse(response, status) {
     setCorsHeaders(response);
-    response.writeHead(status)
+    response.writeHead(status);
     response.end();
 }
-

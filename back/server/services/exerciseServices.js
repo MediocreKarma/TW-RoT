@@ -1,35 +1,43 @@
-import {withDatabaseOperation} from "../db.js";
-import {ServiceResponse} from "../models/serviceResponse.js";
+import { withDatabaseOperation } from '../db.js';
+import { ServiceResponse } from '../models/serviceResponse.js';
 
-export const getAllCategories = withDatabaseOperation(async function (client, user_id = 0) {
-    const qcData = (await client.query(
-        'select ' +
-        '       qc.title as title, ' +
-        '       qc.id as id, ' +
-        '       count(q.id) filter (where aq.answered_correctly) as solved_questions, ' +
-        '       count(q.id) filter (where not aq.answered_correctly) as wrong_questions, ' +
-        '       count(q.id) as total_questions \n' +
-        '    from question_category qc\n' +
-        '    left join question q\n' +
-        '        on q.category_id = qc.id\n' +
-        '    left join answered_question aq\n' +
-        '        on aq.question_id = q.id and aq.user_id = $1::int\n' +
-        '    group by qc.id, qc.title\n' +
-        '    order by qc.id;',
-        [user_id]
-    )).rows;
+export const getAllCategories = withDatabaseOperation(async function (
+    client,
+    user_id = 0
+) {
+    const qcData = (
+        await client.query(
+            'select ' +
+                '       qc.title as title, ' +
+                '       qc.id as id, ' +
+                '       count(q.id) filter (where aq.answered_correctly) as solved_questions, ' +
+                '       count(q.id) filter (where not aq.answered_correctly) as wrong_questions, ' +
+                '       count(q.id) as total_questions \n' +
+                '    from question_category qc\n' +
+                '    left join question q\n' +
+                '        on q.category_id = qc.id\n' +
+                '    left join answered_question aq\n' +
+                '        on aq.question_id = q.id and aq.user_id = $1::int\n' +
+                '    group by qc.id, qc.title\n' +
+                '    order by qc.id;',
+            [user_id]
+        )
+    ).rows;
 
-    const {solved, total, wrong} = qcData.reduce((acc, category) => {
-        acc.solved += parseInt(category['solved_questions'], 10) ?? 0;
-        acc.total += parseInt(category['total_questions'], 10) ?? 0;
-        acc.wrong += parseInt(category['wrong_questions'], 10) ?? 0;
-        console.log(category);
-        return acc;
-    }, {solved: 0, total: 0, wrong: 0});
+    const { solved, total, wrong } = qcData.reduce(
+        (acc, category) => {
+            acc.solved += parseInt(category['solved_questions'], 10) ?? 0;
+            acc.total += parseInt(category['total_questions'], 10) ?? 0;
+            acc.wrong += parseInt(category['wrong_questions'], 10) ?? 0;
+            console.log(category);
+            return acc;
+        },
+        { solved: 0, total: 0, wrong: 0 }
+    );
 
     return new ServiceResponse(
         200,
-        {solved: solved, wrong: wrong, total: total, categories: qcData},
+        { solved: solved, wrong: wrong, total: total, categories: qcData },
         'Question category content retrieved successfully'
     );
 });
@@ -54,28 +62,38 @@ function parseQuestionData(qData) {
 
     const answerObjects = qData.map((qObj) => ({
         id: qObj['answer_id'],
-        description: qObj['answer_description']
+        description: qObj['answer_description'],
     }));
 
-    return {question: questionObj, answers: answerObjects}
+    return { question: questionObj, answers: answerObjects };
 }
 
-export const getUnsolvedQuestion = withDatabaseOperation(async function (client, user_id, category_id) {
-    const qData = (await client.query(
-        SQL_SELECT_STATEMENT +
-        '    where q.id = (\n' +
-        '        select q.id from question q \n' +
-        '            left join answered_question aq on q.id = aq.question_id and aq.user_id = $1::int\n' +
-        '            where (aq.id is NULL or not aq.answered_correctly) and q.category_id = $2::int\n' +
-        '            order by random()\n' +
-        '            limit 1\n' +
-        '    )\n' +
-        '    order by random();',
-        [user_id, category_id]
-    )).rows;
+export const getUnsolvedQuestion = withDatabaseOperation(async function (
+    client,
+    user_id,
+    category_id
+) {
+    const qData = (
+        await client.query(
+            SQL_SELECT_STATEMENT +
+                '    where q.id = (\n' +
+                '        select q.id from question q \n' +
+                '            left join answered_question aq on q.id = aq.question_id and aq.user_id = $1::int\n' +
+                '            where (aq.id is NULL or not aq.answered_correctly) and q.category_id = $2::int\n' +
+                '            order by random()\n' +
+                '            limit 1\n' +
+                '    )\n' +
+                '    order by random();',
+            [user_id, category_id]
+        )
+    ).rows;
 
     if (qData.length === 0) {
-        return new ServiceResponse(404, null, 'No unsolved question could be retrieved');
+        return new ServiceResponse(
+            404,
+            null,
+            'No unsolved question could be retrieved'
+        );
     }
 
     return new ServiceResponse(
@@ -85,22 +103,31 @@ export const getUnsolvedQuestion = withDatabaseOperation(async function (client,
     );
 });
 
-export const getWrongQuestion = withDatabaseOperation(async function (client, user_id) {
-    const qData = (await client.query(
-        SQL_SELECT_STATEMENT +
-        '    where q.id = (\n' +
-        '        select q.id from question q \n' +
-        '            join answered_question aq on q.id = aq.question_id and aq.user_id = $1::int\n' +
-        '            where not aq.answered_correctly' +
-        '            order by random()\n' +
-        '            limit 1\n' +
-        '    )\n' +
-        '    order by random();',
-        [user_id],
-    )).rows;
+export const getWrongQuestion = withDatabaseOperation(async function (
+    client,
+    user_id
+) {
+    const qData = (
+        await client.query(
+            SQL_SELECT_STATEMENT +
+                '    where q.id = (\n' +
+                '        select q.id from question q \n' +
+                '            join answered_question aq on q.id = aq.question_id and aq.user_id = $1::int\n' +
+                '            where not aq.answered_correctly' +
+                '            order by random()\n' +
+                '            limit 1\n' +
+                '    )\n' +
+                '    order by random();',
+            [user_id]
+        )
+    ).rows;
 
     if (qData.length === 0) {
-        return new ServiceResponse(404, null, 'No wrongly solved question could be retrieved');
+        return new ServiceResponse(
+            404,
+            null,
+            'No wrongly solved question could be retrieved'
+        );
     }
 
     return new ServiceResponse(
@@ -110,8 +137,11 @@ export const getWrongQuestion = withDatabaseOperation(async function (client, us
     );
 });
 
-export const getGeneratedQuestionnaire = withDatabaseOperation(async function (client, user_id) {
+export const getGeneratedQuestionnaire = withDatabaseOperation(async function (
+    client,
+    user_id
+) {
     const qData = (await client.query()).rows;
-})
+});
 
 console.log(JSON.stringify(await getWrongQuestion(1, 1), null, 2));

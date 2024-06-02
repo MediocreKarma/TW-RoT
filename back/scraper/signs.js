@@ -1,7 +1,7 @@
-import {DOMParser} from "xmldom";
-import {getContent, silencedDOMParserOptions,} from "./utils.js";
-import xpath from "xpath";
-import {pool} from "./db.js";
+import { DOMParser } from 'xmldom';
+import { getContent, silencedDOMParserOptions } from './utils.js';
+import xpath from 'xpath';
+import { pool } from './db.js';
 
 // each module has its own DOM parser
 const silencedDOMParser = new DOMParser(silencedDOMParserOptions);
@@ -21,7 +21,7 @@ const processLinks = async (links) => {
     const processedData = await Promise.all(
         links.map(async (link, index) => {
             await new Promise((resolve) => setTimeout(resolve, 500 * index));
-            const linkParts = link.split("/");
+            const linkParts = link.split('/');
             const categoryId = linkParts[linkParts.length - 1];
             let data = await processLink(link);
 
@@ -38,15 +38,15 @@ const processLinks = async (links) => {
         })
     );
 
-    console.log("processed all links");
+    console.log('processed all links');
     return processedData;
 };
 
 const processLink = async (link) => {
-    console.log("processing link " + link);
+    console.log('processing link ' + link);
     const data = await getContent(link);
     const signCategoryData = getSignCategoryData(data);
-    console.log("processed link " + link);
+    console.log('processed link ' + link);
     return signCategoryData;
 };
 
@@ -76,7 +76,7 @@ const getSignCategoryData = (content) => {
             let signData = {};
 
             signData.title =
-                signNode.getElementsByTagName("h2")[0].childNodes[0].nodeValue;
+                signNode.getElementsByTagName('h2')[0].childNodes[0].nodeValue;
 
             if (!signData.title) {
                 return null;
@@ -90,16 +90,16 @@ const getSignCategoryData = (content) => {
 
             try {
                 signData.image = signNode
-                    .getElementsByTagName("img")[0]
-                    .getAttribute("src");
-            } catch (error) {
-            }
+                    .getElementsByTagName('img')[0]
+                    .getAttribute('src');
+            } catch (error) {}
 
             try {
                 signData.description =
-                    signNode.getElementsByTagName("p")[0].childNodes[0].nodeValue;
-            } catch (error) {
-            }
+                    signNode.getElementsByTagName(
+                        'p'
+                    )[0].childNodes[0].nodeValue;
+            } catch (error) {}
 
             return signData;
         })
@@ -113,7 +113,7 @@ const getSignCategoryData = (content) => {
 
 export const scrapeSigns = async () => {
     try {
-        const url = "https://www.codrutier.ro/semne-de-circulatie";
+        const url = 'https://www.codrutier.ro/semne-de-circulatie';
         const indexData = await getContent(url);
         const signCategoryLinks = getSignCategoryLinks(indexData);
         return await processLinks(signCategoryLinks);
@@ -127,17 +127,18 @@ export const populateSigns = async () => {
     const client = await pool.connect();
 
     for (const scrapedCategory of scrapedCategories) {
-        process.stdout.write(`Adding new sign category: ${scrapedCategory.title}...`);
+        process.stdout.write(
+            `Adding new sign category: ${scrapedCategory.title}...`
+        );
         try {
-            await client.query(
-                'call insert_sign_category($1::jsonb)',
-                [JSON.stringify(scrapedCategory)],
-            );
+            await client.query('call insert_sign_category($1::jsonb)', [
+                JSON.stringify(scrapedCategory),
+            ]);
         } catch (e) {
             console.error(e);
         }
         process.stdout.write('Done\n');
     }
     client.release();
-    console.log("Done populating signs");
-}
+    console.log('Done populating signs');
+};

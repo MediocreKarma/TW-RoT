@@ -1,7 +1,11 @@
-import {DOMParser} from "xmldom";
-import {getContent, romanNumeralToInt, silencedDOMParserOptions} from "./utils.js";
-import xpath from "xpath";
-import {pool} from "./db.js";
+import { DOMParser } from 'xmldom';
+import {
+    getContent,
+    romanNumeralToInt,
+    silencedDOMParserOptions,
+} from './utils.js';
+import xpath from 'xpath';
+import { pool } from './db.js';
 
 // each module has its own DOM parser
 const silencedDOMParser = new DOMParser(silencedDOMParserOptions);
@@ -20,7 +24,7 @@ const getChapterLinks = (content) => {
 const processLinks = async (links) => {
     return await Promise.all(
         links.map(async (link) => {
-            const linkParts = link.split("/");
+            const linkParts = link.split('/');
             const chapterId = linkParts[linkParts.length - 1];
             const data = await processLink(link);
             return {
@@ -63,7 +67,7 @@ const getChapterData = (content) => {
 
 export const scrapeTheory = async () => {
     try {
-        const url = "https://www.codrutier.ro/codul-rutier";
+        const url = 'https://www.codrutier.ro/codul-rutier';
         const indexData = await getContent(url);
         return processLinks(getChapterLinks(indexData));
     } catch (error) {
@@ -72,7 +76,8 @@ export const scrapeTheory = async () => {
 };
 
 export const populateTheory = async () => {
-    const re = /Cap\. (M{0,3}(CM|CD|D?C{0,3})?(XC|XL|L?X{0,3})?(IX|IV|V?I{0,3})?).*/;
+    const re =
+        /Cap\. (M{0,3}(CM|CD|D?C{0,3})?(XC|XL|L?X{0,3})?(IX|IV|V?I{0,3})?).*/;
     const scrapedTheoryChapters = await scrapeTheory();
     const client = await pool.connect();
 
@@ -83,7 +88,11 @@ export const populateTheory = async () => {
         try {
             await client.query(
                 'insert into chapter values(default, $1::int, $2::varchar, $3::text)',
-                [romanNumeralToInt(chapterRomanNumber), chapter.title, chapter.content],
+                [
+                    romanNumeralToInt(chapterRomanNumber),
+                    chapter.title,
+                    chapter.content,
+                ]
             );
         } catch (e) {
             console.error(e);
@@ -93,4 +102,4 @@ export const populateTheory = async () => {
 
     client.release();
     console.log('Done populating theory');
-}
+};

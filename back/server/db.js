@@ -1,10 +1,10 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
-import {join, dirname} from "node:path";
-import {fileURLToPath} from 'url'
-import {ServiceResponse} from "./models/serviceResponse.js";
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'url';
+import { ServiceResponse } from './models/serviceResponse.js';
 
-const {Pool} = pg;
+const { Pool } = pg;
 dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '/.env') });
 
 export const pool = new Pool({
@@ -17,7 +17,7 @@ export const pool = new Pool({
 });
 
 export function withDatabaseOperation(handler) {
-    return async function() {
+    return async function () {
         try {
             const client = await pool.connect();
             const result = await handler(client, ...arguments);
@@ -27,5 +27,5 @@ export function withDatabaseOperation(handler) {
             console.error(error);
             return new ServiceResponse(500, null, 'Internal Server Error');
         }
-    }
+    };
 }

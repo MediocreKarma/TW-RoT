@@ -1,3 +1,1 @@
-async function getAllChapters(req, res, pathParams) {
-
-}
+async function getAllChapters(req, res, pathParams) {}
