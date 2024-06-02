@@ -136,7 +136,7 @@ export const scrapeSigns = async () => {
 
         const indexData = await getContent(url);
         const signCategoryLinks = getSignCategoryLinks(indexData);
-        return await processLinks(signCategoryLinks.slice(0, 1));
+        return await processLinks(signCategoryLinks);
     } catch (error) {
         console.error(`Error: ${error.message}`);
     }
