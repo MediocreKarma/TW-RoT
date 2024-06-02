@@ -21,5 +21,6 @@ export async function getIncorrectlySolvedQuestion(req, res, params) {
 }
 
 export async function getSolution(req, res, params) {
-    const serviceResponse = await getSolutionService(params.id, params.authorization ?? 0);
+    const serviceResponse = await getSolutionService(params.id);
+    sendJsonResponse(res, serviceResponse.status, serviceResponse.body, serviceResponse.message);
 }
