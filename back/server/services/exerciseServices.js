@@ -140,3 +140,22 @@ export const getGeneratedQuestionnaireService = withDatabaseOperation(async func
 ) {
     const qData = (await client.query()).rows;
 });
+
+export const getSolutionService = withDatabaseOperation(async function (
+    client, question_id
+) {
+    const results = (await client.query(
+        'select \n' +
+        '        a.id, \n' +
+        '        a.correct\n' +
+        '    from answer a \n' +
+        '    join question q\n' +
+        '        on a.question_id = q.id\n' +
+        '        where q.id = $1::int;',
+        [question_id]
+    )).rows;
+
+    return new ServiceResponse(200, results, 'Successfully retrieved question answers');
+});
+
+await getSolutionService(1);

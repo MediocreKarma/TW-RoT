@@ -23,12 +23,15 @@ export class AppRouter extends Server {
     ]);
 
     constructor() {
-        super();
-        this.on('request', this.requestHandler);
+        super((req, res) => this.requestHandler(req, res));
     }
 
     get(route, handler) {
         this.routes.get(Methods.GET).set(route, handler);
+    }
+
+    post(route, handler) {
+        this.routes.get(Methods.POST).set(route, handler);
     }
 
     registerRoute(method, route, handler) {
@@ -41,7 +44,7 @@ export class AppRouter extends Server {
 
      requestHandler(req, res) {
         const method = req.method.toUpperCase();
-        const pathname = parse(req.url, true).pathname;
+        const {pathname, query} = parse(req.url, true);
 
         if (method === 'OPTIONS') {
             sendEmptyResponse(res, 204);
@@ -58,14 +61,14 @@ export class AppRouter extends Server {
         }
 
         for (const [route, handler] of methodHandlers) {
-            const params = this.matchRoute(
+            const pathParams = this.matchRoute(
                 route,
                 pathname,
             );
-            if (params === null) {
+            if (pathParams === null) {
                 continue;
             }
-            params['authorization'] = this.getIdFromAuthorization(req);
+            const params = {...query, ...pathParams, authorization: this.getIdFromAuthorization(req)};
             handler(req, res, params);
             return;
         }

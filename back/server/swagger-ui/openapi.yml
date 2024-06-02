@@ -209,6 +209,99 @@ paths:
                           description:
                             type: string
 
+  /users/{id}/solutions:
+    post:
+      summary: Submit solutions for a user
+      description: Submits a set of solutions for a specific user.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                questionId:
+                  type: integer
+                  description: The ID of the question
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      answerId:
+                        type: integer
+                        description: The ID of the answer
+                      selected:
+                        type: boolean
+                        description: Whether the answer was selected
+              required:
+                - questionId
+                - answers
+              example:
+                questionId: 123
+                answers:
+                  - answerId: 1
+                    selected: true
+                  - answerId: 2
+                    selected: false
+      responses:
+        '200':
+          description: Solutions submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Solutions submitted successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: INVALID_INPUT
+                  errorMessage:
+                    type: string
+                    example: Invalid input data
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: UNAUTHORIZED
+                  errorMessage:
+                    type: string
+                    example: Authorization required
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  errorMessage:
+                    type: string
+                    example: An error occurred while processing the request
+
 components:
   schemas:
     Chapter:
