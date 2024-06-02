@@ -1,4 +1,4 @@
-function setCorsHeaders(response) {
+export function setCorsHeaders(response) {
     response.setHeader('Access-Control-Allow-Origin', '*');
     response.setHeader('Access-Control-Allow-Methods', '*');
     response.setHeader('Access-Control-Allow-Headers', '*');
@@ -6,7 +6,7 @@ function setCorsHeaders(response) {
     return response;
 }
 
-function sendJsonResponse(response, status, content) {
+export function sendJsonResponse(response, status, content) {
     setCorsHeaders(response);
     response.writeHead(status, {
         'Content-Type': 'application/json',
@@ -14,7 +14,7 @@ function sendJsonResponse(response, status, content) {
     response.end(content);
 }
 
-function sendEmptyResponse(response, status) {
+export function sendEmptyResponse(response, status) {
     setCorsHeaders(response);
     response.writeHead(status);
     response.end();

@@ -1,6 +1,6 @@
-const { Server } = require('http');
-const url = require('url');
-const { zip } = require('./utils');
+import {Server} from 'http';
+import { zip } from './utils.js';
+import {parse} from "node:url";
 
 export const Methods = Object.freeze({
     GET: 'GET',
@@ -25,8 +25,9 @@ export class RestServer extends Server {
     }
 
     registerRoute(method, route, handler) {
-        if (!(method in this.routes)) {
-            throw 'Invalid Route';
+        const routeMethods = this.routes.get(method);
+        if (!routeMethods) {
+            throw new Error(`Route ${method} not found`);
         }
         this.routes.get(method).set(route, handler);
     }
@@ -51,7 +52,7 @@ export class RestServer extends Server {
         for (const [route, handler] of methodHandlers) {
             const pathParams = this.matchRoute(
                 route,
-                new URL(req.url()).pathname
+                parse(req.url, true).pathname,
             );
             if (!pathParams) {
                 continue;

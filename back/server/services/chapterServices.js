@@ -1,7 +1,7 @@
-import { withDatabaseOperation } from '../db';
+import { withDatabaseOperation } from '../db.js';
 import { ServiceResponse } from '../models/serviceResponse.js';
 
-export const getAllChapters = withDatabaseOperation(async function (client) {
+export const getAllChaptersService = withDatabaseOperation(async function (client) {
     const chapters = (
         await client.query('select id, number, title from chapter')
     ).rows;
@@ -12,7 +12,7 @@ export const getAllChapters = withDatabaseOperation(async function (client) {
     );
 });
 
-export const getChapterContent = withDatabaseOperation(async function (
+export const getChapterContentService = withDatabaseOperation(async function (
     client,
     id
 ) {
