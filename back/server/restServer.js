@@ -1,6 +1,8 @@
-import {Server} from 'http';
+import { Server } from 'http';
 import { zip } from './utils.js';
-import {parse} from "node:url";
+import { parse } from "node:url";
+import {sendEmptyResponse, sendJsonResponse} from "./response.js";
+import {ErrorCodes} from "./constants.js";
 
 export const Methods = Object.freeze({
     GET: 'GET',
@@ -32,8 +34,9 @@ export class RestServer extends Server {
         this.routes.get(method).set(route, handler);
     }
 
-    requestHandler(req, res) {
+     requestHandler(req, res) {
         const method = req.method.toUpperCase();
+        const pathname = parse(req.url, true).pathname;
 
         if (method === 'OPTIONS') {
             sendEmptyResponse(res, 204);
@@ -52,9 +55,9 @@ export class RestServer extends Server {
         for (const [route, handler] of methodHandlers) {
             const pathParams = this.matchRoute(
                 route,
-                parse(req.url, true).pathname,
+                pathname,
             );
-            if (!pathParams) {
+            if (pathParams === null) {
                 continue;
             }
             handler(req, res, pathParams);
@@ -63,7 +66,7 @@ export class RestServer extends Server {
 
         sendJsonResponse(res, 404, {
             errorCode: ErrorCodes.ROUTE_NOT_FOUND,
-            errorMessage: `Route ${req.url()} not found`,
+            errorMessage: `Route ${pathname} not found`,
         });
     }
 
@@ -71,7 +74,7 @@ export class RestServer extends Server {
         const splitRoute = route.split('/');
         const splitUrl = url.split('/');
 
-        if (splitUrl.length !== splitUrl.length) {
+        if (splitRoute.length !== splitUrl.length) {
             return null;
         }
 

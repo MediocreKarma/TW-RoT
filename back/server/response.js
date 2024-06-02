@@ -6,15 +6,15 @@ export function setCorsHeaders(response) {
     return response;
 }
 
-export function sendJsonResponse(response, status, content) {
+export function sendJsonResponse(response, status, content, message = '') {
     setCorsHeaders(response);
-    response.writeHead(status, {
+    response.writeHead(status, message, {
         'Content-Type': 'application/json',
     });
-    response.end(content);
+    response.end(JSON.stringify(content, null, 2));
 }
 
-export function sendEmptyResponse(response, status) {
+export function sendEmptyResponse(response, status, message = '') {
     setCorsHeaders(response);
     response.writeHead(status);
     response.end();
