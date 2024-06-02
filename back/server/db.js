@@ -1,8 +1,11 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
+import {join, dirname} from "node:path";
+import {fileURLToPath} from 'url'
+import {ServiceResponse} from "./models/serviceResponse.js";
 
 const {Pool} = pg;
-dotenv.config({ path: '.env' });
+dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '/.env') });
 
 export const pool = new Pool({
     user: process.env.DATABASE_USERNAME,
@@ -22,7 +25,7 @@ export function withDatabaseOperation(handler) {
             return result;
         } catch (error) {
             console.error(error);
-            return new Response(500, null, 'Internal Server Error');
+            return new ServiceResponse(500, null, 'Internal Server Error');
         }
     }
 }

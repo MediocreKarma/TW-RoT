@@ -12,7 +12,3 @@ export const pool = new Pool({
     database: process.env.DATABASE,
     schema: process.env.DATABASE_SCHEMA,
 });
-
-const client = await pool.connect();
-
-await client.query('select 1'); // will error if client is invalid

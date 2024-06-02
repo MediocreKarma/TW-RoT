@@ -1,4 +1,15 @@
-create or replace function generate_questionnaire(u_id int) returns int
+drop function generate_questionnaire(int);
+
+
+-- TODO: PE AICEA CEVA
+create or replace function generate_questionnaire(u_id int) 
+returns table(
+    question_id int,
+    question_text varchar(4096),
+    question_image varchar(512),
+    answer_id int,
+    answer_description varchar(2048)
+)
 as $$
 declare
     questionnaire_id int;
@@ -12,7 +23,7 @@ declare
 begin
     select gq.id into questionnaire_id from generated_questionnaire gq where gq.user_id = u_id;
     if found then
-        return questionnaire_id;
+        return select ;
     end if;
 
     -- create a new questionnaire entry
@@ -43,12 +54,25 @@ begin
             insert into generated_question (questionnaire_id, question_id, selected_fields, sent, solved)
                 values (questionnaire_id, question_id, 0, false, false);
 
+            return query select 
+                    q.id as question_id,
+                    q.text as question_text,
+                    q.image_id as question_image,
+                    a.id as answer_id,
+                    a.description as answer_description
+                from question q
+                join answer a
+                    on q.id = a.question_id
+                where q.id = question_id;
+
         end loop;
     end loop;
 
     update generated_questionnaire
-    set generated_time = current_timestamp
-    where id = questionnaire_id;
+        set 
+            generated_time = current_timestamp
+        where 
+            id = questionnaire_id;
 
     return questionnaire_id;
 
