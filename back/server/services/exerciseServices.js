@@ -19,7 +19,7 @@ export const getAllExerciseCategoriesService = withDatabaseOperation(async funct
             '    on aq.question_id = q.id and aq.user_id = $1::int\n' +
             'group by qc.id, qc.title\n' +
             'order by qc.id;',
-        [user_id]
+        [user_id ?? 0]
     )).rows;
 
     const { solved, total, wrong } = qcData.reduce(
@@ -67,8 +67,8 @@ function parseQuestionData(qData) {
 
 export const getUnsolvedQuestionService = withDatabaseOperation(async function (
     client,
-    user_id,
-    category_id
+    category_id,
+    user_id = 0,
 ) {
     const qData = (
         await client.query(
@@ -100,9 +100,9 @@ export const getUnsolvedQuestionService = withDatabaseOperation(async function (
     );
 });
 
-export const getWrongQuestionService = withDatabaseOperation(async function (
+export const getIncorrectlySolvedQuestionService = withDatabaseOperation(async function (
     client,
-    user_id
+    user_id = 0
 ) {
     const qData = (
         await client.query(

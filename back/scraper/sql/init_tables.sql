@@ -34,7 +34,8 @@ create table chapter (
     id serial primary key,
     number int,
     title varchar(128),
-    content text
+    content text,
+    isAddendum bool default false
 );
 
 create table sign_category (

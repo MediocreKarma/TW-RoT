@@ -113,7 +113,7 @@ const getSignCategoryData = (content) => {
 
 export const scrapeSigns = async () => {
     try {
-        const url = 'https://www.codrutier.ro/semne-de-circulatie';
+        const url = 'https://web.archive.org/web/20240220222115mp_/https://www.codrutier.ro/semne-de-circulatie';
         const indexData = await getContent(url);
         const signCategoryLinks = getSignCategoryLinks(indexData);
         return await processLinks(signCategoryLinks);
@@ -127,13 +127,14 @@ export const populateSigns = async () => {
     const client = await pool.connect();
 
     for (const scrapedCategory of scrapedCategories) {
+        console.log(JSON.stringify(scrapedCategory));
         process.stdout.write(
             `Adding new sign category: ${scrapedCategory.title}...`
         );
         try {
-            await client.query('call insert_sign_category($1::jsonb)', [
-                JSON.stringify(scrapedCategory),
-            ]);
+            // await client.query('call insert_sign_category($1::jsonb)', [
+            //     JSON.stringify(scrapedCategory),
+            // ]);
         } catch (e) {
             console.error(e);
         }

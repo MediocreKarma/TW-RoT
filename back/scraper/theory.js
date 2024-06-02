@@ -76,8 +76,8 @@ export const populateTheory = async () => {
 
         try {
             await client.query(
-                'insert into chapter values(default, $1::int, $2::varchar, $3::text)',
-                [chapterNumber, chapterTitle, chapter.content]
+                'insert into chapter values(default, $1::int, $2::varchar, $3::text, $4::bool)',
+                [chapterNumber, chapterTitle, chapter.content, chapter.isAddendum],
             );
         } catch (e) {
             console.error(e);
