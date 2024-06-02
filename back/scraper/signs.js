@@ -41,8 +41,8 @@ const processLinks = async (links) => {
         };
         linkData.push(await fetch());
 
-        const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-        await delay(1000);
+        // const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+        // await delay(1000);
     }
 
     console.log('processed all links');
@@ -119,8 +119,8 @@ const getSignCategoryData = async (content) => {
 
         signs.push(await fetch());
 
-        const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-        await delay(1000);
+        // const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+        // await delay(2000);
     }
 
     return {
@@ -136,7 +136,7 @@ export const scrapeSigns = async () => {
 
         const indexData = await getContent(url);
         const signCategoryLinks = getSignCategoryLinks(indexData);
-        return await processLinks(signCategoryLinks);
+        return await processLinks(signCategoryLinks.slice(0, 1));
     } catch (error) {
         console.error(`Error: ${error.message}`);
     }

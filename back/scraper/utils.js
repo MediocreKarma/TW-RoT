@@ -56,9 +56,10 @@ function getFinalUrlUtil(url, resolve, reject) {
 }
 
 export async function getFinalUrl(url) {
-    return new Promise((resolve, reject) =>
-        getFinalUrlUtil(url, resolve, reject)
-    );
+    // return new Promise((resolve, reject) =>
+    //     getFinalUrlUtil(url, resolve, reject)
+    // );
+    return url;
 }
 
 export const stringToKebabCase = (string) =>
