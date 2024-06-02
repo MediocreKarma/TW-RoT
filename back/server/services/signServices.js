@@ -1,7 +1,7 @@
 import { withDatabaseOperation } from '../db.js';
 import { ServiceResponse } from '../models/serviceResponse.js';
 
-export const getAllSignCategories = withDatabaseOperation(async function (
+export const getAllSignCategoriesService = withDatabaseOperation(async function (
     client
 ) {
     const signCategories = (
@@ -14,7 +14,7 @@ export const getAllSignCategories = withDatabaseOperation(async function (
     );
 });
 
-export const getSignCategory = withDatabaseOperation(async function (
+export const getSignCategoryService = withDatabaseOperation(async function (
     client,
     id
 ) {
@@ -27,7 +27,7 @@ export const getSignCategory = withDatabaseOperation(async function (
     const signCategory = (
         await client.query(
             'select s.id, s.title, s.description, s.image_id ' +
-                'from sign s join sign_to_category_relation stcr on stcr.sign_id where stcr.category_id = $1::int',
+                'from sign s join sign_to_category_relation stcr on stcr.sign_id = s.id where stcr.category_id = $1::int',
             [id]
         )
     ).rows;

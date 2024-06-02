@@ -1,6 +1,6 @@
-import { Server } from 'http';
-import { zip } from './utils.js';
-import { parse } from "node:url";
+import {Server} from 'http';
+import {zip} from './utils.js';
+import {parse} from "node:url";
 import {sendEmptyResponse, sendJsonResponse} from "./response.js";
 import {ErrorCodes} from "./constants.js";
 
@@ -12,7 +12,7 @@ export const Methods = Object.freeze({
     PATCH: 'PATCH',
 });
 
-export class RestServer extends Server {
+export class AppRouter extends Server {
     routes = new Map([
         [Methods.GET, new Map()],
         [Methods.POST, new Map()],
@@ -24,6 +24,10 @@ export class RestServer extends Server {
     constructor() {
         super();
         this.on('request', this.requestHandler);
+    }
+
+    get(route, handler) {
+        this.routes.get(Methods.GET).set(route, handler);
     }
 
     registerRoute(method, route, handler) {
@@ -53,14 +57,15 @@ export class RestServer extends Server {
         }
 
         for (const [route, handler] of methodHandlers) {
-            const pathParams = this.matchRoute(
+            const params = this.matchRoute(
                 route,
                 pathname,
             );
-            if (pathParams === null) {
+            if (params === null) {
                 continue;
             }
-            handler(req, res, pathParams);
+            params['authorization'] = this.getIdFromAuthorization(req);
+            handler(req, res, params);
             return;
         }
 
@@ -78,15 +83,22 @@ export class RestServer extends Server {
             return null;
         }
 
-        const pathParams = {};
+        const params = {};
         for (const [routePart, urlPart] of zip(splitRoute, splitUrl)) {
             if (routePart.startsWith(':')) {
-                pathParams[routePart.slice(1)] = urlPart;
+                params[routePart.slice(1)] = urlPart;
             } else if (routePart !== urlPart) {
                 return null;
             }
         }
+        return params;
+    }
 
-        return pathParams;
+    getIdFromAuthorization(req) {
+        const authHeader = req.headers['authorization'];
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return null;
+        }
+        return authHeader.split(' ')[1];
     }
 }

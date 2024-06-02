@@ -14,8 +14,8 @@ export async function getAllChapters(req, res) {
     );
 }
 
-export async function getChapterContent(req, res, pathParams) {
-    const serviceResponse = await getChapterContentService(pathParams.id);
+export async function getChapterContent(req, res, params) {
+    const serviceResponse = await getChapterContentService(params.id);
     sendJsonResponse(
         res,
         serviceResponse.status,
