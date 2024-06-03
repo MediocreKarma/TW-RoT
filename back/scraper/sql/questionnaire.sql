@@ -1,15 +1,14 @@
 drop function generate_questionnaire(int);
 
-
--- TODO: PE AICEA CEVA
 create or replace function generate_questionnaire(u_id int) 
 returns table(
     questionnaire_id int,
-    generated_time timestamp
+    generated_time timestamp,
+    new bool
 )
 as $$
 declare
-    questionnaire_id int;
+    qstnr_id int;
     category_count int;
     category_question_count int;
     question_id int;
@@ -18,52 +17,51 @@ declare
     qc_id int;
     has_generated_questionnaire int;
     gen_time timestamp;
+    already_registered bool;
 begin
-    select gq.id, gq.generated_time into questionnaire_id, gen_time from generated_questionnaire gq where gq.user_id = u_id;
-    if found then
-        -- TODO: DELETE IF FOUND AND TIME EXPIRED, CREATE NEW ONE
-        return query select questionnaire_id, gen_time;
+    select 
+        gq.id, gq.generated_time, gq.registered 
+    into 
+        qstnr_id, gen_time, already_registered 
+    from generated_questionnaire gq where gq.user_id = u_id;
+
+    if found and  then
+
+        raise notice '% % %', qstnr_id, gen_time, (current_timestamp - interval '30 minutes');
+        if gen_time >= (current_timestamp - interval '30 minutes') THEN
+            return query select qstnr_id, gen_time, false;
+            return;
+        end if;
+        raise notice 'but here';
+        if not already_registered then
+            perform finish_questionnaire(u_id);
+        end if;
+
+        delete from generated_question      gq where gq.questionnaire_id = qstnr_id;
+        delete from generated_questionnaire gq where gq.id = qstnr_id;
     end if;
 
-    -- create a new questionnaire entry
     insert into generated_questionnaire (user_id)
         values (u_id)
-    returning id into questionnaire_id;
+    returning id into qstnr_id;
     
-    -- get the number of categories
     select count(' ') into category_count from question_category;
     
-    -- calculate the base number of questions per category and the extra questions
     questions_per_category := 26 / category_count;
     extra_questions := 26 % category_count;
     
-    -- loop through each category
     for qc_id in select qc.id from question_category qc order by random() loop
         
         category_question_count := questions_per_category;
-        -- calculate the number of questions to select from this category
         if extra_questions > 0 then
             category_question_count := questions_per_category + 1;
             extra_questions := extra_questions - 1;
         end if;
         
-        -- fetch questions and insert them into generated_question table
         for question_id in select q.id from question q where q.category_id = qc_id order by random() limit category_question_count loop
             
             insert into generated_question (questionnaire_id, question_id, selected_fields, sent, solved)
-                values (questionnaire_id, question_id, 0, false, false);
-
-            return query select 
-                    q.id as question_id,
-                    q.text as question_text,
-                    q.image_id as question_image,
-                    a.id as answer_id,
-                    a.description as answer_description
-                from question q
-                join answer a
-                    on q.id = a.question_id
-                where q.id = question_id;
-
+                values (qstnr_id, question_id, 0, false, false);
         end loop;
     end loop;
 
@@ -73,11 +71,76 @@ begin
         set 
             generated_time = gen_time
         where 
-            id = questionnaire_id;
+            id = qstnr_id;
 
-    return query select questionnaire_id, gen_time;
-
+    return query select qstnr_id, gen_time, true;
 end; $$ language plpgsql;
+
+create type answer_t as (
+    id int, 
+    description varchar(4096)
+);
+
+create or replace function get_questionnaire_by_id(qstr_id int) 
+returns table (
+    generated_question_id int,
+    question_text varchar(4096),
+    question_image varchar(256),
+    answers answer_t[]
+) as $$
+begin  
+    return query 
+        select 
+            gq.id as generated_question_id, 
+            q.text as question_text, 
+            q.image_id as question_image,
+            array( 
+                select row(a.id, a.description)::answer_t
+                from answer a
+                where
+                    a.question_id = gq.question_id
+            ) as answers
+        FROM
+            generated_question gq
+        join 
+            question q
+                on 
+                    q.id = gq.question_id
+        where 
+            gq.questionnaire_id = qstr_id;      
+end; $$ language PLPGSQL;
+
+create or replace function get_questionnaire_by_user_id(u_id int) 
+returns table (
+    generated_question_id int,
+    question_text varchar(4096),
+    question_image varchar(256),
+    answers answer_t[]
+) as $$
+begin  
+    return query 
+        select 
+            gq.id as generated_question_id, 
+            q.text as question_text, 
+            q.image_id as question_image,
+            array( 
+                select row(a.id, a.description)::answer_t
+                from answer a
+                where
+                    a.question_id = gq.question_id
+            ) as answers
+        FROM
+            generated_question gq
+        join question q
+            on 
+                q.id = gq.question_id
+        join generated_questionnaire qstr
+            ON
+                qstr.id = gq.questionnaire_id
+        where 
+            qstr.user_id = u_id;   
+end; $$ language PLPGSQL;
+
 
 create or replace function get_answer_bitset(q_id integer) returns int
 as $$
@@ -123,23 +186,25 @@ as $$
 declare
     qstnr_id int;
     score int;
+    already_registered bool;
 begin 
-    select qstnr.id, count(' ') filter (where q.solved)
-        into qstnr_id, score
+    select qstnr.id, count(' ') filter (where q.solved), qstnr.registered
+        into qstnr_id, score, already_registered
     from generated_questionnaire qstnr 
     join generated_question q 
         on qstnr.id = q.questionnaire_id 
         where qstnr.user_id = 1
-        group by qstnr.id;
+        group by qstnr.id, qstnr.registered;
 
     if not found THEN
         return -1;
     end if;
 
+    if already_registered then
+        return -2;
+    end if;
 
-    delete from generated_question      gq where gq.questionnaire_id = qstnr_id;
-    delete from generated_questionnaire gq where gq.id = qstnr_id;
-
+    update generated_questionnaire set registered = true where id = qstnr_id;
     update user_account
         set 
             total_questionnaires = total_questionnaires + 1,

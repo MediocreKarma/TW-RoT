@@ -1,8 +1,6 @@
 import {withDatabaseOperation} from "../db.js";
-import {sendJsonResponse} from "../response.js";
 import {ServiceResponse} from "../models/serviceResponse.js";
-import {generateQuestionnaire, getSolutionService} from "./exerciseServices.js";
-import client from "pg/lib/client.js";
+import {generateQuestionnaireService} from "./exerciseServices.js";
 
 export const addQuestionSolutionService = withDatabaseOperation(async function (
     client,
@@ -27,7 +25,7 @@ export const addQuestionSolutionService = withDatabaseOperation(async function (
     }
 
     const correctAnswers = (await client.query(
-        'select answerid as "answerId", correct as "correct" from register_answer($1::int, $2::int, $3::int)',
+        'select answer_id as "answerId", correct as "correct" from register_answer($1::int, $2::int, $3::int)',
         [userId, questionId, bitset],
     )).rows;
 
@@ -38,7 +36,22 @@ export const createUserQuestionnaireService = withDatabaseOperation(async functi
     client, userId
 ) {
      const thirtyMinutesInMs = 30 * 60 * 1000;
+     const questionnaireObj = (await generateQuestionnaireService(userId)).body;
 
+     console.log(questionnaireObj);
 
-    return await generateQuestionnaire(userId);
-})
+     if (questionnaireObj['new']) {
+         setTimeout(() => {
+             client.query('perform finish_questionnaire($1::int)', [userId]);
+         }, thirtyMinutesInMs);
+     }
+
+     const result = (await client.query(
+        'select * from get_questionnaire_by_id($1::int)', [questionnaireObj['id']]
+     )).rows;
+
+     console.log(JSON.stringify(result, undefined, 2));
+     return null;
+});
+
+// await createUserQuestionnaireService(1);

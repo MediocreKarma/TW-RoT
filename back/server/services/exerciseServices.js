@@ -134,14 +134,17 @@ export const getIncorrectlySolvedQuestionService = withDatabaseOperation(async f
     );
 });
 
-export const generateQuestionnaire = withDatabaseOperation(async function (
+export const generateQuestionnaireService = withDatabaseOperation(async function (
     client,
     userId
 ) {
-    const questionnaire = await (client.query(
+
+    console.log(userId);
+    const questionnaire = (await client.query(
         'select ' +
-            '   questionnaire_id as "id", ' +
-            '   generated_time as "generationTime ' +
+            '    questionnaire_id as "id", ' +
+            '    generated_time as "generationTime", ' +
+            '    new as "new" ' +
             'from generate_questionnaire($1::int)',
         [userId]
     )).rows[0];

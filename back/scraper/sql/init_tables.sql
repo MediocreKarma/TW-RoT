@@ -106,7 +106,8 @@ create table answer (
 create table generated_questionnaire (
     id serial primary key,
     generated_time timestamp,
-    user_id int references user_account (id) unique
+    user_id int references user_account (id) unique,
+    registered bool default false
 );
 
 create table generated_question (
