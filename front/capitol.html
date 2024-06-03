@@ -5,16 +5,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RoT - Romanian Traffic Signs Tutor</title>
-  <link rel="stylesheet" href="../style/style.css">
+  <link rel="stylesheet" href="./style/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="../js/darkModeSwitch.js"></script>
-  <script src="../js/headerToHamburger.js"></script>
-  <script src="../js/backToTop.js"></script>
+  <script src="./js/darkModeSwitch.js"></script>
+  <script src="./js/headerToHamburger.js"></script>
+  <script src="./js/backToTop.js"></script>
+  <script src="./js/populateChapterContent.js"></script>
 </head>
 
 <body>
   <header class="header header--no-js" id="header">
-    <a href="../index.html" class="logo">RoT</a>
+    <a href="./index.html" class="logo">RoT</a>
     <input class="header__button" type="checkbox" id="header__button">
     <label class="header__icon" for="header__button">
       <span class="navicon"></span>
@@ -37,10 +38,10 @@
       </label>
     </div>
     <ul class="header__list" id="header__list">
-      <li><a href="../cod_rutier.html">Cod rutier</a></li>
-      <li><a href="../indicatoare.html">Indicatoare</a></li>
-      <li><a href="../exerseaza.html">Exersează</a></li>
-      <li><a href="../login.html">Autentificare</a></li>
+      <li><a href="./cod_rutier.html">Cod rutier</a></li>
+      <li><a href="./indicatoare.html">Indicatoare</a></li>
+      <li><a href="./exerseaza.html">Exersează</a></li>
+      <li><a href="./login.html">Autentificare</a></li>
     </ul>
 
   </header>
@@ -50,13 +51,15 @@
     <button class="back-to-top" id="back-to-top">Înapoi sus</button>
     <div class="capitol">
       <div class="capitol__info">
-        <h1 class="capitol__title">Capitolul 1: Dispoziții generale</h1>
-        <a href="../cod_rutier.html" class="button capitol__back-button">Înapoi</a>
+        <h1 class="capitol__title" id="chapter-title">
+          <!-- Capitolul 1: Dispoziții generale -->
+        </h1>
+        <a href="./cod_rutier.html" class="button capitol__back-button">Înapoi</a>
       </div>
       
       <div class="content-container">
-       <div class="chapter-sidebar">
-        <a href="./capitol_1.html">
+       <div class="chapter-sidebar" id="chapter-sidebar">
+        <!-- <a href="./capitol?id=1">
           <div class="chapter-sidebar__item chapter-sidebar__item--checked">Dispoziții generale</div>
         </a>
         <a href="./capitol_1.html">
@@ -73,10 +76,10 @@
         </a>
         <a href="./capitol_1.html">
           <div class="chapter-sidebar__item">etc</div>
-        </a>
+        </a> -->
        </div>
-       <div class="chapter-content">
-        <p><span><span><span>(1) Circulația pe drumurile publice a vehiculelor, pietonilor și a celorlalte categorii de participanți la trafic, drepturile, obligațiile și răspunderile care revin persoanelor fizice și juridice, precum și atribuțiile unor autorități ale administrației publice, instituții și organizații sunt supuse dispozițiilor prevăzute &icirc;n prezenta ordonanță de urgență.</span></span></span></p>
+       <div class="chapter-content" id="chapter-content">
+        <!-- <p><span><span><span>(1) Circulația pe drumurile publice a vehiculelor, pietonilor și a celorlalte categorii de participanți la trafic, drepturile, obligațiile și răspunderile care revin persoanelor fizice și juridice, precum și atribuțiile unor autorități ale administrației publice, instituții și organizații sunt supuse dispozițiilor prevăzute &icirc;n prezenta ordonanță de urgență.</span></span></span></p>
 
         <p><span><span><span>(2) Dispozițiile prevăzute &icirc;n prezenta ordonanță de urgență au ca scop asigurarea desfășurării fluente și &icirc;n siguranță a circulației pe drumurile publice, precum și ocrotirea vieții, integrității corporale și a sănătății persoanelor participante la trafic sau aflate &icirc;n zona drumului public, protecția drepturilor și intereselor legitime ale persoanelor respective, a proprietății publice și private, c&acirc;t și a mediului.</span></span></span></p>
 
@@ -224,7 +227,7 @@
 
         <p>40. zona rezidențială - perimetrul dintr-o localitate unde se aplică reguli speciale de circulație, av&acirc;nd intrările și ieșirile semnalizate &icirc;n conformitate cu prevederile legale.</p>
 
-<p>41. conducere auto defensivă - pregătire specială a conducătorilor auto &icirc;n vederea prevenirii accidentelor rutiere.</p>
+<p>41. conducere auto defensivă - pregătire specială a conducătorilor auto &icirc;n vederea prevenirii accidentelor rutiere.</p> -->
        </div>
       </div>
     </div>
@@ -242,7 +245,7 @@
 
     <ul class="footer__nav">
       <li class="nav__item">
-        <a href="../about.html">
+        <a href="./about.html">
           <h2 class="nav__title">Despre noi</h2>
           <ul class="nav__ul">
             <li>Chirvasa George-Matei</li>
@@ -265,7 +268,7 @@
         </ul>
       </li>
       <li class="nav__item">
-        <a href="../help.html"><h2 class="nav__title">Ajutor</h2></a>
+        <a href="./help.html"><h2 class="nav__title">Ajutor</h2></a>
       </li>
     </ul>
 
