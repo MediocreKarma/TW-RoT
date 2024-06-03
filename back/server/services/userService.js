@@ -38,8 +38,6 @@ export const createUserQuestionnaireService = withDatabaseOperation(async functi
      const thirtyMinutesInMs = 30 * 60 * 1000;
      const questionnaireObj = (await generateQuestionnaireService(userId)).body;
 
-     console.log(questionnaireObj);
-
      if (questionnaireObj['new']) {
          setTimeout(() => {
              client.query('perform finish_questionnaire($1::int)', [userId]);
@@ -47,11 +45,14 @@ export const createUserQuestionnaireService = withDatabaseOperation(async functi
      }
 
      const result = (await client.query(
-        'select * from get_questionnaire_by_id($1::int)', [questionnaireObj['id']]
+         `select 
+             generated_question_id as "generatedQuestionId",
+             question_text as "questionText",
+             question_image as "questionImage",
+             answers as "answers"
+         from get_questionnaire_by_id($1::int)`,
+         [questionnaireObj['id']]
      )).rows;
 
-     console.log(JSON.stringify(result, undefined, 2));
-     return null;
+     return new ServiceResponse(200, result, 'Successfully created questionnaire');
 });
-
-// await createUserQuestionnaireService(1);

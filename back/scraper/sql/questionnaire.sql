@@ -86,7 +86,7 @@ returns table (
     generated_question_id int,
     question_text varchar(4096),
     question_image varchar(256),
-    answers answer_t[]
+    answers jsonb[]
 ) as $$
 begin  
     return query 
@@ -94,20 +94,17 @@ begin
             gq.id as generated_question_id, 
             q.text as question_text, 
             q.image_id as question_image,
-            array( 
-                select row(a.id, a.description)::answer_t
-                from answer a
-                where
-                    a.question_id = gq.question_id
-            ) as answers
+            array_agg(jsonb_build_object('id', a.id, 'description', a.description)) as answer
         FROM
             generated_question gq
         join 
             question q
                 on 
                     q.id = gq.question_id
+        join answer a on q.id = a.question_id
         where 
-            gq.questionnaire_id = qstr_id;      
+            gq.questionnaire_id = qstr_id
+        group by gq.id, q.text, q.image_id;    
 end; $$ language PLPGSQL;
 
 create or replace function get_questionnaire_by_user_id(u_id int) 
@@ -115,7 +112,7 @@ returns table (
     generated_question_id int,
     question_text varchar(4096),
     question_image varchar(256),
-    answers answer_t[]
+    answers jsonb[]
 ) as $$
 begin  
     return query 
@@ -123,22 +120,19 @@ begin
             gq.id as generated_question_id, 
             q.text as question_text, 
             q.image_id as question_image,
-            array( 
-                select row(a.id, a.description)::answer_t
-                from answer a
-                where
-                    a.question_id = gq.question_id
-            ) as answers
+            array_agg(jsonb_build_object('id', a.id, 'description', a.description)) as answer
         FROM
             generated_question gq
-        join question q
-            on 
-                q.id = gq.question_id
+        join 
+            question q
+                on q.id = gq.question_id
+        join answer a 
+            on q.id = a.question_id
         join generated_questionnaire qstr
-            ON
-                qstr.id = gq.questionnaire_id
+            on qstr.id = gq.questionnaire_id
         where 
-            qstr.user_id = u_id;   
+            qstr.user_id = u_id
+        group by gq.id, q.text, q.image_id;   
 end; $$ language PLPGSQL;
 
 

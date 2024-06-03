@@ -47,10 +47,9 @@ export class AppRouter extends Server {
         const {pathname, query} = parse(req.url, true);
         const body = await this.getRequestBody(req);
 
-        console.log(`Received request ${method} ${pathname} with 
-            - query: ${JSON.stringify(query)}
-            - body: ${JSON.stringify(body)}`
-        );
+        console.log(`Received request ${method} ${pathname}`);
+        query || console.log(`\t- query: ${JSON.stringify(query)}`);
+        body  || console.log(`\t- body: ${JSON.stringify(body)}`);
 
         if (method === 'OPTIONS') {
             sendEmptyResponse(res, 204);

@@ -3,7 +3,7 @@ import { ServiceResponse } from '../models/serviceResponse.js';
 
 export const getAllExerciseCategoriesService = withDatabaseOperation(async function (
     client,
-    user_id = 0
+    userId = 0
 ) {
     const qcData = (await client.query(
         'select ' +
@@ -19,7 +19,7 @@ export const getAllExerciseCategoriesService = withDatabaseOperation(async funct
             '    on aq.question_id = q.id and aq.user_id = $1::int\n' +
             'group by qc.id, qc.title\n' +
             'order by qc.id;',
-        [user_id ?? 0]
+        [userId ?? 0]
     )).rows;
 
     const { solved, total, wrong } = qcData.reduce(
@@ -40,21 +40,31 @@ export const getAllExerciseCategoriesService = withDatabaseOperation(async funct
 });
 
 const SQL_SELECT_STATEMENT =
-    'select ' +
-    '   q.id as question_id, ' +
-    '    q.category_id as category_id, ' +
-    '    q.text as question_text, ' +
-    '    q.image_id as question_image, ' +
-    '    a.id as answer_id, ' +
-    '    a.description as answer_description ' +
-    'from question q join answer a on q.id = a.question_id\n';
+    `select
+        q.id as "questionId",
+        q.category_id as "categoryId",
+        qg.title as "categoryTitle",
+        q.text as "questionText",
+        q.image_id as "questionImage",
+        array_agg(jsonb_build_object('answerId', a.id, 'description', a.description)) as "answers"
+    from 
+        question q 
+        join answer a on q.id = a.question_id 
+        join question_category qg on qg.id = q.category_id`;
+
+const SQL_GROUPING_STATEMENT =
+    `group by
+        q.id, q.category_id, qg.title, q.text, q.image_id
+    order by 
+        random();`
+
 
 function parseQuestionData(qData) {
     const questionObj = {
-        id: qData[0]['question_id'],
-        category: qData[0]['category_id'],
-        text: qData[0]['question_text'],
-        image: qData[0]['question_image'],
+        id: qData[0]['questionId'],
+        category: qData[0]['categoryId'],
+        text: qData[0]['questionText'],
+        image: qData[0]['questionImage'],
     };
 
     const answerObjects = qData.map((qObj) => ({
@@ -67,21 +77,28 @@ function parseQuestionData(qData) {
 
 export const getUnsolvedQuestionService = withDatabaseOperation(async function (
     client,
-    category_id,
-    user_id = 0,
+    categoryId,
+    userId = 0,
 ) {
     const qData = (
         await client.query(
-            SQL_SELECT_STATEMENT +
-                'where q.id = (\n' +
-                '    select q.id from question q \n' +
-                '        left join answered_question aq on q.id = aq.question_id and aq.user_id = $1::int\n' +
-                '        where (aq.id is NULL or not aq.answered_correctly) and q.category_id = $2::int\n' +
-                '        order by random()\n' +
-                '        limit 1\n' +
-                ')\n' +
-                'order by random();',
-            [user_id, category_id]
+            `${SQL_SELECT_STATEMENT}
+                where 
+                    q.id = (
+                        select 
+                            q.id 
+                        from 
+                            question q 
+                            left join answered_question aq on q.id = aq.question_id and aq.user_id = $1::int
+                        where 
+                            (aq.id is NULL or not aq.answered_correctly) and q.category_id = $2::int
+                        order by 
+                            random()
+                        limit 
+                            1
+                    )
+                ${SQL_GROUPING_STATEMENT}`,
+            [userId, categoryId]
         )
     ).rows;
 
@@ -95,28 +112,35 @@ export const getUnsolvedQuestionService = withDatabaseOperation(async function (
 
     return new ServiceResponse(
         200,
-        parseQuestionData(qData),
+        qData[0],
         'Successfully retrieved random unsolved question'
     );
 });
 
 export const getIncorrectlySolvedQuestionService = withDatabaseOperation(async function (
     client,
-    user_id = 0
+    userId = 0
 ) {
     const qData = (
         await client.query(
-            SQL_SELECT_STATEMENT +
-                'where q.id = (\n' +
-                '    select q.id from question q \n' +
-                '        join answered_question aq on q.id = aq.question_id and aq.user_id = $1::int\n' +
-                '        where not aq.answered_correctly' +
-                '        order by random()\n' +
-                '        limit 1\n' +
-                ')\n' +
-                'order by random();',
-            [user_id]
-        )
+            `${SQL_SELECT_STATEMENT}
+                where 
+                    q.id = (
+                        select 
+                            q.id 
+                        from 
+                            question q 
+                            left join answered_question aq on q.id = aq.question_id and aq.user_id = $1::int
+                        where 
+                            not aq.answered_correctly
+                        order by 
+                            random()
+                        limit 
+                            1
+                    )
+                ${SQL_GROUPING_STATEMENT}`,
+                [userId]
+            )
     ).rows;
 
     if (qData.length === 0) {
@@ -129,7 +153,7 @@ export const getIncorrectlySolvedQuestionService = withDatabaseOperation(async f
 
     return new ServiceResponse(
         200,
-        parseQuestionData(qData),
+        qData[0],
         'Successfully retrieved incorrectly solved question'
     );
 });
@@ -138,8 +162,6 @@ export const generateQuestionnaireService = withDatabaseOperation(async function
     client,
     userId
 ) {
-
-    console.log(userId);
     const questionnaire = (await client.query(
         'select ' +
             '    questionnaire_id as "id", ' +
@@ -153,7 +175,7 @@ export const generateQuestionnaireService = withDatabaseOperation(async function
 });
 
 export const getSolutionService = withDatabaseOperation(async function (
-    client, question_id
+    client, questionId
 ) {
     const results = (await client.query(
         'select \n' +
@@ -163,7 +185,7 @@ export const getSolutionService = withDatabaseOperation(async function (
         '    join question q\n' +
         '        on a.question_id = q.id\n' +
         '        where q.id = $1::int;',
-        [question_id]
+        [questionId]
     )).rows;
 
     return new ServiceResponse(200, results, 'Successfully retrieved question answers');
