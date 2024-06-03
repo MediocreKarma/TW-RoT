@@ -6,14 +6,18 @@ const renderChapters = (chapterContainer, chapters) => {
     }
     chapters.forEach((chapter) => {
         const aElement = document.createElement('a');
-        aElement.href = `capitole/capitol_${chapter.number}.html`;
+        aElement.href = `capitol.html?id=${chapter.id}`;
 
         const divCard = document.createElement('div');
-        divCard.className = 'chapter-card';
+        divCard.className = `chapter-card ${
+            chapter.isaddendum ? 'chapter-card--anexa' : ''
+        }`;
 
         const h3Title = document.createElement('h3');
         h3Title.className = 'chapter-card__title';
-        h3Title.textContent = `Capitolul ${chapter.number}`;
+        h3Title.textContent = `${chapter.isaddendum ? 'Anexa' : 'Capitolul'} ${
+            chapter.number
+        }`;
 
         const pDescription = document.createElement('p');
         pDescription.className = 'chapter-card__description';

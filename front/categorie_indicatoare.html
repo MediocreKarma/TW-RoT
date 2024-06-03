@@ -5,16 +5,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome to RoT</title>
-  <link rel="stylesheet" href="../style/style.css">
+  <link rel="stylesheet" href="./style/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="../js/darkModeSwitch.js"></script>
-  <script src="../js/navbar.js"></script>
-  <script src="../js/backToTop.js"></script>
+  <script src="./js/darkModeSwitch.js"></script>
+  <script src="./js/populateSignCategory.js"></script>
+  <script src="./js/backToTop.js"></script>
 </head>
 
 <body>
   <header class="header">
-    <a href="../index.html" class="logo">RoT</a>
+    <a href="./index.html" class="logo">RoT</a>
     <input class="header__button" type="checkbox" id="header__button">
     <label class="header__icon" for="header__button">
       <span class="navicon"></span>
@@ -37,10 +37,10 @@
       </label>
     </div>
     <ul class="header__list" id="header__list">
-      <li><a href="../cod_rutier.html">Cod rutier</a></li>
-      <li><a href="../indicatoare.html">Indicatoare</a></li>
-      <li><a href="../exerseaza.html">Exersează</a></li>
-      <li><a href="../login.html">Autentificare</a></li>
+      <li><a href="./cod_rutier.html">Cod rutier</a></li>
+      <li><a href="./indicatoare.html">Indicatoare</a></li>
+      <li><a href="./exerseaza.html">Exersează</a></li>
+      <li><a href="./login.html">Autentificare</a></li>
     </ul>
 
   </header>
@@ -50,8 +50,10 @@
 
     <div class="indicatoare">
       <div class="indicatoare__info">
-        <h1 class="indicatoare__title">Indicatoare de avertizare</h1>
-        <a href="../indicatoare.html" class="button">Înapoi</a>
+        <h1 class="indicatoare__title" id="sign-category-title">
+
+        </h1>
+        <a href="./indicatoare.html" class="button">Înapoi</a>
       </div>
       <div class="category-info">
         <div class="category-info__row">
@@ -67,8 +69,8 @@
           <div class="category-info__value">Fiți precaut în proximitatea indicatoarelor de avertizare, fiindcă acestea au ca scop avertizarea participanților asupra unor potențiale pericole.</div>
         </div>
       </div>
-      <div class="category-container">
-        <div class="category-card">
+      <div class="category-container" id="category-container">
+        <!-- <div class="category-card">
           <div class="category-card__body">
             <img src="https://www.codrutier.ro/storage/images/2627c2fe7f7552cbb5bbc881f6870d85.png"
               alt="Curbă la stânga" class="card-img mb-2">
@@ -711,7 +713,7 @@
               indicator,
               pentru a se asigura ca nu se apropie niciun tren.</p>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -730,7 +732,7 @@
 
     <ul class="footer__nav">
       <li class="nav__item">
-        <a href="../about.html">
+        <a href="./about.html">
           <h2 class="nav__title">Despre noi</h2>
           <ul class="nav__ul">
             <li>Chirvasa George-Matei</li>
@@ -753,7 +755,7 @@
         </ul>
       </li>
       <li class="nav__item">
-        <a href="../help.html"><h2 class="nav__title">Ajutor</h2></a>
+        <a href="./help.html"><h2 class="nav__title">Ajutor</h2></a>
       </li>
     </ul>
 
