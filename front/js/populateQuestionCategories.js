@@ -30,11 +30,9 @@ const renderCategory = (categoryData) => {
     const anchor = document.createElement('a');
     anchor.href = `./intrebare.html?type=unsolved&category=${categoryData.id}`;
 
-    const correctlySolved =
-        categoryData['solved_questions'] - categoryData['wrong_questions'];
-
     const percentage =
-        (correctlySolved / categoryData['total_questions']) * 100;
+        (categoryData['solved_questions'] / categoryData['total_questions']) *
+        100;
 
     const cardDiv = document.createElement('div');
     cardDiv.className = 'question-category';
@@ -49,7 +47,7 @@ const renderCategory = (categoryData) => {
 
     const valueParagraph = document.createElement('p');
     valueParagraph.className = 'question-category__value';
-    valueParagraph.textContent = `${correctlySolved}/${categoryData['total_questions']}`;
+    valueParagraph.textContent = `${categoryData['solved_questions']}/${categoryData['total_questions']}`;
 
     cardDiv.appendChild(fillerDiv);
     cardDiv.appendChild(titleParagraph);

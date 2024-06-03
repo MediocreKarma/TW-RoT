@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="js/darkModeSwitch.js"></script>
   <script src="js/headerToHamburger.js"></script>
-  
+  <script src="js/populateQuestion.js"></script>
   <script src="js/hoverEffectQuestion.js"></script>
 </head>
 
@@ -53,16 +53,20 @@
             <div class="intrebare-card__header">
               <div class="header__upper">
                 <div class="intrebare-card__title">
-                  <h2>Întrebarea <span id="current-question">25</span> din <span id="total-questions">1024</span></h2>
-                  <span id="category">Categorie: Toate întrebările</span>
+                  <h2>Întrebarea <span id="current-question">...</span>
+                    <!-- din <span id="total-questions">1024</span> -->
+                  </h2>
+                  <span>Categorie: <span id="category">Toate întrebările</span></span>
                 </div>
               </div>
             </div>
-            <form class="intrebare-card__body" action="./index.html" method="get">  
-              <h3 class="intrebare-card__title" id="question-title">Care dintre indicatoare te avertizează că urmează să intersectezi un drum fără prioritate?</h3>
+            <form class="intrebare-card__body" id="question-form">  
+              <h3 class="intrebare-card__title" id="question-title">
+                <!-- Care dintre indicatoare te avertizează că urmează să intersectezi un drum fără prioritate? -->
+              </h3>
                 <div class="intrebare-card__contents">
-                  <ul class="intrebare-card__answers-list">
-                    <li class="intrebare-card__answer">
+                  <ul class="intrebare-card__answers-list" id="question-answers">
+                    <!-- <li class="intrebare-card__answer">
                       <input type="checkbox" name="option-a" id="option-a">
                       <label for="option-a" id="option-a-label">indicatorul 1</label>
                     </li>
@@ -73,15 +77,15 @@
                     <li class="intrebare-card__answer">
                       <input type="checkbox" name="option-c" id="option-c">
                       <label for="option-c" id="option-c-label">ambele</label>
-                    </li>
+                    </li> -->
                   </ul>
-                  <div class="intrebare-card__image-wrapper">
-                    <img src="img/intrebare_image.jpg" alt="">
+                  <div class="intrebare-card__image-wrapper" id="image-wrapper">
+                    <!-- <img src="img/intrebare_image.jpg" alt=""> -->
                   </div>
                 </div>
                 <div class="intrebare-card__buttons">
-                  <button>Răspunde mai târziu</button>
-                  <button>Modifică răspunsul</button>
+                  <button type="button">Răspunde mai târziu</button>
+                  <button type="button">Modifică răspunsul</button>
                   <button type="submit">Răspunde</button>
                 </div>
             </form>

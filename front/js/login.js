@@ -11,8 +11,6 @@ const fetchLogin = async (data) => {
 const onFormSubmit = async (event) => {
     console.log('here');
     event.preventDefault();
-    // send request to backend
-    // if successful, redirect to login
 
     const data = new FormData(event.target);
     const dataObject = Object.fromEntries(data.entries());
@@ -20,7 +18,7 @@ const onFormSubmit = async (event) => {
     const response = await fetchLogin(dataObject);
 
     if (!response.ok) {
-        console.log('rip');
+        console.log('Response unsuccessful');
         console.log(response);
         return;
     }
