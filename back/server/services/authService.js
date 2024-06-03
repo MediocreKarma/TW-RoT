@@ -24,3 +24,18 @@ export const registerService = withDatabaseOperation(async function (
 
     return new ServiceResponse(200, null, 'Account successfully registered');
 });
+
+export const loginService = withDatabaseOperation(async function (
+    client, params
+) {
+    const response = (await client.query(
+        'select id, hash from user_account where email = $1::varchar',
+        [params['email']],
+    )).rows;
+
+    if (response.length === 0 || response[0]['hash'] !== params['password']) {
+        return new ServiceResponse(400, null, 'Invalid credentials');
+    }
+
+    return new ServiceResponse(200, {id: response[0]['id']}, 'Account successfully logged in');
+});
