@@ -464,30 +464,6 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: object
-                properties:
-                  generatedQuestionId:
-                    type: integer
-                  questionText:
-                    type: string
-                  questionImage:
-                    type: string
-                  answers:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        description:
-                          type: string
       responses:
         '200':
           description: Successful response
