@@ -134,11 +134,19 @@ export const getIncorrectlySolvedQuestionService = withDatabaseOperation(async f
     );
 });
 
-export const getGeneratedQuestionnaireService = withDatabaseOperation(async function (
+export const generateQuestionnaire = withDatabaseOperation(async function (
     client,
-    user_id
+    userId
 ) {
-    const qData = (await client.query()).rows;
+    const questionnaire = await (client.query(
+        'select ' +
+            '   questionnaire_id as "id", ' +
+            '   generated_time as "generationTime ' +
+            'from generate_questionnaire($1::int)',
+        [userId]
+    )).rows[0];
+
+    return new ServiceResponse(200, questionnaire, 'Successfully generated questionnaire');
 });
 
 export const getSolutionService = withDatabaseOperation(async function (
@@ -146,8 +154,8 @@ export const getSolutionService = withDatabaseOperation(async function (
 ) {
     const results = (await client.query(
         'select \n' +
-        '        a.id, \n' +
-        '        a.correct\n' +
+        '        a.id as "answerId", \n' +
+        '        a.correct as "correct"\n' +
         '    from answer a \n' +
         '    join question q\n' +
         '        on a.question_id = q.id\n' +

@@ -46,7 +46,6 @@ export class AppRouter extends Server {
         const method = req.method.toUpperCase();
         const {pathname, query} = parse(req.url, true);
         const body = await this.getRequestBody(req);
-        console.log(body);
 
         console.log(`Received request ${method} ${pathname} with 
             - query: ${JSON.stringify(query)}
@@ -75,7 +74,13 @@ export class AppRouter extends Server {
             if (pathParams === null) {
                 continue;
             }
-            const params = {...query, ...body,...pathParams, authorization: this.getIdFromAuthorization(req)};
+
+            const params = {
+                ...query,
+                ...body,
+                ...pathParams,
+                authorization: this.getIdFromAuthorization(req)
+            };
             handler(req, res, params);
             return;
         }

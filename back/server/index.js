@@ -10,7 +10,7 @@ import {
     getIncorrectlySolvedQuestion, getSolution,
     getUnsolvedQuestionByCategory
 } from "./controllers/exerciseController.js";
-import {addQuestionSolution} from "./controllers/userController.js";
+import {addQuestionSolution, createQuestionnaire} from "./controllers/userController.js";
 
 const app = new AppRouter();
 
@@ -26,5 +26,6 @@ app.get('/api/v1/exercises/incorrectly-solved', getIncorrectlySolvedQuestion);
 app.get('/api/v1/exercises/:id/solution', getSolution);
 
 app.post('/api/v1/users/:id/solutions', addQuestionSolution);
+app.post('/api/v1/users/:id/questionnaire', createQuestionnaire);
 
 app.listen(process.env.PORT);

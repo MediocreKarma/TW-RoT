@@ -4,11 +4,8 @@ drop function generate_questionnaire(int);
 -- TODO: PE AICEA CEVA
 create or replace function generate_questionnaire(u_id int) 
 returns table(
-    question_id int,
-    question_text varchar(4096),
-    question_image varchar(512),
-    answer_id int,
-    answer_description varchar(2048)
+    questionnaire_id int,
+    generated_time timestamp
 )
 as $$
 declare
@@ -20,10 +17,12 @@ declare
     extra_questions int;
     qc_id int;
     has_generated_questionnaire int;
+    gen_time timestamp;
 begin
-    select gq.id into questionnaire_id from generated_questionnaire gq where gq.user_id = u_id;
+    select gq.id, gq.generated_time into questionnaire_id, gen_time from generated_questionnaire gq where gq.user_id = u_id;
     if found then
-        return select ;
+        -- TODO: DELETE IF FOUND AND TIME EXPIRED, CREATE NEW ONE
+        return query select questionnaire_id, gen_time;
     end if;
 
     -- create a new questionnaire entry
@@ -68,13 +67,15 @@ begin
         end loop;
     end loop;
 
+    gen_time := current_timestamp;
+
     update generated_questionnaire
         set 
-            generated_time = current_timestamp
+            generated_time = gen_time
         where 
             id = questionnaire_id;
 
-    return questionnaire_id;
+    return query select questionnaire_id, gen_time;
 
 end; $$ language plpgsql;
 
@@ -100,7 +101,11 @@ BEGIN
     
 end; $$ language PLPGSQL;
 
-create or replace function register_answer(u_id integer, q_id integer, answer_bitset integer) returns int 
+create or replace function register_answer(u_id integer, q_id integer, answer_bitset integer) 
+returns table (
+    answer_id int,
+    correct bool
+)
 as $$
 DECLARE
     correct_bitset int;
@@ -110,7 +115,7 @@ BEGIN
     correctness := (answer_bitset = correct_bitset);
     insert into answered_question (user_id, question_id, answered_correctly) values (u_id, q_id, correctness)
         on conflict (user_id, question_id) do update set answered_correctly = excluded.answered_correctly;
-    return correct_bitset;
+    return query select a.id, a.correct from answer a join question q on a.question_id = q.id where q.id = q_id;
 end; $$ language PLPGSQL;
 
 create or replace function finish_questionnaire(user_id int) returns int
@@ -145,3 +150,4 @@ begin
 
     return score;
 end; $$ language plpgsql;
+
