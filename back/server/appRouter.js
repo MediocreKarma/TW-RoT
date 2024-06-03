@@ -42,9 +42,16 @@ export class AppRouter extends Server {
         this.routes.get(method).set(route, handler);
     }
 
-     requestHandler(req, res) {
+     async requestHandler(req, res) {
         const method = req.method.toUpperCase();
         const {pathname, query} = parse(req.url, true);
+        const body = await this.getRequestBody(req);
+        console.log(body);
+
+        console.log(`Received request ${method} ${pathname} with 
+            - query: ${JSON.stringify(query)}
+            - body: ${JSON.stringify(body)}`
+        );
 
         if (method === 'OPTIONS') {
             sendEmptyResponse(res, 204);
@@ -68,7 +75,7 @@ export class AppRouter extends Server {
             if (pathParams === null) {
                 continue;
             }
-            const params = {...query, ...pathParams, authorization: this.getIdFromAuthorization(req)};
+            const params = {...query, ...body,...pathParams, authorization: this.getIdFromAuthorization(req)};
             handler(req, res, params);
             return;
         }
@@ -108,5 +115,21 @@ export class AppRouter extends Server {
             return null;
         }
         return authHeader.split(' ')[1];
+    }
+
+    getRequestBody(req){
+        return new Promise((resolve, reject) => {
+            let body = '';
+            req.on('data', (chunk) => {
+                body += chunk.toString();
+            });
+
+            req.on('end', () => {
+                resolve(JSON.parse(body || '{}'));
+            });
+            req.on('error', (err) => {
+                reject(err);
+            });
+        });
     }
 }

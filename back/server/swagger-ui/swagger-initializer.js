@@ -1,20 +1,27 @@
 window.onload = function() {
-  //<editor-fold desc="Changeable Configuration Block">
+    //<editor-fold desc="Changeable Configuration Block">
 
-  // the following lines will be replaced by docker/configurator, when it runs in a docker-container
-  window.ui = SwaggerUIBundle({
-    url: "http://localhost:12734/swagger-ui/openApi.yml",
-    dom_id: '#swagger-ui',
-    deepLinking: true,
-    presets: [
-      SwaggerUIBundle.presets.apis,
-      SwaggerUIStandalonePreset
-    ],
-    plugins: [
-      SwaggerUIBundle.plugins.DownloadUrl
-    ],
-    layout: "StandaloneLayout"
-  });
+    // the following lines will be replaced by docker/configurator, when it runs in a docker-container
+    window.ui = SwaggerUIBundle({
+        url: "http://localhost:12734/swagger-ui/openApi.yml",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+        ],
+        plugins: [
+            SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout",
+        requestInterceptor: (request) => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                request.headers['Authorization'] = `Bearer ${token}`;
+            }
+            return request;
+        }
+    });
 
-  //</editor-fold>
+    //</editor-fold>
 };

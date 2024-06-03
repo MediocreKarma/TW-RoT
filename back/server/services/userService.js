@@ -18,19 +18,24 @@ export const addQuestionSolutionService = withDatabaseOperation(async function (
 
     const {questionId, answers} = params;
 
-    const correctAnswers = (await getSolutionService(questionId)).body;
-    const answerMapping = new Map(
-        correctAnswers.map(answer => [answer['id'], answer['correct']])
-    );
+    console.log(params);
 
-    const correct = answers.reduce(
-        (acc, answer) => acc && answerMapping.get(answer['answerId']) === answer['selected'],
-        true
-    );
+    [...answers].sort((a, b) => a['answerId'] - b['answerId']);
 
-    // TODO: STOPPED HERE
+    let bitset = 0;
+    for (const answer of answers) {
+        bitset = bitset * 2 + (answer['selected'] ? 1  : 0);
+    }
+
     await client.query(
-        ''
-    )
+        'select * from register_answer($1::int, $2::int, $3::int)',
+        [userId, questionId, bitset],
+    );
 
+    return new ServiceResponse(200, null, 'Successfully registered answer');
+})
+
+await addQuestionSolutionService({
+    authorization: 1, id: 1, questionId: 1,
+    answers: [{}]
 })
