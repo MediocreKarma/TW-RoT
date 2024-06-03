@@ -28,6 +28,7 @@ app.get('/api/v1/exercises/:id/solution', getSolution);
 
 app.post('/api/v1/auth/register', register);
 app.post('/api/v1/auth/login', login);
+
 app.post('/api/v1/users/:id/solutions', addQuestionSolution);
 app.post('/api/v1/users/:id/questionnaire', createQuestionnaire);
 
