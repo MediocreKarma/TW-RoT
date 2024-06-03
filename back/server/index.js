@@ -11,6 +11,7 @@ import {
     getUnsolvedQuestionByCategory
 } from "./controllers/exerciseController.js";
 import {addQuestionSolution, createQuestionnaire} from "./controllers/userController.js";
+import {register} from "./controllers/authController.js";
 
 const app = new AppRouter();
 
@@ -25,6 +26,7 @@ app.get('/api/v1/exercises/unsolved/:id', getUnsolvedQuestionByCategory);
 app.get('/api/v1/exercises/incorrectly-solved', getIncorrectlySolvedQuestion);
 app.get('/api/v1/exercises/:id/solution', getSolution);
 
+app.post('/api/v1/auth/register', register);
 app.post('/api/v1/users/:id/solutions', addQuestionSolution);
 app.post('/api/v1/users/:id/questionnaire', createQuestionnaire);
 

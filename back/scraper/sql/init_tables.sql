@@ -62,7 +62,7 @@ create table sign_to_category_relation (
 
 create table user_account (
     id serial primary key,
-    username varchar(256),
+    username varchar(256) unique not null,
     email varchar(256) unique not null,
     hash varchar(128),
     salt varchar(128),

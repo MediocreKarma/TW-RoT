@@ -37,7 +37,7 @@ export const addQuestionSolutionService = withDatabaseOperation(async function (
 export const createUserQuestionnaireService = withDatabaseOperation(async function (
     client, userId
 ) {
-    const thirtyMinutesInMs = 30 * 60 * 1000;
+     const thirtyMinutesInMs = 30 * 60 * 1000;
 
 
     return await generateQuestionnaire(userId);
