@@ -452,6 +452,68 @@ paths:
                     - answerId
                     - correct
 
+  /users/{id}/questionnaire:
+    post:
+      summary: Create questionnaire for a user
+      tags: [Exercises]
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  generatedQuestionId:
+                    type: integer
+                  questionText:
+                    type: string
+                  questionImage:
+                    type: string
+                  answers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        description:
+                          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    generatedQuestionId:
+                      type: integer
+                    questionText:
+                      type: string
+                    questionImage:
+                      type: string
+                    answers:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          description:
+                            type: string
+
 components:
 
   securitySchemes:

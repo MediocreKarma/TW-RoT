@@ -33,26 +33,32 @@ export const addQuestionSolutionService = withDatabaseOperation(async function (
 });
 
 export const createUserQuestionnaireService = withDatabaseOperation(async function (
-    client, userId
+    client, params
 ) {
-     const thirtyMinutesInMs = 30 * 60 * 1000;
-     const questionnaireObj = (await generateQuestionnaireService(userId)).body;
+    const userId = params['id'];
+    if (userId !== params['authorization']) {
+        return new ServiceResponse(403, null, 'Unauthorized');
+    }
 
-     if (questionnaireObj['new']) {
-         setTimeout(() => {
-             client.query('perform finish_questionnaire($1::int)', [userId]);
-         }, thirtyMinutesInMs);
-     }
+    const thirtyMinutesInMs = 30 * 60 * 1000;
+    const questionnaireObj = (await generateQuestionnaireService(userId)).body;
+    if (questionnaireObj['new']) {
+        setTimeout(() => {
+            client.query('perform finish_questionnaire($1::int)', [userId]);}, thirtyMinutesInMs);
+    }
+    const result = (await client.query(
+        `select 
+            generated_question_id as "generatedQuestionId",
+            question_text as "questionText",
+            question_image as "questionImage",
+            answers as "answers"
+        from get_questionnaire_by_id($1::int)`,
+        [questionnaireObj['id']]
+    )).rows;
 
-     const result = (await client.query(
-         `select 
-             generated_question_id as "generatedQuestionId",
-             question_text as "questionText",
-             question_image as "questionImage",
-             answers as "answers"
-         from get_questionnaire_by_id($1::int)`,
-         [questionnaireObj['id']]
-     )).rows;
+    console.log(JSON.stringify(result.slice(0, 2), null, 2));
 
-     return new ServiceResponse(200, result, 'Successfully created questionnaire');
+    return new ServiceResponse(200, result, 'Successfully created questionnaire');
 });
+
+await createUserQuestionnaireService({id: 1, authorization: 1});
