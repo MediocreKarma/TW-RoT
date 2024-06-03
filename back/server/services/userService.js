@@ -18,9 +18,7 @@ export const addQuestionSolutionService = withDatabaseOperation(async function (
 
     const {questionId, answers} = params;
 
-    console.log(params);
-
-    [...answers].sort((a, b) => a['answerId'] - b['answerId']);
+    answers.sort((a, b) => a['answerId'] - b['answerId']);
 
     let bitset = 0;
     for (const answer of answers) {
@@ -33,9 +31,4 @@ export const addQuestionSolutionService = withDatabaseOperation(async function (
     );
 
     return new ServiceResponse(200, null, 'Successfully registered answer');
-})
-
-await addQuestionSolutionService({
-    authorization: 1, id: 1, questionId: 1,
-    answers: [{}]
 })
