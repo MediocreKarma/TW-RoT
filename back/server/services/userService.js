@@ -56,9 +56,5 @@ export const createUserQuestionnaireService = withDatabaseOperation(async functi
         [questionnaireObj['id']]
     )).rows;
 
-    console.log(JSON.stringify(result.slice(0, 2), null, 2));
-
     return new ServiceResponse(200, result, 'Successfully created questionnaire');
 });
-
-await createUserQuestionnaireService({id: 1, authorization: 1});
