@@ -20,6 +20,26 @@ const fetchUnsolved = async () => {
     return data;
 };
 
+const fetchWrong = async () => {
+    const bearerToken = localStorage.getItem('token');
+    let headers = {};
+    if (bearerToken) {
+        headers = { Authorization: 'Bearer ' + bearerToken };
+    }
+
+    const id = new URLSearchParams(document.location.search).get('category');
+    const response = await fetch(`${API_URL}/exercises/incorrectly-solved`, {
+        method: 'GET',
+        headers: headers,
+    });
+
+    if (response.status === 404) {
+        window.location.href = './'; // extreme measures
+    }
+    const data = await response.json();
+    return data;
+};
+
 const submitAnswer = async (data) => {
     const bearerToken = localStorage.getItem('token');
     let headers = {};
@@ -93,10 +113,12 @@ const populateQuestion = async () => {
     let data = null;
     if (type === 'unsolved') {
         data = await fetchUnsolved();
+    } else if (type === 'incorrect') {
+        data = await fetchWrong();
     }
 
     if (!data) {
-        return;
+        window.location.href = './exerseaza.html'; // extreme measures
     }
 
     console.log(data);

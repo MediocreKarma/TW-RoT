@@ -58,6 +58,12 @@ const renderCategory = (categoryData) => {
     return anchor;
 };
 
+const setIncorrectData = async (wrong) => {
+    document
+        .getElementById('incorrectly-solved')
+        .querySelector('.question-category__value').innerText = wrong;
+};
+
 const renderCategories = async () => {
     const container = document.getElementById('categories');
     showLoading(container);
@@ -69,6 +75,8 @@ const renderCategories = async () => {
     categoriesData.categories.forEach((category) => {
         container.appendChild(renderCategory(category));
     });
+
+    setIncorrectData(categoriesData.wrong);
 };
 
 window.addEventListener('load', renderCategories);
