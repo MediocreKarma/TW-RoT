@@ -148,7 +148,6 @@ BEGIN
     select array(select correct from answer where question_id = q_id order by id asc) into answers_correctness;
     arr_length = array_length(answers_correctness, 1);
     for i in 1..arr_length LOOP
-        raise notice '%', answers_correctness[i];
         correct_bitset := correct_bitset * 2 + (answers_correctness[i])::int;
     end loop;
 
@@ -167,7 +166,6 @@ DECLARE
     correctness bool := false;
 BEGIN
     correct_bitset := get_answer_bitset(q_id);
-    raise notice '%', correct_bitset;
     correctness := (answer_bitset = correct_bitset);
     insert into answered_question (user_id, question_id, answered_correctly) values (u_id, q_id, correctness)
         on conflict (user_id, question_id) do update set answered_correctly = excluded.answered_correctly;
