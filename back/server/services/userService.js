@@ -28,6 +28,7 @@ export const addQuestionSolutionService = withDatabaseOperation(async function (
 
     const {questionId, answers} = params;
     const bitset = calculateBitsetOfAnswers(answers);
+    console.log(bitset);
 
     const correctAnswers = (await client.query(
         'select answer_id as "answerId", correct as "correct" from register_answer($1::int, $2::int, $3::int)',

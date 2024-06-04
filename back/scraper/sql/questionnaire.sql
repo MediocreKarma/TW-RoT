@@ -145,13 +145,11 @@ declare
     i int;
 BEGIN
 
-    select array(select correct from answer where question_id = q_id order by id) into answers_correctness;
+    select array(select correct from answer where question_id = q_id order by id asc) into answers_correctness;
     arr_length = array_length(answers_correctness, 1);
-
     for i in 1..arr_length LOOP
-        if answers_correctness[i] then
-            correct_bitset := correct_bitset | (1 << (i - 1));
-        end if;
+        raise notice '%', answers_correctness[i];
+        correct_bitset := correct_bitset * 2 + (answers_correctness[i])::int;
     end loop;
 
     return correct_bitset;
@@ -169,11 +167,14 @@ DECLARE
     correctness bool := false;
 BEGIN
     correct_bitset := get_answer_bitset(q_id);
+    raise notice '%', correct_bitset;
     correctness := (answer_bitset = correct_bitset);
     insert into answered_question (user_id, question_id, answered_correctly) values (u_id, q_id, correctness)
         on conflict (user_id, question_id) do update set answered_correctly = excluded.answered_correctly;
     return query select a.id, a.correct from answer a join question q on a.question_id = q.id where q.id = q_id;
 end; $$ language PLPGSQL;
+
+select register_answer(1, 2, 2);
 
 create or replace function finish_questionnaire(user_id int) returns int
 as $$
