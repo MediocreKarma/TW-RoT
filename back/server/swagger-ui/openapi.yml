@@ -455,7 +455,7 @@ paths:
   /users/{id}/questionnaire:
     post:
       summary: Create questionnaire for a user
-      tags: [Exercises]
+      tags: [Questionnaire]
       security:
         - bearerAuth: [ ]
       parameters:
@@ -489,6 +489,146 @@ paths:
                             type: integer
                           description:
                             type: string
+
+    get:
+      summary: Get questionnaire for a user
+      tags: [Questionnaire]
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questionnaireId:
+                    type: integer
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        generatedQuestionId:
+                          type: integer
+                        questionText:
+                          type: string
+                        questionImage:
+                          type: string
+                        answers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              description:
+                                type: string
+
+  /questionnaires/{questionnaireId}/question/{gqId}/solution:
+    post:
+      parameters:
+        - name: questionnaireId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The Id of questionnaire
+        - name: gqId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The Id of the question
+      tags: [Questionnaire]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                questionId:
+                  type: integer
+                  description: The ID of the question
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      answerId:
+                        type: integer
+                        description: The ID of the answer
+                      selected:
+                        type: boolean
+                        description: Whether the answer was selected
+              required:
+                - answers
+              example:
+                answers:
+                  - answerId: 1
+                    selected: true
+                  - answerId: 2
+                    selected: false
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Solutions submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Solutions submitted successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: INVALID_INPUT
+                  errorMessage:
+                    type: string
+                    example: Invalid input data
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: UNAUTHORIZED
+                  errorMessage:
+                    type: string
+                    example: Authorization required
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  errorMessage:
+                    type: string
+                    example: An error occurred while processing the request
 
 components:
 

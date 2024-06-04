@@ -1,6 +1,6 @@
 import {
     addQuestionSolutionService,
-    createUserQuestionnaireService
+    createUserQuestionnaireService, getQuestionnaireService, submitQuestionnaireSolutionService
 } from "../services/userService.js";
 import {sendJsonResponse} from "../response.js";
 
@@ -9,7 +9,17 @@ export async function addQuestionSolution(req, res, params) {
     sendJsonResponse(res, serviceResponse.status, serviceResponse.body, serviceResponse.message);
 }
 
+export async function getQuestionnaire(req, res, params) {
+    const serviceResponse = await getQuestionnaireService(params);
+    sendJsonResponse(res, serviceResponse.status, serviceResponse.body, serviceResponse.message);
+}
+
 export async function createQuestionnaire(req, res, params) {
     const serviceResponse = await createUserQuestionnaireService(params);
+    sendJsonResponse(res, serviceResponse.status, serviceResponse.body, serviceResponse.message);
+}
+
+export async function submitQuestionnaireSolution(req, res, params) {
+    const serviceResponse = await submitQuestionnaireSolutionService(params);
     sendJsonResponse(res, serviceResponse.status, serviceResponse.body, serviceResponse.message);
 }
