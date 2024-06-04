@@ -145,13 +145,10 @@ declare
     i int;
 BEGIN
 
-    select array(select correct from answer where question_id = q_id order by id) into answers_correctness;
+    select array(select correct from answer where question_id = q_id order by id asc) into answers_correctness;
     arr_length = array_length(answers_correctness, 1);
-
     for i in 1..arr_length LOOP
-        if answers_correctness[i] then
-            correct_bitset := correct_bitset | (1 << (i - 1));
-        end if;
+        correct_bitset := correct_bitset * 2 + (answers_correctness[i])::int;
     end loop;
 
     return correct_bitset;
@@ -174,6 +171,8 @@ BEGIN
         on conflict (user_id, question_id) do update set answered_correctly = excluded.answered_correctly;
     return query select a.id, a.correct from answer a join question q on a.question_id = q.id where q.id = q_id;
 end; $$ language PLPGSQL;
+
+select register_answer(1, 2, 2);
 
 create or replace function finish_questionnaire(user_id int) returns int
 as $$
@@ -210,3 +209,37 @@ begin
     return score;
 end; $$ language plpgsql;
 
+create or replace function submit_questionnaire_solution(u_id int, qstr_id int, gq_id int, answer_bitset int) 
+returns table (
+    answer_id int,
+    correct bool
+)
+as $$
+DECLARE
+    correct_bitset int;
+    correctness bool := false;
+    q_id int;
+    actual_qstr_id int;
+    actual_user_id int;
+BEGIN
+    select gq.question_id, gq.questionnaire_id, gq.user_id 
+        into q_id, actual_qstr_id, actual_user_id 
+        from generated_question gq where gq.id = gq_id; 
+
+    if actual_qstr_id != qstr_id THEN
+        raise exception '1:Invalid questionnaire id';
+    end if;
+    if actual_user_id != u_id THEN
+        raise exception '2:Wrong user id';
+    end if;
+
+    correct_bitset := get_answer_bitset(q_id);
+    correctness := (answer_bitset = correct_bitset);
+    update generated_question
+        set 
+            sent = true,
+            selected_fields = bitset,
+            solved = correctness 
+        where id = gq_id;
+    return query select a.id, a.correct from answer a join question q on a.question_id = q.id where q.id = q_id;
+end; $$ language PLPGSQL;
