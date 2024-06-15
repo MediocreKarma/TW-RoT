@@ -1,4 +1,4 @@
-import { WebServer } from "./webServer.js";
+import { WebServer } from './webServer.js';
 
 const server = new WebServer();
 

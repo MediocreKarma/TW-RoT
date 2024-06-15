@@ -1,20 +1,39 @@
 import { Server } from 'http';
 import { zip } from '../common/utils.js';
-import { parse } from "node:url";
-import { sendEmptyResponse, sendJsonResponse, sendFileResponse } from "../common/response.js";
-import { ErrorCodes } from "../common/constants.js";
+import { parse } from 'node:url';
+import {
+    sendEmptyResponse,
+    sendJsonResponse,
+    sendFileResponse,
+} from '../common/response.js';
+import { ErrorCodes } from '../common/constants.js';
 import fs from 'fs';
-
+import path from 'path';
 
 export class WebServer extends Server {
     constructor() {
         super((req, res) => this.requestHandler(req, res));
-        this.parametrizedRoutes = new Map();
+        this.fixedRoutes = new Map();
+        this.dynamicRoutes = new Map();
         this.wildcardRoutes = new Map();
     }
 
-    addParametrizedRoute(route, redirect) {
-        this.parametrizedRoutes.set(route, redirect);
+    addFixedRoute(route, redirect) {
+        if (route.includes('*')) {
+            throw new Error(
+                'Fixed route cannot contain wildcard character (*)'
+            );
+        }
+        if (route.includes(':')) {
+            throw new Error(
+                'Fixed route cannot contain dynamic route character (:)'
+            );
+        }
+        this.fixedRoutes.set(route, redirect);
+    }
+
+    addDynamicRoute(route, redirect) {
+        this.dynamicRoutes.set(route, redirect);
     }
 
     addWildcardRoute(route, redirectPrefix) {
@@ -40,18 +59,25 @@ export class WebServer extends Server {
             return;
         }
 
-        for (const [route, filepath] of this.parametrizedRoutes) {
-            const pathParams = this.matchParametrizedRoute(
-                route,
-                pathname,
-            );
-            if (pathParams === null) {
+        for (const [route, filepath] of this.fixedRoutes) {
+            if (!this.matchFixedRoute(route, pathname)) {
                 continue;
             }
 
-            // aici adaugi tu cum consideri
+            if (this.serveFile(filepath, res)) {
+                return;
+            }
 
-            handler(req, res, params);
+            return;
+        }
+
+        for (const [route, filepath] of this.dynamicRoutes) {
+            const pathParams = this.matchDynamicRoute(route, pathname);
+            if (pathParams === null) {
+                continue;
+            }
+            // TODO
+            // handler(req, res, params);
             return;
         }
 
@@ -72,7 +98,11 @@ export class WebServer extends Server {
         });
     }
 
-    matchParametrizedRoute(route, url) {
+    matchFixedRoute(route, url) {
+        return url.startsWith(route);
+    }
+
+    matchDynamicRoute(route, url) {
         const splitRoute = route.split('/');
         const splitUrl = url.split('/');
 
@@ -94,7 +124,7 @@ export class WebServer extends Server {
     matchWildcardRoute(route, url) {
         const splitRoute = route.split('/');
         const splitUrl = url.split('/');
-        
+
         // disallow any wildcard path containing '..'
         if (splitUrl.includes('..')) {
             return false;
@@ -121,25 +151,65 @@ export class WebServer extends Server {
     getContentType(filename) {
         const extension = filename.substring(filename.lastIndexOf('.') + 1);
         switch (extension) {
-            case 'css': return 'text/css';
-            case 'js': return 'application/javascript';
-            case 'json': return 'application/json';
-            case 'yml': return 'application/x-yaml';
-            case 'html': return 'text/html';
-            case 'jpg': 
-            case 'jpeg': return 'image/jpeg';
-            case 'png': return 'image/png';
-            default: return 'text/plain';
+            case 'css':
+                return 'text/css';
+            case 'js':
+                return 'application/javascript';
+            case 'json':
+                return 'application/json';
+            case 'yml':
+                return 'application/x-yaml';
+            case 'html':
+                return 'text/html';
+            case 'jpg':
+                return 'image/jpeg';
+            case 'jpeg':
+                return 'image/jpeg';
+            case 'png':
+                return 'image/png';
+            default:
+                return 'text/plain';
         }
     }
 
     serveFile(filepath, res) {
-        console.log(filepath);
+        const hasExtension = (filePath) => {
+            const normalizedPath = path.normalize(filePath);
+            const extension = path.extname(normalizedPath);
+            return extension !== '';
+        };
+
         try {
-            const contentType = this.getContentType(filepath);
-            const file = fs.readFileSync(filepath);
-            sendFileResponse(res, 200, file, contentType);
-            return true;
+            // if filePath has no extension, add HTML extension
+            // TODO: figure out whether this introduces a vulnerability
+            const sanitizedFilepath = filepath.replace(/\/+$/, '');
+
+            const variants = [
+                sanitizedFilepath,
+                ...(!hasExtension(sanitizedFilepath) &&
+                sanitizedFilepath
+                    .substring(sanitizedFilepath.lastIndexOf('/') + 1)
+                    .toLowerCase() !== 'index'
+                    ? [
+                          sanitizedFilepath + '.html',
+                          sanitizedFilepath + '/index.html',
+                      ]
+                    : []),
+            ];
+
+            for (let i = 0; i < variants.length; ++i) {
+                const variant = variants[i];
+                try {
+                    const file = fs.readFileSync(variant);
+                    const contentType = this.getContentType(variant);
+                    sendFileResponse(res, 200, file, contentType);
+                    return true;
+                } catch (err) {
+                    if (i === variants.length - 1) {
+                        throw err;
+                    }
+                }
+            }
         } catch (err) {
             console.log(err.message);
             return false;
