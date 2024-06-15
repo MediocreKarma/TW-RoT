@@ -20,10 +20,12 @@ export function sendEmptyResponse(response, status, message = '') {
     response.end();
 }
 
-export function sendFileResponse(response, status, file, contentType, message = '') {
+export function sendFileResponse(response, status, file, contentType = '', message = '') {
     setCorsHeaders(response);
-    response.writeHead(status, message, {
-        'Content-Type': contentType,
-    });
+    if (contentType !== '') {
+        response.writeHead(status, message, {
+            'Content-Type': contentType,
+        });
+    }
     response.end(file);
 }

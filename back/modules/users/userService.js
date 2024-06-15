@@ -1,6 +1,6 @@
-import {withDatabaseOperation} from "../db.js";
-import {ServiceResponse} from "../models/serviceResponse.js";
-import {generateQuestionnaireService} from "./exerciseServices.js";
+import {withDatabaseOperation} from "../_common/db.js";
+import {ServiceResponse} from "../_common/models/serviceResponse.js";
+import {generateQuestionnaireService} from "../exercises/exerciseServices.js";
 
 function calculateBitsetOfAnswers(answers) {
     answers.sort((a, b) => a['answerId'] - b['answerId']);

@@ -2,8 +2,8 @@ import {
     getAllExerciseCategoriesService,
     getIncorrectlySolvedQuestionService, getSolutionService,
     getUnsolvedQuestionService,
-} from "../services/exerciseServices.js";
-import {sendJsonResponse} from "../response.js";
+} from "./exerciseServices.js";
+import {sendJsonResponse} from "../../common/response.js";
 
 export async function getAllExerciseCategories(req, res, params) {
     const serverResponse = await getAllExerciseCategoriesService(params.authorization ?? 0);

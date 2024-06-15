@@ -1,25 +1,24 @@
 import {Server} from 'http';
-import {zip} from './utils.js';
+import {zip} from '../../common/utils.js';
 import {parse} from "node:url";
-import {sendEmptyResponse, sendJsonResponse} from "./response.js";
-import {ErrorCodes} from "./constants.js";
-import {serveDocFile} from "./swagger-ui/docsService.js";
+import {sendEmptyResponse, sendJsonResponse} from "../../common/response.js";
+import {ErrorCodes} from "../../common/constants.js";
 
 export const Methods = Object.freeze({
-    GET: 'GET',
-    POST: 'POST',
-    PUT: 'PUT',
+    GET:    'GET',
+    POST:   'POST',
+    PUT:    'PUT',
     DELETE: 'DELETE',
-    PATCH: 'PATCH',
+    PATCH:  'PATCH',
 });
 
 export class AppRouter extends Server {
     routes = new Map([
-        [Methods.GET, new Map()],
-        [Methods.POST, new Map()],
-        [Methods.PUT, new Map()],
+        [Methods.GET,    new Map()],
+        [Methods.POST,   new Map()],
+        [Methods.PUT,    new Map()],
         [Methods.DELETE, new Map()],
-        [Methods.PATCH, new Map()],
+        [Methods.PATCH,  new Map()],
     ]);
 
     constructor() {
@@ -81,10 +80,6 @@ export class AppRouter extends Server {
                 authorization: this.getIdFromAuthorization(req)
             };
             handler(req, res, params);
-            return;
-        }
-
-        if (serveDocFile(req, res)) {
             return;
         }
 

@@ -1,5 +1,5 @@
-import { withDatabaseOperation } from '../db.js';
-import { ServiceResponse } from '../models/serviceResponse.js';
+import { withDatabaseOperation } from '../_common/db.js';
+import { ServiceResponse } from '../_common/models/serviceResponse.js';
 
 export const getAllChaptersService = withDatabaseOperation(async function (client) {
     const chapters = (

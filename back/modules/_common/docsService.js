@@ -1,4 +1,4 @@
-import {sendFileResponse} from "../response.js";
+import {sendFileResponse} from "../../modules/common/response.js";
 import * as fs from "node:fs";
 
 

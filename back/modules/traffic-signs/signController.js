@@ -1,5 +1,5 @@
-import {getAllSignCategoriesService, getSignCategoryService} from "../services/signServices.js";
-import {sendJsonResponse} from "../response.js";
+import {getAllSignCategoriesService, getSignCategoryService} from "./signServices.js";
+import {sendJsonResponse} from "../../common/response.js";
 
 export async function getAllSignCategories(req, res) {
     const serviceResponse = await getAllSignCategoriesService();

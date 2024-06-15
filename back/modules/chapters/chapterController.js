@@ -1,8 +1,8 @@
 import {
     getAllChaptersService,
     getChapterContentService,
-} from '../services/chapterServices.js';
-import { sendJsonResponse } from '../response.js';
+} from './chapterServices.js';
+import { sendJsonResponse } from '../../common/response.js';
 
 export async function getAllChapters(req, res) {
     const serviceResponse = await getAllChaptersService();

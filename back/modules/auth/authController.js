@@ -1,5 +1,5 @@
-import {loginService, registerService} from "../services/authService.js";
-import {sendJsonResponse} from "../response.js";
+import {loginService, registerService} from "./authService.js";
+import {sendJsonResponse} from "../../common/response.js";
 
 export async function register(req, res, params) {
     const serverResponse = await registerService(params);

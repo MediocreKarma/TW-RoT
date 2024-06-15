@@ -1,8 +1,8 @@
 import {
     addQuestionSolutionService,
     createUserQuestionnaireService, getQuestionnaireService, submitQuestionnaireSolutionService
-} from "../services/userService.js";
-import {sendJsonResponse} from "../response.js";
+} from "./userService.js";
+import {sendJsonResponse} from "../../common/response.js";
 
 export async function addQuestionSolution(req, res, params) {
     const serviceResponse = await addQuestionSolutionService(params);
