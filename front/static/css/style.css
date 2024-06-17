@@ -134,9 +134,7 @@ body[data-theme=dark] {
   float: right;
   padding: 28px 20px;
   position: relative;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  user-select: none;
   display: none;
 }
 .header__icon .navicon {
@@ -304,7 +302,6 @@ body[data-theme=dark] {
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: -moz-max-content;
   max-width: max-content;
   margin: 1rem 0;
   padding-right: 1rem;
@@ -405,6 +402,9 @@ body[data-theme=dark] {
 }
 .welcome-container__right {
   background-image: url("../img/trafic.jpg");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   background-size: cover;
 }
 
@@ -458,8 +458,7 @@ body[data-theme=dark] {
 }
 .features-container .features-wrapper .feature-card img {
   box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   aspect-ratio: 16/9;
   max-width: 100%;
 }
@@ -516,7 +515,6 @@ body[data-theme=dark] {
 .about__info-cards {
   display: flex;
   gap: 1rem;
-  height: -moz-fit-content;
   height: fit-content;
   justify-content: center;
 }
@@ -604,6 +602,26 @@ body[data-theme=dark] {
 .help__item__answer {
   padding: 1rem;
   background-color: #b66d24;
+}
+
+.not-found {
+  padding: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.not-found__info {
+  text-align: center;
+}
+.not-found__info .button {
+  background-color: #ea9a4b;
+  color: #fff;
+}
+.not-found__info .button:hover {
+  background-color: #f0c395;
+}
+.not-found__info h1 {
+  font-size: 6rem;
 }
 
 .login-container, .signup-container {
@@ -729,7 +747,6 @@ body[data-theme=dark] {
   }
 }
 .admin-dashboard button {
-  width: -moz-max-content;
   width: max-content;
   align-self: center;
 }
@@ -770,7 +787,6 @@ body[data-theme=dark] {
   border-radius: 3px;
   box-sizing: border-box;
   background-color: #6353aa;
-  width: -moz-max-content;
   width: max-content;
   align-self: center;
   display: flex;
@@ -1127,7 +1143,6 @@ body[data-theme=dark] {
   }
 }
 .cod-rutier .chapters-container .button {
-  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -1422,9 +1437,7 @@ body[data-theme=dark] {
   pointer-events: none;
 }
 .comparison__select select {
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+  appearance: none;
   border-radius: 3px;
   display: block;
   width: 100%;
@@ -2011,4 +2024,6 @@ button:hover {
   padding-top: 3.5rem;
   display: flex;
   flex-direction: column;
-}/*# sourceMappingURL=style.css.map */
+}
+
+/*# sourceMappingURL=style.css.map */

@@ -1,16 +1,4 @@
-const API_URL = 'http://localhost:12734/api/v1';
-
-const fetchChapter = async (id) => {
-    const response = await fetch(`${API_URL}/chapters/${id}`);
-    const data = await response.json();
-    return data;
-};
-
-const fetchChapters = async () => {
-    const response = await fetch(`${API_URL}/chapters`);
-    const data = await response.json();
-    return data;
-};
+import { fetchChapter, fetchChapters } from './requests.js';
 
 const showLoading = (domNode) => {
     domNode.innerText = 'Se încarcă...';
@@ -23,12 +11,14 @@ const populateChapterContent = async (chapterId) => {
     showLoading(titleContainer);
     showLoading(contentContainer);
 
-    const data = await fetchChapter(chapterId);
-    titleContainer.innerText = `${data.isaddendum ? 'Anexa ' : 'Capitolul '} ${
-        data.number
-    }: ${data.title}`;
-
-    contentContainer.innerHTML = data.content;
+    try {
+        const data = await fetchChapter(chapterId);
+        console.log(data);
+        titleContainer.innerText = `${
+            data.isaddendum ? 'Anexa ' : 'Capitolul '
+        } ${data.number}: ${data.title}`;
+        contentContainer.innerHTML = data.content;
+    } catch (e) {}
 };
 
 const populateChapterSidebar = async (currentId) => {
@@ -36,6 +26,8 @@ const populateChapterSidebar = async (currentId) => {
     showLoading(sidebar);
 
     const data = await fetchChapters();
+
+    sidebar.innerText = '';
 
     data.forEach((chapter) => {
         const a = document.createElement('a');
@@ -55,7 +47,11 @@ const populateChapterSidebar = async (currentId) => {
 };
 
 window.addEventListener('load', async () => {
-    const chapterId = new URLSearchParams(document.location.search).get('id');
+    // const chapterId = new URLSearchParams(document.location.search).get('id');
+    const chapterId = document.location.pathname
+        .replace(/\/+$/, '')
+        .split('/')
+        .pop();
 
     await populateChapterContent(chapterId);
     await populateChapterSidebar(parseInt(chapterId));

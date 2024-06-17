@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:12734/api/v1';
+import { fetchChapter, fetchChapters } from './requests.js';
 
 const renderChapters = (chapterContainer, chapters) => {
     if (!Array.isArray(chapters)) {
@@ -6,7 +6,7 @@ const renderChapters = (chapterContainer, chapters) => {
     }
     chapters.forEach((chapter) => {
         const aElement = document.createElement('a');
-        aElement.href = `capitol.html?id=${chapter.id}`;
+        aElement.href = `/cod-rutier/capitol/${chapter.id}`;
 
         const divCard = document.createElement('div');
         divCard.className = `chapter-card ${
@@ -41,8 +41,7 @@ window.addEventListener('load', async () => {
     const chapterContainer = document.getElementById('chapters-container');
 
     try {
-        const chapterRequest = await fetch(`${API_URL}/chapters`);
-        const chapters = await chapterRequest.json();
+        const chapters = await fetchChapters();
 
         renderChapters(chapterContainer, chapters);
     } catch (e) {

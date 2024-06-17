@@ -1,19 +1,13 @@
-const API_URL = 'http://localhost:12734/api/v1';
+import { fetchCategory, fetchCategories } from './requests.js';
 
 const showLoading = (domNode) => {
     domNode.innerText = 'Se încarcă...';
 };
 
-const fetchCategories = async () => {
-    const response = await fetch(`${API_URL}/sign-categories`);
-    const data = await response.json();
-    return data;
-};
-
 const renderCategory = (categoryData) => {
     const anchor = document.createElement('a');
     anchor.className = 'category-card';
-    anchor.href = `categorie_indicatoare.html?id=${categoryData.id}`;
+    anchor.href = `/indicatoare/categorie/${categoryData.id}`;
 
     const cardBodyDiv = document.createElement('div');
     cardBodyDiv.className = 'category-card__body';

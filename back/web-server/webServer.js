@@ -13,9 +13,18 @@ import path from 'path';
 export class WebServer extends Server {
     constructor() {
         super((req, res) => this.requestHandler(req, res));
+        this.notFoundRoute = null;
         this.fixedRoutes = new Map();
         this.dynamicRoutes = new Map();
         this.wildcardRoutes = new Map();
+    }
+
+    setNotFoundRoute(route, redirect) {
+        this.addFixedRoute(route, redirect); // if user goes to "not-found"...
+        this.notFoundRoute = {
+            route,
+            redirect,
+        };
     }
 
     addFixedRoute(route, redirect) {
@@ -76,8 +85,12 @@ export class WebServer extends Server {
             if (pathParams === null) {
                 continue;
             }
-            // TODO
-            // handler(req, res, params);
+            console.log(filepath);
+
+            if (this.serveFile(filepath, res)) {
+                return;
+            }
+
             return;
         }
 
@@ -92,14 +105,11 @@ export class WebServer extends Server {
             }
         }
 
-        sendJsonResponse(res, 404, {
-            errorCode: ErrorCodes.ROUTE_NOT_FOUND,
-            errorMessage: `Route ${pathname} not found`,
-        });
+        this.serveFile(this.notFoundRoute.redirect, res, 404);
     }
 
     matchFixedRoute(route, url) {
-        return url.startsWith(route);
+        return url === route;
     }
 
     matchDynamicRoute(route, url) {
@@ -111,6 +121,7 @@ export class WebServer extends Server {
         }
 
         const params = {};
+
         for (const [routePart, urlPart] of zip(splitRoute, splitUrl)) {
             if (routePart.startsWith(':')) {
                 params[routePart.slice(1)] = urlPart;
@@ -172,7 +183,7 @@ export class WebServer extends Server {
         }
     }
 
-    serveWildcardFile(filepath, res) {
+    serveWildcardFile(filepath, res, statusCode = 200) {
         const isBlacklisted = (filePath) => {
             const normalizedPath = path.normalize(filePath);
             const extension = path.basename(normalizedPath);
@@ -208,7 +219,7 @@ export class WebServer extends Server {
             for (let i = 0; i < variants.length; ++i) {
                 const variant = variants[i];
                 try {
-                    if (this.serveFile(variant, res)) {
+                    if (this.serveFile(variant, res, statusCode)) {
                         return true;
                     }
                 } catch (err) {
@@ -223,10 +234,11 @@ export class WebServer extends Server {
         }
     }
 
-    serveFile(filepath, res) {
+    serveFile(filepath, res, statusCode = 200) {
+        console.log(filepath);
         const file = fs.readFileSync(filepath);
         const contentType = this.getContentType(filepath);
-        sendFileResponse(res, 200, file, contentType);
+        sendFileResponse(res, statusCode, file, contentType);
         return true;
     }
 }

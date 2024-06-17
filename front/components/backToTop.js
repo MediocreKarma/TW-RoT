@@ -5,7 +5,7 @@ function addButtonToDocument() {
     button.id = 'back-to-top';
     button.textContent = 'Înapoi sus';
 
-    document.body.appendChild(button);
+    document.body.prepend(button);
 }
 
 document.addEventListener(

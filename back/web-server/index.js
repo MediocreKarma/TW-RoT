@@ -10,7 +10,18 @@ dotenv.config({
 const FRONT = process.env.FRONT;
 const server = new WebServer();
 
+server.setNotFoundRoute('/not-found', `${FRONT}/pages/not-found/index.html`);
+
 server.addFixedRoute('/favicon.ico', `${FRONT}/static/img/favicon.ico`);
+
+server.addDynamicRoute(
+    '/cod-rutier/capitol/:id',
+    `${FRONT}/pages/cod-rutier/_capitol.html`
+);
+server.addDynamicRoute(
+    '/indicatoare/categorie/:id',
+    `${FRONT}/pages/indicatoare/_id.html`
+);
 
 server.addWildcardRoute('/components/*', `${FRONT}/components`);
 server.addWildcardRoute('/img/*', `${FRONT}/static/img`);

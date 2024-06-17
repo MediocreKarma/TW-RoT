@@ -1,13 +1,7 @@
-const API_URL = 'http://localhost:12734/api/v1';
+import { fetchCategory, fetchCategories } from './requests.js';
 
 const showLoading = (domNode) => {
     domNode.innerText = 'Se încarcă...';
-};
-
-const fetchCategory = async (id) => {
-    const response = await fetch(`${API_URL}/sign-categories/${id}`);
-    const data = await response.json();
-    return data;
 };
 
 function renderCard(cardData) {
@@ -53,7 +47,7 @@ const renderCards = (targetNode, cardsData) => {
 };
 
 const renderCategory = async () => {
-    const id = new URLSearchParams(document.location.search).get('id');
+    const id = document.location.pathname.replace(/\/+$/, '').split('/').pop();
 
     const container = document.getElementById('category-container');
     showLoading(container);
