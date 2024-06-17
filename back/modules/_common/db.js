@@ -2,7 +2,7 @@ import pg from 'pg';
 import dotenv from 'dotenv';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'url';
-import { ServiceResponse } from './models/serviceResponse.js';
+import { ServiceResponse } from './serviceResponse.js';
 
 const { Pool } = pg;
 dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '/.env') });

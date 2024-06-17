@@ -1,5 +1,5 @@
 import {withDatabaseOperation} from "../_common/db.js";
-import {ServiceResponse} from "../_common/models/serviceResponse.js";
+import {ServiceResponse} from "../_common/serviceResponse.js";
 import {generateQuestionnaireService} from "../exercises/exerciseServices.js";
 
 function calculateBitsetOfAnswers(answers) {

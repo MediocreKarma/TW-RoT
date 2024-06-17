@@ -63,11 +63,11 @@ create table sign_to_category_relation (
 create table user_account (
     id serial primary key,
     username varchar(256) unique not null,
-    email varchar(256) unique not null,
+    email varchar(256) unique default null,
+    new_email varchar(256) unique default null,
     hash varchar(128),
-    salt varchar(128),
     updated_at timestamp default current_timestamp,
-    roles int default 0,
+    flags int default 0,
     solved_questionnaires int default 0,
     total_questionnaires int default 0,
     solved_questions int default 0,
@@ -78,7 +78,7 @@ create table user_token (
     id serial primary key,
     user_id int references user_account (id),
     token_type varchar(32) check (
-        token_type in ('session', 'change_password')
+        token_type in ('session', 'change_password', 'change_email', 'change_username', 'confirm_email')
     ),
     token_value varchar(128) unique not null,
     created_at timestamp

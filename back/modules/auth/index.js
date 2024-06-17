@@ -1,9 +1,8 @@
 import dotenv from 'dotenv';
-
 dotenv.config({path: '../../.env'});
 
 import {AppRouter} from "../_common/appRouter.js";
-import {login, register} from "./authController.js";
+import { login, register } from './service.js';
 
 const app = new AppRouter();
 

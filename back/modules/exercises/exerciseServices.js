@@ -1,5 +1,5 @@
 import { withDatabaseOperation } from '../_common/db.js';
-import { ServiceResponse } from '../_common/models/serviceResponse.js';
+import { ServiceResponse } from '../_common/serviceResponse.js';
 
 export const getAllExerciseCategoriesService = withDatabaseOperation(async function (
     client,

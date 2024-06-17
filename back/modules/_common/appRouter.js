@@ -3,6 +3,7 @@ import {zip} from '../../common/utils.js';
 import {parse} from "node:url";
 import {sendEmptyResponse, sendJsonResponse} from "../../common/response.js";
 import {ErrorCodes} from "../../common/constants.js";
+import { withResponse } from './serviceResponse.js';
 
 export const Methods = Object.freeze({
     GET:    'GET',
@@ -26,11 +27,11 @@ export class AppRouter extends Server {
     }
 
     get(route, handler) {
-        this.routes.get(Methods.GET).set(route, handler);
+        this.registerRoute(Methods.GET, route, handler);
     }
 
     post(route, handler) {
-        this.routes.get(Methods.POST).set(route, handler);
+        this.registerRoute(Methods.POST, route, handler);
     }
 
     registerRoute(method, route, handler) {
@@ -38,7 +39,7 @@ export class AppRouter extends Server {
         if (!routeMethods) {
             throw new Error(`Route ${method} not found`);
         }
-        this.routes.get(method).set(route, handler);
+        this.routes.get(method).set(route, withResponse(handler));
     }
 
      async requestHandler(req, res) {
@@ -74,9 +75,9 @@ export class AppRouter extends Server {
             }
 
             const params = {
-                ...query,
-                ...body,
-                ...pathParams,
+                query: query,
+                body: body,
+                path: pathParams,
                 authorization: this.getIdFromAuthorization(req)
             };
             handler(req, res, params);
