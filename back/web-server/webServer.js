@@ -87,7 +87,7 @@ export class WebServer extends Server {
             }
             const replacedString = route.substring(0, route.lastIndexOf('/*'));
             const filepath = pathname.replace(replacedString, prefix);
-            if (this.serveFile(filepath, res)) {
+            if (this.serveWildcardFile(filepath, res)) {
                 return;
             }
         }
@@ -172,7 +172,12 @@ export class WebServer extends Server {
         }
     }
 
-    serveFile(filepath, res) {
+    serveWildcardFile(filepath, res) {
+        const isBlacklisted = (filePath) => {
+            const normalizedPath = path.normalize(filePath);
+            const extension = path.basename(normalizedPath);
+            return extension.startsWith('_');
+        };
         const hasExtension = (filePath) => {
             const normalizedPath = path.normalize(filePath);
             const extension = path.extname(normalizedPath);
@@ -183,6 +188,10 @@ export class WebServer extends Server {
             // if filePath has no extension, add HTML extension
             // TODO: figure out whether this introduces a vulnerability
             const sanitizedFilepath = filepath.replace(/\/+$/, '');
+
+            if (isBlacklisted(sanitizedFilepath)) {
+                return false;
+            }
 
             const variants = [
                 sanitizedFilepath,
@@ -196,14 +205,12 @@ export class WebServer extends Server {
                       ]
                     : []),
             ];
-
             for (let i = 0; i < variants.length; ++i) {
                 const variant = variants[i];
                 try {
-                    const file = fs.readFileSync(variant);
-                    const contentType = this.getContentType(variant);
-                    sendFileResponse(res, 200, file, contentType);
-                    return true;
+                    if (this.serveFile(variant, res)) {
+                        return true;
+                    }
                 } catch (err) {
                     if (i === variants.length - 1) {
                         throw err;
@@ -214,5 +221,12 @@ export class WebServer extends Server {
             console.log(err.message);
             return false;
         }
+    }
+
+    serveFile(filepath, res) {
+        const file = fs.readFileSync(filepath);
+        const contentType = this.getContentType(filepath);
+        sendFileResponse(res, 200, file, contentType);
+        return true;
     }
 }

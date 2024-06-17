@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>RoT - Romanian Traffic Signs Tutor</title>
+        <link rel="stylesheet" href="/style/style.css" />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
+        <script src="/components/header/header.js" type="module"></script>
+        <script src="/components/footer/footer.js" type="module"></script>
+        <script src="/components/backToTop.js"></script>
+
+        <script src="/exerseaza/populateQuestion.js" type="module"></script>
+        <script src="/exerseaza/hoverEffectQuestion.js"></script>
+    </head>
+
+    <body>
+        <header class="header header--no-js" id="header"></header>
+
+        <div class="main-container">
+            <div class="intrebare">
+                <h1 class="intrebare__title">Pasul 3: Exersează</h1>
+                <div class="intrebare-card">
+                    <div class="intrebare-card__header">
+                        <div class="header__upper">
+                            <div class="intrebare-card__title">
+                                <h2>
+                                    Întrebarea
+                                    <span id="current-question">...</span>
+                                    <!-- din <span id="total-questions">1024</span> -->
+                                </h2>
+                                <span
+                                    >Categorie:
+                                    <span id="category"
+                                        >Toate întrebările</span
+                                    ></span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <form class="intrebare-card__body" id="question-form">
+                        <h3 class="intrebare-card__title" id="question-title">
+                            <!-- Care dintre indicatoare te avertizează că urmează să intersectezi un drum fără prioritate? -->
+                        </h3>
+                        <div class="intrebare-card__contents">
+                            <ul
+                                class="intrebare-card__answers-list"
+                                id="question-answers"
+                            >
+                                <!-- <li class="intrebare-card__answer">
+                      <input type="checkbox" name="option-a" id="option-a">
+                      <label for="option-a" id="option-a-label">indicatorul 1</label>
+                    </li>
+                    <li class="intrebare-card__answer">
+                      <input type="checkbox" name="option-b" id="option-b">
+                      <label for="option-b" id="option-b-label">indicatorul 2</label>
+                    </li>
+                    <li class="intrebare-card__answer">
+                      <input type="checkbox" name="option-c" id="option-c">
+                      <label for="option-c" id="option-c-label">ambele</label>
+                    </li> -->
+                            </ul>
+                            <div
+                                class="intrebare-card__image-wrapper"
+                                id="image-wrapper"
+                            >
+                                <!-- <img src="img/intrebare_image.jpg" alt=""> -->
+                            </div>
+                        </div>
+                        <div class="intrebare-card__buttons">
+                            <button type="button">Răspunde mai târziu</button>
+                            <button type="button">Modifică răspunsul</button>
+                            <button type="submit">Răspunde</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer" id="footer"></footer>
+    </body>
+</html>

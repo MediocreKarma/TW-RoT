@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Înregistrare</title>
+        <link rel="stylesheet" href="/style/style.css" />
+        <script src="/components/header/header.js" type="module"></script>
+        <script src="/components/footer/footer.js" type="module"></script>
+
+        <script src="/signup/signup.js"></script>
+    </head>
+    <body>
+        <header class="header header--no-js" id="header"></header>
+
+        <div class="flex-center-container signup-container">
+            <div class="signup-card">
+                <h2 class="signup-card__title">Înregistrare</h2>
+                <form id="signup-form" class="signup-form">
+                    <div class="signup-form__group">
+                        <label for="email" class="signup-form__label"
+                            >Email</label
+                        >
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="signup-form__input"
+                            required
+                        />
+                    </div>
+                    <div class="signup-form__group">
+                        <label for="password" class="signup-form__label"
+                            >Parolă</label
+                        >
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="signup-form__input"
+                            required
+                        />
+                    </div>
+                    <div class="signup-form__group">
+                        <label for="name" class="signup-form__label"
+                            >Nume de utilizator (username)</label
+                        >
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="signup-form__input"
+                            required
+                        />
+                    </div>
+                    <button type="submit" class="signup-form__button">
+                        Înregistrare
+                    </button>
+                </form>
+                <p>Ai cont deja? <a href="/login">Autentifică-te</a></p>
+            </div>
+        </div>
+
+        <footer class="footer" id="footer"></footer>
+    </body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>RoT - Romanian Traffic Signs Tutor</title>
+        <link rel="stylesheet" href="/style/style.css" />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
+        <script src="/components/header/header.js" type="module"></script>
+        <script src="/components/footer/footer.js" type="module"></script>
+        <script src="/components/backToTop.js"></script>
+
+        <script
+            src="/exerseaza/populateQuestionCategories.js"
+            type="module"
+        ></script>
+    </head>
+
+    <body>
+        <header class="header header--no-js" id="header"></header>
+
+        <div class="main-container">
+            <div class="exerseaza">
+                <h1 class="exerseaza__title">Pasul 3: Exersează</h1>
+                <div class="question-categories">
+                    <h2 class="question-categories__title">
+                        Mediu general de exersare
+                    </h2>
+                    <div class="question-categories__container">
+                        <a href="/intrebare">
+                            <div class="question-category">
+                                <p class="question-category__title">
+                                    Toate întrebările
+                                </p>
+                            </div>
+                        </a>
+                        <a href="/intrebare-chestionar">
+                            <div class="question-category">
+                                <p class="question-category__title">
+                                    Generează chestionar aleator
+                                </p>
+                            </div>
+                        </a>
+                        <a href="/intrebare?type=incorrect">
+                            <div
+                                class="question-category"
+                                id="incorrectly-solved"
+                            >
+                                <div class="question-category__filler"></div>
+                                <p class="question-category__title">
+                                    Întrebări la care ai greșit
+                                </p>
+                                <p class="question-category__value">100</p>
+                            </div>
+                        </a>
+                        <p></p>
+                        <p>
+                            Vrei să afli unde te plasezi în comparație cu alți
+                            utilizatori?
+                        </p>
+                        <a href="/leaderboard" class="button">
+                            Vezi scorurile obținute
+                        </a>
+                    </div>
+                </div>
+
+                <div class="question-categories">
+                    <h2 class="question-categories__title">
+                        Întrebări pe categorii
+                    </h2>
+                    <div
+                        id="categories"
+                        class="question-categories__container"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer" id="footer"></footer>
+    </body>
+</html>

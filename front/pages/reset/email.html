@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>RoT - Romanian Traffic Signs Tutor</title>
+        <link rel="stylesheet" href="/style/style.css" />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
+        <script src="/components/header/header.js" type="module"></script>
+        <script src="/components/footer/footer.js" type="module"></script>
+
+        <script src="/js/validateForm.js"></script>
+    </head>
+
+    <body>
+        <header class="header header--no-js" id="header"></header>
+
+        <div class="main-container">
+            <!--reset email-->
+            <div class="reset-container">
+                <div class="login-card">
+                    <h2 class="login-card__title">Resetează-ți email-ul</h2>
+                    <p>
+                        Scrie noua adresă de email, iar noi îți vom trimite un
+                        link de verificare pentru a confirma că adresa a fost
+                        introdusă corect.
+                    </p>
+                    <form
+                        id="login-form"
+                        class="login-form"
+                        action="javascript:void(0);"
+                    >
+                        <div class="login-form__group">
+                            <label for="email" class="login-form__label"
+                                >Email-ul Nou</label
+                            >
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="login-form__input"
+                                placeholder="Scrie-ți noua adresa de email aici"
+                                required
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            id="submit-button"
+                            class="login-form__button"
+                        >
+                            Trimite noua adresă de email
+                        </button>
+                    </form>
+                </div>
+                <div id="confirmation-container" class="confirmation-container">
+                    <p>Un link a fost trimis către adresa ta nouă de email.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer" id="footer"></footer>
+    </body>
+</html>
