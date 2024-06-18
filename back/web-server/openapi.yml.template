@@ -451,6 +451,122 @@ paths:
                     type: string
                     example: Internal server error
 
+  /auth/verify:
+    post:
+      summary: Verify a token
+      description: Verify the provided token to ensure its validity.
+      tags:
+        - Auth
+      servers:
+        - url: http://localhost:{AUTH_PORT}/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The token to be verified
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+              required:
+                - token
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                    example: Token is valid
+        '400':
+          description: Invalid input, object invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid token
+        '401':
+          description: Unauthorized, token is invalid or expired
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /auth/change-credentials:
+    post:
+      summary: Change user credentials
+      description: Request a change to the user's email, password, or username.
+      tags:
+        - Auth
+      servers:
+        - url: http://localhost:{AUTH_PORT}/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The email of the user requesting the change
+                  example: user@example.com
+                type:
+                  type: string
+                  enum: ['email', 'password', 'username']
+                  description: The type of credential change being requested
+                  example: password
+              required:
+                - email
+                - type
+      responses:
+        '200':
+          description: Change request accepted, further instructions sent to the user's email
+        '400':
+          description: Invalid input, object invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid email or request type
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
   /exercises/{id}/solution:
     get:
       summary: Get solution for exercise

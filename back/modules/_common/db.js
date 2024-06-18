@@ -31,6 +31,21 @@ export function withDatabaseOperation(handler) {
     };
 }
 
+export function wrapOperationWithTransaction(client, handler) {
+    return async function () {
+        try {
+            await client.query('BEGIN');
+            const result = await handler(client, ...arguments);
+            await client.query('COMMIT');
+            return result;
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error(error);
+            return new ServiceResponse(500, null, 'Internal Server Error');
+        }
+    };
+}
+
 export function withDatabaseTransaction(handler) {
     return async function () {
         const client = await pool.connect();

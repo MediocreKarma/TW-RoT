@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Credential Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .content {
+            text-align: left;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{WEBSITE_NAME}</h1>
+        </div>
+        <div class="content">
+            <p>Salut {USERNAME},</p>
+            <p>Acesta este un email de notificare privind încercarea de a-ți schimba {CHANGE_TYPE} pentru contul tău pe {WEBSITE_NAME}.</p>
+            <p>Dacă tu ai inițiat această schimbare, te rugăm să confirmi folosind link-ul de mai jos:</p>
+            <p><a href="{LINK}" class="button">Confirmă încercarea de schimbarea</a></p>
+            <p>Dacă nu ai inițiat această schimbare, te rugăm să ignori acest mesaj.</p>
+        </div>
+        <div class="footer">
+            <p>Mulțumim că folosești {WEBSITE_NAME}!</p>
+            <p>Echipa {WEBSITE_NAME}</p>
+        </div>
+    </div>
+</body>
+</html>
