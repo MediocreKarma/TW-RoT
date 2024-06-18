@@ -53,7 +53,7 @@ const processSignRow = (signRow) => {
         let tdNodeDoc = silencedDOMParser.parseFromString(tdNodeString);
 
         const xImageNodes =
-            "//a[contains(@class, 'mw-file-description')]//img/@src"; // get node.value
+            "//a[contains(@class, 'mw-file-description')]/@href"; // get node.value
 
         const imageNodes = xpath.select(xImageNodes, tdNodeDoc);
 
@@ -66,7 +66,7 @@ const processSignRow = (signRow) => {
             images = imageNodes.map((node) => node.value);
         }
 
-        tdData.images = images.map((image) => 'https:' + image);
+        tdData.images = images;
 
         let rowspan = tdNode.getAttribute('rowspan');
         if (rowspan === '') {
@@ -180,10 +180,8 @@ const processWikiPage = (content) => {
     return tableNodes.map(processCategory).filter(Boolean);
 };
 
-export const scrapeWikiTables = async () => {
+export const scrapeWikiTables = async (url) => {
     try {
-        const url =
-            'https://ro.wikipedia.org/wiki/Compara%C8%9Bie_%C3%AEntre_indicatoarele_rutiere_din_Europa';
         const data = await getContent(url);
         return processWikiPage(data);
     } catch (error) {
@@ -191,8 +189,29 @@ export const scrapeWikiTables = async () => {
     }
 };
 
+const getBiggerImageLink = async (imageLink) => {
+    const content = await getContent(imageLink);
+    let doc = silencedDOMParser.parseFromString(content);
+
+    const divXPath = '//div[@class="fullImageLink"]//img/@src';
+
+    try {
+        const link = xpath.select(divXPath, doc)[0].value;
+
+        if (!link) {
+            return null;
+        }
+        return 'https:' + link;
+    } catch (e) {
+        return null;
+    }
+};
+
 export const populateComparisonTables = async () => {
-    const comparisonTables = await scrapeWikiTables();
+    const url =
+        'https://ro.wikipedia.org/wiki/Compara%C8%9Bie_%C3%AEntre_indicatoarele_rutiere_din_Europa';
+    const baseUrl = 'https://ro.wikipedia.org/';
+    const comparisonTables = await scrapeWikiTables(url);
     const client = await pool.connect();
     for (const comparisonTable of comparisonTables) {
         process.stdout.write(
@@ -201,30 +220,57 @@ export const populateComparisonTables = async () => {
         try {
             let comparisonTableWithImageIds = comparisonTable;
 
-            // iterative because otherwise Wikipedia gets scared of me
-            for (
-                let i = 0;
-                i < comparisonTableWithImageIds?.signs?.length;
-                ++i
-            ) {
-                let sign = comparisonTableWithImageIds?.signs[i];
-                for (let j = 0; j < sign?.variants?.length; ++j) {
-                    let variant = sign?.variants[j];
-                    try {
-                        if (variant.images.length === 0) {
-                            continue;
+            for (let i = 0; i < comparisonTableWithImageIds.signs.length; ++i) {
+                let sign = comparisonTableWithImageIds.signs[i];
+                console.log('Scraping: ' + sign.name);
+
+                // process scraped image links; download them locally
+                await Promise.all(
+                    sign.variants.map(async (variant) => {
+                        try {
+                            if (variant.images.length === 0) {
+                                return;
+                            }
+
+                            for (let k = 0; k < variant.images.length; ++k) {
+                                try {
+                                    const biggerImageUrl =
+                                        await getBiggerImageLink(
+                                            baseUrl + variant.images[k]
+                                        );
+                                    if (biggerImageUrl !== null) {
+                                        variant.images[k] = biggerImageUrl;
+                                    }
+                                } catch (e) {
+                                    console.error(
+                                        'Error getting bigger image. ' + e
+                                    );
+                                    console.error(
+                                        '(Will use smaller image instead.)'
+                                    );
+                                    continue; // we'll stick to the small image
+                                }
+                            }
+
+                            const imageId = await saveWikiImages(
+                                variant.images,
+                                OUTPUT_DIR
+                            );
+                            variant.images = [imageId];
+                            console.log('Successful: ' + variant.images);
+                        } catch (e) {
+                            console.error(
+                                'Error saving image ' + variant.images + ':'
+                            );
+                            console.error(e);
+                            console.error(
+                                '(Will leave image field blank for current country.)'
+                            );
+                            variant.images = [];
                         }
-                        const imageId = await saveWikiImages(
-                            variant.images,
-                            OUTPUT_DIR
-                        );
-                        variant.images = [imageId];
-                    } catch (e) {
-                        console.error('At ' + variant.images + '...');
-                        console.error(e);
-                        variant.images = [];
-                    }
-                }
+                    })
+                );
+                console.log('Successful: ' + sign.name);
             }
 
             await client.query('call insert_comparison_category($1::jsonb)', [

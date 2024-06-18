@@ -2,6 +2,7 @@ import jimp from 'jimp';
 import http from 'http';
 import https from 'https';
 import fs from 'fs';
+import { headers } from './utils.js';
 import { v4 as uuid4 } from 'uuid';
 
 async function downloadImage(url) {
@@ -9,12 +10,15 @@ async function downloadImage(url) {
         const protocol = url.startsWith('https') ? https : http;
 
         protocol
-            .get(url, (response) => {
+            .get(url, { headers }, (response) => {
                 const chunks = [];
+
                 response.on('data', (chunk) => chunks.push(chunk));
                 response.on('end', () => resolve(Buffer.concat(chunks)));
             })
-            .on('error', reject);
+            .on('error', (err) => {
+                reject(err);
+            });
     });
 }
 
@@ -78,12 +82,8 @@ async function saveImageBuffer(imageBuffer, imageId, outputDirectory) {
 export async function saveWikiImages(imageUrls, outputDirectory) {
     const imageBuffers = await Promise.all(
         imageUrls.map(async (url) => {
-            try {
-                const data = await downloadImage(url);
-                return data;
-            } catch (e) {
-                console.log(e);
-            }
+            const data = await downloadImage(url);
+            return data;
         })
     );
 

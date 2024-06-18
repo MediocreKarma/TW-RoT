@@ -12,28 +12,38 @@ export const silencedDOMParserOptions = {
     },
 };
 
+export const headers = {
+    'User-Agent': `ProRutier/0.0 (https://example.org/coolbot/; ${process.env.USER_AGENT_EMAIL}) generic-library/0.0`,
+};
+
 function getContentUtil(url, resolve, reject) {
-    https.get(url, (res) => {
-        if (res.statusCode === 301 || res.statusCode === 302) {
-            return getContentUtil(res.headers.location, resolve, reject);
-        }
+    const options = new URL(url);
+    options.headers = headers;
 
-        let body = [];
-
-        res.on('data', (chunk) => {
-            body.push(chunk);
-        });
-
-        res.on('end', () => {
-            try {
-                resolve(Buffer.concat(body).toString());
-            } catch (err) {
-                reject(err);
+    https
+        .get(options, (res) => {
+            if (res.statusCode === 301 || res.statusCode === 302) {
+                return getContentUtil(res.headers.location, resolve, reject);
             }
-        });
-    });
-}
 
+            let body = [];
+
+            res.on('data', (chunk) => {
+                body.push(chunk);
+            });
+
+            res.on('end', () => {
+                try {
+                    resolve(Buffer.concat(body).toString());
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        })
+        .on('error', (err) => {
+            reject(err);
+        });
+}
 export async function getContent(url) {
     return new Promise((resolve, reject) =>
         getContentUtil(url, resolve, reject)
