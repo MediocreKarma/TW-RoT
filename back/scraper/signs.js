@@ -143,13 +143,33 @@ export const populateSigns = async () => {
             `Adding new sign category: ${scrapedCategory.title}...`
         );
         try {
+            let scrapedCategoryWithImageIds = scrapedCategory;
             // create new object, identical to old one, but with different image id
-            const imageId = await saveImage(scrapedCategory.image, OUTPUT_DIR);
+            try {
+                const imageId = await saveImage(
+                    scrapedCategory.image,
+                    OUTPUT_DIR
+                );
 
-            const scrapedCategoryWithImageIds = {
-                ...scrapedCategory,
-                image: imageId,
-            };
+                scrapedCategoryWithImageIds.image = imageId;
+
+                await Promise.all(
+                    scrapedCategoryWithImageIds.signs.map(async (sign) => {
+                        try {
+                            const imageId = await saveImage(
+                                sign.image,
+                                OUTPUT_DIR
+                            );
+                            sign.image = imageId;
+                        } catch (e) {
+                            sign.image = null;
+                        }
+                    })
+                );
+            } catch (e) {
+                console.log(e);
+                scrapedCategory.image = null;
+            }
 
             await client.query('call insert_sign_category($1::jsonb)', [
                 JSON.stringify(scrapedCategoryWithImageIds),

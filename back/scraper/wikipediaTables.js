@@ -271,6 +271,8 @@ export const populateComparisonTables = async () => {
                     })
                 );
                 console.log('Successful: ' + sign.name);
+                const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+                await delay(1000);
             }
 
             await client.query('call insert_comparison_category($1::jsonb)', [
