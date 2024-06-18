@@ -32,22 +32,19 @@ begin
 end;
 $$ language plpgsql;
 
-create or replace function is_valid_session(p_user_id int, p_token_value varchar) returns bool as $$
-declare
-	token_record record;
+create or replace function validate_session(p_token_value varchar) returns table (
+    id int,
+    username varchar(256),
+    updated_at timestamp,
+    roles int
+) as $$
 begin
-	select id, created_at into token_record from user_token ut 
-		where ut.user_id = p_user_id and ut.token_type = 'session' and ut.token_value = p_token_value;
-		
-	if token_record is null then
-		return false;
-	end if;
-	
-	if token_record.created_at < (current_timestamp - interval '30 days') then
-		delete from user_token where id = token_record.id;
-		return false;
-	end if;
-	
-	return true;
+    delete from user_token 
+        where token_type = 'session' and created_at < (current_timestamp - interval '30 days');
+
+	return query select ua.id, ua.username, ua.updated_at, ua.roles 
+        from user_token ut join user_account ua
+            on ut.user_id = ua.id
+		where ut.token_type = 'session' and ut.token_value = p_token_value;
 end;
 $$ language plpgsql;

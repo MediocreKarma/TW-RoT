@@ -1,3 +1,4 @@
+-- Active: 1717142263895@@127.0.0.1@5432@tw_rot@tw_rot
 set schema 'tw_rot';
 
 drop table chapter cascade;
@@ -71,7 +72,7 @@ create table user_account (
     solved_questionnaires int default 0,
     total_questionnaires int default 0,
     solved_questions int default 0,
-    total_questions int default 0,
+    total_questions int default 0
 );
 
 create table user_token (

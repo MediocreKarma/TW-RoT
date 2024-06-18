@@ -556,6 +556,246 @@ paths:
                   error:
                     type: string
                     example: Internal server error
+
+  /auth/change-password:
+    post:
+      summary: Change user password
+      description: Change the user's password using a token.
+      tags:
+        - Auth
+      servers:
+        - url: http://localhost:12739/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The token for password change
+                  example: some_token_string
+                value:
+                  type: string
+                  description: The new password
+                  example: new_password123
+              required:
+                - token
+                - value
+      responses:
+        '200':
+          description: Password changed successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid token or password
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /auth/change-email:
+    post:
+      summary: Change user email
+      description: Change the user's email using a token.
+      tags:
+        - Auth
+      servers:
+        - url: http://localhost:12739/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The token for email change
+                  example: some_token_string
+                value:
+                  type: string
+                  description: The new email
+                  example: new_email@example.com
+              required:
+                - token
+                - value
+      responses:
+        '200':
+          description: Email changed successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid token or email
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /auth/change-username:
+    post:
+      summary: Change user username
+      description: Change the user's username using a token.
+      tags:
+        - Auth
+      servers:
+        - url: http://localhost:12739/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The token for username change
+                  example: some_token_string
+                value:
+                  type: string
+                  description: The new username
+                  example: new_username
+              required:
+                - token
+                - value
+      responses:
+        '200':
+          description: Username changed successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid token or username
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /auth/logout:
+    post:
+      summary: Logout user
+      description: Logs out the authenticated user.
+      tags:
+        - Auth
+      servers:
+        - url: http://localhost:12739/api/v1
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User logged out successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /auth/authenticated:
+    post:
+      summary: Verify user authentication
+      description: Verifies if the user authentication cookie is valid.
+      tags:
+        - Auth
+      servers:
+        - url: http://localhost:12739/api/v1
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User is authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the authenticated user
+                    example: 1
+                  username:
+                    type: string
+                    description: The username of the authenticated user
+                    example: john_doe
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The last update timestamp
+                    example: 2023-06-18T12:34:56Z
+                  roles:
+                    type: integer
+                    description: The roles assigned to the authenticated user
+                    example: 2
+        '401':
+          description: Unauthorized, invalid authentication
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
   /exercises/{id}/solution:
     get:
       summary: Get solution for exercise
@@ -773,10 +1013,10 @@ paths:
                     example: An error occurred while processing the request
 components:
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: plain
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: TW-RoT-Auth-Cookie
   schemas:
     Chapter:
       type: object
