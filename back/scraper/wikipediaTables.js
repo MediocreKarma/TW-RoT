@@ -2,6 +2,9 @@ import { DOMParser } from 'xmldom';
 import { getContent, silencedDOMParserOptions } from './utils.js';
 import xpath from 'xpath';
 import { pool } from './db.js';
+import { saveWikiImages } from './image.js';
+
+const OUTPUT_DIR = '../modules/traffic-signs/images';
 
 const silencedDOMParser = new DOMParser(silencedDOMParserOptions);
 
@@ -63,7 +66,7 @@ const processSignRow = (signRow) => {
             images = imageNodes.map((node) => node.value);
         }
 
-        tdData.images = images;
+        tdData.images = images.map((image) => 'https:' + image);
 
         let rowspan = tdNode.getAttribute('rowspan');
         if (rowspan === '') {
@@ -104,8 +107,6 @@ const processTableNode = (tableNode) => {
         .map((node) => node.textContent.trim())
         .filter(Boolean);
 
-    // console.log(countries);
-
     // create matrix of arrays of images
     let infoMatrix = signRows.map((_) => []);
 
@@ -145,7 +146,6 @@ const processTableNode = (tableNode) => {
     });
 
     // link infoMatrix data to signs and all
-    // console.log("creating final data obj...");
     return signRowData.map((rowData, rowIndex) => ({
         name: rowData.signName,
         // array of objects of type {country: "Belgia", images: <array of images>}
@@ -196,11 +196,39 @@ export const populateComparisonTables = async () => {
     const client = await pool.connect();
     for (const comparisonTable of comparisonTables) {
         process.stdout.write(
-            `Add new comparison category: ${comparisonTable.category}...`
+            `Adding new comparison category: ${comparisonTable.category}...\n`
         );
         try {
+            let comparisonTableWithImageIds = comparisonTable;
+
+            // iterative because otherwise Wikipedia gets scared of me
+            for (
+                let i = 0;
+                i < comparisonTableWithImageIds?.signs?.length;
+                ++i
+            ) {
+                let sign = comparisonTableWithImageIds?.signs[i];
+                for (let j = 0; j < sign?.variants?.length; ++j) {
+                    let variant = sign?.variants[j];
+                    try {
+                        if (variant.images.length === 0) {
+                            continue;
+                        }
+                        const imageId = await saveWikiImages(
+                            variant.images,
+                            OUTPUT_DIR
+                        );
+                        variant.images = [imageId];
+                    } catch (e) {
+                        console.error('At ' + variant.images + '...');
+                        console.error(e);
+                        variant.images = [];
+                    }
+                }
+            }
+
             await client.query('call insert_comparison_category($1::jsonb)', [
-                JSON.stringify(comparisonTable),
+                JSON.stringify(comparisonTableWithImageIds),
             ]);
         } catch (e) {
             console.error(e);

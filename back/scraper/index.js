@@ -4,8 +4,8 @@ import { populateTheory } from './theory.js';
 import { populateComparisonTables } from './wikipediaTables.js';
 
 (async () => {
-    //await populateQuestions();
     await populateSigns();
-    // await populateTheory();
-    //await populateComparisonTables();
+    await populateTheory();
+    await populateComparisonTables();
+    await populateQuestions();
 })();

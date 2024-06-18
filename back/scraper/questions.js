@@ -2,6 +2,9 @@ import { DOMParser } from 'xmldom';
 import { getContent, silencedDOMParserOptions } from './utils.js';
 import xpath from 'xpath';
 import { pool } from './db.js';
+import { saveImage } from './image.js';
+
+const OUTPUT_DIR = process.env.EXERCISES_IMAGES_DIR;
 
 // each module has its own DOM parser
 const silencedDOMParser = new DOMParser(silencedDOMParserOptions);
@@ -148,8 +151,27 @@ export const populateQuestions = async () => {
             `Adding new question category: ${questionCategory.id}...`
         );
         try {
+            // create new object, identical to old one, but with different images
+            let questionCategoryWithImageIds = questionCategory;
+
+            await Promise.all(
+                questionCategoryWithImageIds.questions.map(async (question) => {
+                    try {
+                        if (question.image) {
+                            const imageId = await saveImage(
+                                question.image,
+                                OUTPUT_DIR
+                            );
+                            question.image = imageId;
+                        }
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })
+            );
+
             await client.query('call insert_question_category($1::jsonb)', [
-                JSON.stringify(questionCategory),
+                JSON.stringify(questionCategoryWithImageIds),
             ]);
         } catch (e) {
             console.error(e);
