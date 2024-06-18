@@ -33,7 +33,7 @@ const populateChapterSidebar = async (currentId) => {
 
     data.forEach((chapter) => {
         const a = document.createElement('a');
-        a.href = `/capitol/${chapter.id}`;
+        a.href = `/traffic-code/chapter/${chapter.id}`;
 
         const div = document.createElement('div');
         div.className = 'chapter-sidebar__item';

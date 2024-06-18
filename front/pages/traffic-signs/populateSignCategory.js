@@ -1,4 +1,6 @@
-import { fetchCategory, fetchCategories } from './requests.js';
+import { fetchCategory } from './requests.js';
+
+import API from '/js/api.js';
 
 const showLoading = (domNode) => {
     domNode.innerText = 'Se încarcă...';
@@ -15,7 +17,7 @@ function renderCard(cardData) {
 
     // Create the image element
     const img = document.createElement('img');
-    img.src = cardData['image_id'];
+    img.src = `${API.TRAFFIC_SIGNS}/img/${cardData['image_id']}`;
     img.alt = cardData.title;
     img.className = 'card-img mb-2';
 
