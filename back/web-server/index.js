@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
 dotenv.config({
-     path: join(dirname(fileURLToPath(import.meta.url)), '../.env'),
+    path: join(dirname(fileURLToPath(import.meta.url)), '../.env'),
 });
 dotenv.config({
     path: join(dirname(fileURLToPath(import.meta.url)), '.env'),
@@ -18,12 +18,12 @@ server.setNotFoundRoute('/not-found', `${FRONT}/pages/not-found/index.html`);
 server.addFixedRoute('/favicon.ico', `${FRONT}/static/img/favicon.ico`);
 
 server.addDynamicRoute(
-    '/cod-rutier/capitol/:id',
-    `${FRONT}/pages/cod-rutier/_capitol.html`
+    '/traffic-code/chapter/:id',
+    `${FRONT}/pages/traffic-code/_chapter.html`
 );
 server.addDynamicRoute(
-    '/indicatoare/categorie/:id',
-    `${FRONT}/pages/indicatoare/_id.html`
+    '/traffic-signs/category/:id',
+    `${FRONT}/pages/traffic-signs/_id.html`
 );
 
 server.addWildcardRoute('/components/*', `${FRONT}/components`);

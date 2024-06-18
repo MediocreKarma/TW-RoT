@@ -1,4 +1,6 @@
-import { fetchCategory, fetchCategories } from './requests.js';
+import { fetchCategories } from './requests.js';
+
+import API from '/js/api.js';
 
 const showLoading = (domNode) => {
     domNode.innerText = 'Se încarcă...';
@@ -7,13 +9,13 @@ const showLoading = (domNode) => {
 const renderCategory = (categoryData) => {
     const anchor = document.createElement('a');
     anchor.className = 'category-card';
-    anchor.href = `/indicatoare/categorie/${categoryData.id}`;
+    anchor.href = `/traffic-signs/category/${categoryData.id}`;
 
     const cardBodyDiv = document.createElement('div');
     cardBodyDiv.className = 'category-card__body';
 
     const img = document.createElement('img');
-    img.src = categoryData['image_id'];
+    img.src = `${API.TRAFFIC_SIGNS}/img/${categoryData['image_id']}`;
     img.alt = categoryData.title;
     img.className = 'category-card__img';
 

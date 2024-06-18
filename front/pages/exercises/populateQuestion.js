@@ -118,7 +118,7 @@ const populateQuestion = async () => {
     }
 
     if (!data) {
-        window.location.href = '/exerseaza';
+        window.location.href = '/exercises';
     }
 
     console.log(data);

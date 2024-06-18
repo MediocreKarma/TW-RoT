@@ -18,7 +18,9 @@ const populateChapterContent = async (chapterId) => {
             data.isaddendum ? 'Anexa ' : 'Capitolul '
         } ${data.number}: ${data.title}`;
         contentContainer.innerHTML = data.content;
-    } catch (e) {}
+    } catch (e) {
+        console.log(e);
+    }
 };
 
 const populateChapterSidebar = async (currentId) => {

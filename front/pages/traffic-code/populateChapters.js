@@ -6,7 +6,7 @@ const renderChapters = (chapterContainer, chapters) => {
     }
     chapters.forEach((chapter) => {
         const aElement = document.createElement('a');
-        aElement.href = `/cod-rutier/capitol/${chapter.id}`;
+        aElement.href = `/traffic-code/chapter/${chapter.id}`;
 
         const divCard = document.createElement('div');
         divCard.className = `chapter-card ${
