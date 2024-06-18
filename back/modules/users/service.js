@@ -1,6 +1,5 @@
 import {withDatabaseOperation} from "../_common/db.js";
 import {ServiceResponse} from "../_common/serviceResponse.js";
-import {generateQuestionnaireService} from "../exercises/exerciseServices.js";
 
 function calculateBitsetOfAnswers(answers) {
     answers.sort((a, b) => a['answerId'] - b['answerId']);
@@ -13,23 +12,31 @@ function calculateBitsetOfAnswers(answers) {
     return bitset;
 }
 
-export const addQuestionSolutionService = withDatabaseOperation(async function (
-    client,
-    params
-){
-    if (params['authorization'] === null) {
+const validateAuth = (auth, userId = -1) => {
+    if (!Number.isInteger(params['authorization'])) {
         return new ServiceResponse(401, null, 'Unauthenticated');
     }
-
-    const userId = params['id'];
+    if (userId === -1) {
+        return null;
+    }
     if (userId !== params['authorization']) {
         return new ServiceResponse(403, null, 'Unauthorized');
+    }
+    return null;
+}
+
+export const addQuestionSolution = withDatabaseOperation(async function (
+    client, _req, _res, params
+) {
+    const userId = params['path']['id'];
+    const validationResult = validateAuth(params['authorization'], userId);
+    if (validationResult) {
+        return validationResult;
     }
 
     const {questionId, answers} = params;
     const bitset = calculateBitsetOfAnswers(answers);
-    console.log(bitset);
-
+    
     const correctAnswers = (await client.query(
         'select answer_id as "answerId", correct as "correct" from register_answer($1::int, $2::int, $3::int)',
         [userId, questionId, bitset],
@@ -40,8 +47,8 @@ export const addQuestionSolutionService = withDatabaseOperation(async function (
 
 const userIdToQuestionnaireTimeoutMapping = new Map();
 
-export const getQuestionnaireService = withDatabaseOperation(async function (
-    client, params
+export const getQuestionnaire = withDatabaseOperation(async function (
+    client, _req, _res, params
 ) {
     const userId = params['id'];
     if (userId !== params['authorization']) {
@@ -74,7 +81,7 @@ export const getQuestionnaireService = withDatabaseOperation(async function (
     );
 });
 
-export const createUserQuestionnaireService = withDatabaseOperation(async function (
+export const createQuestionnaire = withDatabaseOperation(async function (
     client, params
 ) {
     const userId = params['id'];
@@ -83,7 +90,14 @@ export const createUserQuestionnaireService = withDatabaseOperation(async functi
     }
 
     const thirtyMinutesInMs = 30 * 60 * 1000;
-    const questionnaireObj = (await generateQuestionnaireService(userId)).body;
+    const questionnaireObj = (await client.query(
+        'select ' +
+            '    questionnaire_id as "id", ' +
+            '    generated_time as "generationTime", ' +
+            '    new as "new" ' +
+            'from generate_questionnaire($1::int)',
+        [userId]
+    )).rows[0];
     if (questionnaireObj['new']) {
         userIdToQuestionnaireTimeoutMapping.set(userId, setTimeout(() => {
             client.query('perform finish_questionnaire($1::int)', [userId]);},
@@ -107,8 +121,8 @@ export const createUserQuestionnaireService = withDatabaseOperation(async functi
     );
 });
 
-export const submitQuestionnaireSolutionService = withDatabaseOperation(async function (
-    client, params
+export const submitQuestionnaireSolution = withDatabaseOperation(async function (
+    client, _req, _res, params
 ) {
     const userId = params['authorization'];
     if (!Number.isInteger(userId)) {

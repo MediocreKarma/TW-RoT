@@ -18,14 +18,33 @@ export const pool = new Pool({
 
 export function withDatabaseOperation(handler) {
     return async function () {
+        const client = await pool.connect();
         try {
-            const client = await pool.connect();
             const result = await handler(client, ...arguments);
-            client.release();
             return result;
         } catch (error) {
             console.error(error);
             return new ServiceResponse(500, null, 'Internal Server Error');
+        } finally {
+            client.release();
+        }
+    };
+}
+
+export function withDatabaseTransaction(handler) {
+    return async function () {
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+            const result = await handler(client, ...arguments);
+            await client.query('COMMIT');
+            return result;
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error(error);
+            return new ServiceResponse(500, null, 'Internal Server Error');
+        } finally {
+            client.release();
         }
     };
 }

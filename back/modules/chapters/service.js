@@ -1,7 +1,9 @@
 import { withDatabaseOperation } from '../_common/db.js';
 import { ServiceResponse } from '../_common/serviceResponse.js';
 
-export const getAllChaptersService = withDatabaseOperation(async function (client) {
+export const getAllChapters = withDatabaseOperation(async function (
+    client, _req, _res, _params
+) {
     const chapters = (
         await client.query('select id, number, title, isAddendum from chapter')
     ).rows;
@@ -12,10 +14,10 @@ export const getAllChaptersService = withDatabaseOperation(async function (clien
     );
 });
 
-export const getChapterContentService = withDatabaseOperation(async function (
-    client,
-    id
+export const getChapterContent = withDatabaseOperation(async function (
+    client, _req, _res, params
 ) {
+    const id = params['path']['id'];
     const chapter = (
         await client.query(
             'select number, title, content, isAddendum from chapter where id=$1::int',

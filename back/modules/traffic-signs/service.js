@@ -1,8 +1,8 @@
 import { withDatabaseOperation } from '../_common/db.js';
 import { ServiceResponse } from '../_common/serviceResponse.js';
 
-export const getAllSignCategoriesService = withDatabaseOperation(async function (
-    client
+export const getAllSignCategories = withDatabaseOperation(async function (
+    client, _req, _res, _params
 ) {
     const signCategories = (
         await client.query('select id, title, image_id from sign_category')
@@ -14,10 +14,10 @@ export const getAllSignCategoriesService = withDatabaseOperation(async function 
     );
 });
 
-export const getSignCategoryService = withDatabaseOperation(async function (
-    client,
-    id
+export const getSignCategory = withDatabaseOperation(async function (
+    client, _req, _res, params
 ) {
+    const id = params['path']['id'];
     const categoryInfo = (
         await client.query(
             'select title, design, purpose, suggestion from sign_category where id=$1::int',

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
 dotenv.config({
-    path: join(dirname(fileURLToPath(import.meta.url)), '../.env'),
+     path: join(dirname(fileURLToPath(import.meta.url)), '../.env'),
 });
 dotenv.config({
     path: join(dirname(fileURLToPath(import.meta.url)), '.env'),

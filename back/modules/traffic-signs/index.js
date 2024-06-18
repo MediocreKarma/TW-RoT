@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config({path: '../../.env'});
 
 import {AppRouter} from "../_common/appRouter.js";
-import {getAllSignCategories, getSignCategory} from "../traffic-signs/signController.js";
+import {getAllSignCategories, getSignCategory} from "./service.js";
 
 const app = new AppRouter();
 

@@ -71,7 +71,7 @@ create table user_account (
     solved_questionnaires int default 0,
     total_questionnaires int default 0,
     solved_questions int default 0,
-    total_questions int default 0
+    total_questions int default 0,
 );
 
 create table user_token (

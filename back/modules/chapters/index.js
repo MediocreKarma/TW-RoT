@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config({path: '../../.env'});
 
 import {AppRouter} from "../_common/appRouter.js";
-import {getAllChapters, getChapterContent} from "../chapters/chapterController.js";
+import {getAllChapters, getChapterContent} from "./service.js";
 
 const app = new AppRouter();
 

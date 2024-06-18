@@ -124,6 +124,7 @@ export const register = withDatabaseOperation(async function (
 export const login = withDatabaseOperation(async function (
     client, _req, res, params
 ) {
+    const msTimeout = 5000;
     const password = params['body']['password'];
     const passwordValidationStatus = validate(password);
     if (passwordValidationStatus) {
@@ -131,28 +132,63 @@ export const login = withDatabaseOperation(async function (
     }
     const identifier = params['body']['identifier'];
     idType = identifier.includes('@') ? 'email' : 'username';
+    const timerBegin = new Date().getTime();
     const userAccount = (await client.query(
         `select id, username, updated_at as updatedAt, roles, hash from user_account where ${idType} = $1::varchar`,
         [identifier],
     )).rows;
     
     if (userAccount.length === 0 || !(await compare(password, userAccount[0]['hash']))) {
+        sleep(timerBegin + msTimeout - new Date().getTime());
         return new ServiceResponse(400, null, 'Invalid credentials');
     }
     delete userAccount[0]['hash'];
-    await client.query(
-        `delete from user_token where user_id = $1::int`,
-        [userAccount[0]['id']]
-    );
-    const token = genToken();
-    await client.query(
-        `insert into user_token (user_id, token_type, token_value, created_at)
-            values($1::int, 'session', $2::varchar, now()::timestamp)`,
-        [userAccount[0]['id'], token]
-    );
-    const cookie = `TW-RoT-Auth-Cookie=${token}; Max-Age=${60 * 60 * 24 * 30}; SameSite=Strict; HttpOnly; Secure`;
-    res.setHeader('Set-Cookie', cookie);
+    try {
+        let token;
+        let exists = 1;
+
+        while (exists === 1) {
+            token = genToken();
+            exists = (await client.query(
+                `select count(' ') as exists from user_token where token_value = $1::varchar`,
+                [token]
+            )).rows[0]['exists'];
+        }
+
+        await client.query(
+            `insert into user_token (user_id, token_type, token_value, created_at)
+                values($1::int, 'session', $2::varchar, now()::timestamp)`,
+            [userAccount[0]['id'], token]
+        );
+
+        const cookie = `TW-RoT-Auth-Cookie=${token}; Max-Age=${60 * 60 * 24 * 30}; SameSite=Strict; HttpOnly; Secure`;
+        res.setHeader('Set-Cookie', cookie);
+    } catch (e) {
+        sleep(timerBegin + msTimeout - new Date().getTime());
+        throw e;
+    }
     return new ServiceResponse(200, {user: userAccount[0]}, 'Account successfully logged in');
+});
+
+export const verify = withDatabaseOperation(async function(
+    client, _req, _res, params
+) {
+    const token = params['body']['token'];
+    if (!token) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.VERIFICATION_TOKEN_NOT_IN_BODY}, 'Verification token not in request body');
+    }
+    const result = (await client.query(
+        `select user_id as userId, created_at as createdAt from user_token where token_value = $1::varchar`,
+        [token]
+    )).rows;
+    if (result.length === 0) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_TOKEN}, 'No such token exists');
+    }
+    const tokenInfo = result[0];
+    if (tokenInfo['createdAt'].getTime() + 60 * 60 < new Date().getTime()) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.EXPIRED_TOKEN}, 'Token is expired');
+    }
+
 });
 
 export const validateToken = withDatabaseOperation(async function (

@@ -3,30 +3,12 @@ const path = require('path');
 
 // Define paths to your server scripts and their corresponding working directories
 const servers = [
-    {
-        script: './modules/auth',
-        cwd: path.resolve(__dirname, './modules/auth'),
-    },
-    {
-        script: './modules/users',
-        cwd: path.resolve(__dirname, './modules/users'),
-    },
-    {
-        script: './modules/chapters',
-        cwd: path.resolve(__dirname, './modules/chapters'),
-    },
-    {
-        script: './modules/traffic-signs',
-        cwd: path.resolve(__dirname, './modules/traffic-signs'),
-    },
-    {
-        script: './modules/exercises',
-        cwd: path.resolve(__dirname, './modules/exercises'),
-    },
-    {
-        script: './web-server',
-        cwd: path.resolve(__dirname, './web-server'),
-    },
+    path.resolve(__dirname, './modules/auth'),
+    path.resolve(__dirname, './modules/users'),
+    path.resolve(__dirname, './modules/chapters'),
+    path.resolve(__dirname, './modules/traffic-signs'),
+    path.resolve(__dirname, './modules/exercises'),
+    path.resolve(__dirname, './web-server'),
 ];
 
 // Array to hold references to the server processes
@@ -34,10 +16,10 @@ const serverProcesses = [];
 
 // Function to start a server process
 function startServer(server) {
-    const serverProcess = spawn('supervisor', [server.script], {
+    const serverProcess = spawn('supervisor', ['index.js'], {
         stdio: 'inherit',
         shell: true,
-        cwd: server.cwd,
+        cwd: server,
     });
 
     serverProcess.on('close', (code) => {

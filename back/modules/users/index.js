@@ -8,7 +8,7 @@ import {
     createQuestionnaire,
     getQuestionnaire,
     submitQuestionnaireSolution
-} from "../users/userController.js";
+} from "./service.js";
 
 const app = new AppRouter();
 

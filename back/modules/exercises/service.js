@@ -1,10 +1,10 @@
 import { withDatabaseOperation } from '../_common/db.js';
 import { ServiceResponse } from '../_common/serviceResponse.js';
 
-export const getAllExerciseCategoriesService = withDatabaseOperation(async function (
-    client,
-    userId = 0
+export const getAllExerciseCategories = withDatabaseOperation(async function (
+    client, _req, _res, params
 ) {
+    const userId = params['authorization'];
     const qcData = (await client.query(
         'select ' +
             '   qc.title as title, ' +
@@ -75,11 +75,11 @@ function parseQuestionData(qData) {
     return { question: questionObj, answers: answerObjects };
 }
 
-export const getUnsolvedQuestionService = withDatabaseOperation(async function (
-    client,
-    categoryId,
-    userId = 0,
+export const getUnsolvedQuestionByCategory = withDatabaseOperation(async function (
+    client, _req, _res, params
 ) {
+    const categoryId = params['path']['id'];
+    const userId = params['authorization'] ?? 0;
     const qData = (
         await client.query(
             `${SQL_SELECT_STATEMENT}
@@ -117,10 +117,10 @@ export const getUnsolvedQuestionService = withDatabaseOperation(async function (
     );
 });
 
-export const getIncorrectlySolvedQuestionService = withDatabaseOperation(async function (
-    client,
-    userId = 0
+export const getIncorrectlySolvedQuestion = withDatabaseOperation(async function (
+    client, _req, _res, params
 ) {
+    const userId = params['authorization'];
     const qData = (
         await client.query(
             `${SQL_SELECT_STATEMENT}
@@ -158,25 +158,10 @@ export const getIncorrectlySolvedQuestionService = withDatabaseOperation(async f
     );
 });
 
-export const generateQuestionnaireService = withDatabaseOperation(async function (
-    client,
-    userId
+export const getSolution = withDatabaseOperation(async function (
+    client, _req, _res, params
 ) {
-    const questionnaire = (await client.query(
-        'select ' +
-            '    questionnaire_id as "id", ' +
-            '    generated_time as "generationTime", ' +
-            '    new as "new" ' +
-            'from generate_questionnaire($1::int)',
-        [userId]
-    )).rows[0];
-
-    return new ServiceResponse(200, questionnaire, 'Successfully generated questionnaire');
-});
-
-export const getSolutionService = withDatabaseOperation(async function (
-    client, questionId
-) {
+    const questionId = params['path']['id'];
     const results = (await client.query(
         'select \n' +
         '        a.id as "answerId", \n' +
@@ -190,5 +175,3 @@ export const getSolutionService = withDatabaseOperation(async function (
 
     return new ServiceResponse(200, results, 'Successfully retrieved question answers');
 });
-
-await getSolutionService(1);

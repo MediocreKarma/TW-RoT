@@ -7,7 +7,7 @@ import {
     getAllExerciseCategories,
     getIncorrectlySolvedQuestion, getSolution,
     getUnsolvedQuestionByCategory
-} from "../exercises/exerciseController.js";
+} from "./service.js";
 
 const app = new AppRouter();
 

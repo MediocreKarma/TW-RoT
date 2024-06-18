@@ -12,4 +12,7 @@ export const ErrorCodes = Object.freeze({
     PASSWORD_TOO_SHORT: 10,
     PASSWORD_TOO_LONG: 11,
     USERNAME_INVALID_CHARS: 12,
+    VERIFICATION_TOKEN_NOT_IN_BODY: 13,
+    INVALID_TOKEN: 14,
+    EXPIRED_TOKEN: 15,
 });
