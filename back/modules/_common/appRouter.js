@@ -1,10 +1,13 @@
-import {Server} from 'http';
+import {Server} from 'https';
 import {zip} from '../../common/utils.js';
 import {parse} from "node:url";
 import {sendEmptyResponse, sendJsonResponse} from "../../common/response.js";
 import {ErrorCodes} from "../../common/constants.js";
 import { withResponse } from './serviceResponse.js';
 import {getAuth} from './authMiddleware.js';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 export const Methods = Object.freeze({
     GET:    'GET',
@@ -18,6 +21,10 @@ export const Authentication = Object.freeze({
     REQUIRE: true, IGNORE: false
 })
 
+const getCWD = () => {
+    return dirname(fileURLToPath(import.meta.url));
+};
+
 export class AppRouter extends Server {
     routes = new Map([
         [Methods.GET,    new Map()],
@@ -28,7 +35,13 @@ export class AppRouter extends Server {
     ]);
 
     constructor(auth = Authentication.IGNORE) {
-        super((req, res) => this.requestHandler(req, res));
+        super(
+            {
+                key: fs.readFileSync(getCWD() + '/../../common/localhost-key.pem'), 
+                cert: fs.readFileSync(getCWD() + '/../../common/localhost.pem'), 
+            }, 
+            (req, res) => this.requestHandler(req, res)
+        );
         this.middlewares = [];
         this.auth = auth;
     }

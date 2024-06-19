@@ -1,11 +1,14 @@
 import { ErrorCodes } from '../../common/constants.js';
+import { isStringValidInteger } from '../../common/utils.js';
 import { withDatabaseOperation } from '../_common/db.js';
 import { ServiceResponse } from '../_common/serviceResponse.js';
+
+const API_IMAGE_URL = `${process.env.EXERCISES_URL}/api/v1/images/{id}.png`;
 
 export const getAllExerciseCategories = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const userId = params['authorization']?.id ?? 0;
+    const userId = params['authorization']?.user.id ?? 0;
     const qcData = (await client.query(
         'select ' +
             '   qc.title as title, ' +
@@ -60,27 +63,14 @@ const SQL_GROUPING_STATEMENT =
         random();`
 
 
-function parseQuestionData(qData) {
-    const questionObj = {
-        id: qData[0]['questionId'],
-        category: qData[0]['categoryId'],
-        text: qData[0]['questionText'],
-        image: qData[0]['questionImage'],
-    };
-
-    const answerObjects = qData.map((qObj) => ({
-        id: qObj['answer_id'],
-        description: qObj['answer_description'],
-    }));
-
-    return { question: questionObj, answers: answerObjects };
-}
-
 export const getUnsolvedQuestionByCategory = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
     const categoryId = params['path']['id'];
-    const userId = params['authorization']?.id ?? 0;
+    if (!isStringValidInteger(categoryId)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_CATEGORY_ID}, 'Invalid question category id');
+    }
+    const userId = params['authorization']?.user.id ?? 0;
     const qData = (
         await client.query(
             `${SQL_SELECT_STATEMENT}
@@ -106,10 +96,12 @@ export const getUnsolvedQuestionByCategory = withDatabaseOperation(async functio
     if (qData.length === 0) {
         return new ServiceResponse(
             404,
-            null,
+            {errorCode: ErrorCodes.NO_MORE_QUESTIONS_FOR_CATEGORY},
             'No unsolved question could be retrieved'
         );
     }
+
+    qData[0]['questionImage'] = API_IMAGE_URL.replace(/id/g, qData[0]['questionImageId']);
 
     return new ServiceResponse(
         200,
@@ -121,7 +113,10 @@ export const getUnsolvedQuestionByCategory = withDatabaseOperation(async functio
 export const getIncorrectlySolvedQuestion = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const userId = params['authorization'];
+    const userId = params['authorization']?.user.id;
+    if (!userId) {
+        return new ServiceResponse(401, {errorCode: ErrorCodes.UNAUTHENTICATED}, 'Cannot retrieve incorrectly solved for unlogged user');
+    }
     const qData = (
         await client.query(
             `${SQL_SELECT_STATEMENT}
@@ -147,7 +142,7 @@ export const getIncorrectlySolvedQuestion = withDatabaseOperation(async function
     if (qData.length === 0) {
         return new ServiceResponse(
             404,
-            null,
+            {errorCode: ErrorCodes.NO_MORE_INCORRECTLY_SOLVED_QUESTIONS},
             'No wrongly solved question could be retrieved'
         );
     }

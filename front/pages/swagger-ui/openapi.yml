@@ -4,15 +4,15 @@ info:
   description: API for managing chapters, sign categories, and exercise categories
   version: 1.0.0
 servers:
-  - url: http://localhost:12735/api/v1
+  - url: https://localhost:12735/api/v1
     description: Chapters server
-  - url: http://localhost:12736/api/v1
+  - url: https://localhost:12736/api/v1
     description: Sign Categories server
-  - url: http://localhost:12737/api/v1
+  - url: https://localhost:12737/api/v1
     description: Exercises server
-  - url: http://localhost:12738/api/v1
+  - url: https://localhost:12738/api/v1
     description: Users server
-  - url: http://localhost:12739/api/v1
+  - url: https://localhost:12739/api/v1
     description: Auth server
 paths:
   /chapters:
@@ -22,7 +22,7 @@ paths:
       tags:
         - Chapters
       servers:
-        - url: http://localhost:12735/api/v1
+        - url: https://localhost:12735/api/v1
       responses:
         '200':
           description: A list of chapters
@@ -46,7 +46,7 @@ paths:
       tags:
         - Chapters
       servers:
-        - url: http://localhost:12735/api/v1
+        - url: https://localhost:12735/api/v1
       parameters:
         - name: id
           in: path
@@ -74,7 +74,7 @@ paths:
       tags:
         - Sign Categories
       servers:
-        - url: http://localhost:12736/api/v1
+        - url: https://localhost:12736/api/v1
       responses:
         '200':
           description: A list of sign categories
@@ -100,7 +100,7 @@ paths:
       tags:
         - Sign Categories
       servers:
-        - url: http://localhost:12736/api/v1
+        - url: https://localhost:12736/api/v1
       parameters:
         - name: id
           in: path
@@ -152,7 +152,7 @@ paths:
       summary: Get an image
       description: Retrieve an image by its name.
       servers:
-        - url: http://localhost:12736/api/v1
+        - url: https://localhost:12736/api/v1
       tags:
         - Sign Categories
       parameters:
@@ -197,7 +197,7 @@ paths:
       tags:
         - Exercises
       servers:
-        - url: http://localhost:12737/api/v1
+        - url: https://localhost:12737/api/v1
       parameters:
         - name: Authorization
           in: header
@@ -225,7 +225,7 @@ paths:
       tags:
         - Exercises
       servers:
-        - url: http://localhost:12737/api/v1
+        - url: https://localhost:12737/api/v1
       parameters:
         - name: id
           in: path
@@ -275,7 +275,7 @@ paths:
       tags:
         - Exercises
       servers:
-        - url: http://localhost:12737/api/v1
+        - url: https://localhost:12737/api/v1
       security:
         - bearerAuth: []
       responses:
@@ -320,7 +320,7 @@ paths:
       tags:
         - Exercises
       servers:
-        - url: http://localhost:12738/api/v1
+        - url: https://localhost:12738/api/v1
       parameters:
         - name: id
           in: path
@@ -418,7 +418,7 @@ paths:
       tags:
         - Auth
       servers:
-        - url: http://localhost:12739/api/v1
+        - url: https://localhost:12739/api/v1
       requestBody:
         required: true
         content:
@@ -458,7 +458,7 @@ paths:
       tags:
         - Auth
       servers:
-        - url: http://localhost:12739/api/v1
+        - url: https://localhost:12739/api/v1
       requestBody:
         required: true
         content:
@@ -484,7 +484,7 @@ paths:
                 type: string
                 example: >-
                   TW-RoT-Auth-Cookie=token_value; Max-Age=100000;
-                  SameSite=Strict; HttpOnly; Secure
+                  SameSite=Strict; httpsOnly; Secure
           content:
             application/json:
               schema:
@@ -543,7 +543,7 @@ paths:
       tags:
         - Auth
       servers:
-        - url: http://localhost:12739/api/v1
+        - url: https://localhost:12739/api/v1
       requestBody:
         required: true
         content:
@@ -606,7 +606,7 @@ paths:
       tags:
         - Auth
       servers:
-        - url: http://localhost:12739/api/v1
+        - url: https://localhost:12739/api/v1
       requestBody:
         required: true
         content:
@@ -662,7 +662,7 @@ paths:
       tags:
         - Auth
       servers:
-        - url: http://localhost:12739/api/v1
+        - url: https://localhost:12739/api/v1
       requestBody:
         required: true
         content:
@@ -711,7 +711,7 @@ paths:
       tags:
         - Auth
       servers:
-        - url: http://localhost:12739/api/v1
+        - url: https://localhost:12739/api/v1
       requestBody:
         required: true
         content:
@@ -760,7 +760,7 @@ paths:
       tags:
         - Auth
       servers:
-        - url: http://localhost:12739/api/v1
+        - url: https://localhost:12739/api/v1
       requestBody:
         required: true
         content:
@@ -809,7 +809,7 @@ paths:
       tags:
         - Auth
       servers:
-        - url: http://localhost:12739/api/v1
+        - url: https://localhost:12739/api/v1
       security:
         - cookieAuth: []
       responses:
@@ -842,7 +842,7 @@ paths:
       tags:
         - Auth
       servers:
-        - url: http://localhost:12739/api/v1
+        - url: https://localhost:12739/api/v1
       security:
         - cookieAuth: []
       responses:
@@ -896,7 +896,7 @@ paths:
       tags:
         - Exercises
       servers:
-        - url: http://localhost:12737/api/v1
+        - url: https://localhost:12737/api/v1
       parameters:
         - in: path
           name: id
@@ -927,7 +927,7 @@ paths:
       tags:
         - Questionnaire
       servers:
-        - url: http://localhost:12738/api/v1
+        - url: https://localhost:12738/api/v1
       security:
         - bearerAuth: []
       parameters:
@@ -966,7 +966,7 @@ paths:
       tags:
         - Questionnaire
       servers:
-        - url: http://localhost:12738/api/v1
+        - url: https://localhost:12738/api/v1
       security:
         - bearerAuth: []
       parameters:
@@ -1023,7 +1023,7 @@ paths:
       tags:
         - Questionnaire
       servers:
-        - url: http://localhost:12738/api/v1
+        - url: https://localhost:12738/api/v1
       requestBody:
         required: true
         content:

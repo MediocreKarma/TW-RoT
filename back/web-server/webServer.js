@@ -1,4 +1,4 @@
-import { Server } from 'http';
+import { Server } from 'https';
 import { zip } from '../common/utils.js';
 import { parse } from 'node:url';
 import {
@@ -9,10 +9,22 @@ import {
 import { ErrorCodes } from '../common/constants.js';
 import fs from 'fs';
 import path from 'path';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'url';
+
+const getCWD = () => {
+    return dirname(fileURLToPath(import.meta.url));
+};
 
 export class WebServer extends Server {
     constructor() {
-        super((req, res) => this.requestHandler(req, res));
+        super(
+            {
+                key: fs.readFileSync(getCWD() + '/../common/localhost-key.pem'), 
+                cert: fs.readFileSync(getCWD() + '/../common/localhost.pem'), 
+            },
+            (req, res) => this.requestHandler(req, res)
+        );
         this.notFoundRoute = null;
         this.fixedRoutes = new Map();
         this.dynamicRoutes = new Map();

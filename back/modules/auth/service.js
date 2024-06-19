@@ -16,7 +16,9 @@ const CHANGE_CREDENTIAL_SUBJECT = 'Solicitare de schimbare a credențialelor pe 
 const CHANGE_EMAIL_SUBJECT = 'Confirmarea noului email de pe ProRutier';
 const oneHourInMs = 60 * 60 * 1000;
 const AUTH_COOKIE_NAME = 'TW-RoT-Auth-Cookie';
-const AUTH_COOKIE_PROPERTIES = `Max-Age=${60 * 60 * 24 * 30}; SameSite=Strict; HttpOnly; Secure`;
+const AUTH_COOKIE_PROPERTIES = `Max-Age=${60 * 60 * 24 * 30}; ` + 
+    'SameSite=None; HttpOnly; Secure; Path=/' + 
+    (process.env.DOMAIN === 'localhost' ? '': `; Domain=${process.env.DOMAIN}`);
 
 const validationProperties = Object.freeze({
     password: [8, 64],
@@ -411,7 +413,7 @@ const getAuthCookie = (req) => {
 };
 
 const expireAuthCookie = (res) => {
-    res.setHeader('Set-Cookie', `${AUTH_COOKIE_NAME}=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; ${AUTH_COOKIE_PROPERTIES}`);
+    res.setHeader('Set-Cookie', `${AUTH_COOKIE_NAME}=; Expires=Thu, 01 Jan 1970 00:00:00 GMT`);
     return res;
 };
 
@@ -438,6 +440,9 @@ export const logout = withDatabaseOperation(async function(
     client, req, res, _params
 ) {
     const cookieOutput = getAuthCookie(req);
+    if (cookieOutput instanceof ServiceResponse) {
+        return cookieOutput;
+    }
     const result = await client.query(
         `delete from user_token where token_type = 'session' and token_value = $1::varchar`,
         [cookieOutput]
