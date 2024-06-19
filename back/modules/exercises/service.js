@@ -1,10 +1,11 @@
+import { ErrorCodes } from '../../common/constants.js';
 import { withDatabaseOperation } from '../_common/db.js';
 import { ServiceResponse } from '../_common/serviceResponse.js';
 
 export const getAllExerciseCategories = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const userId = params['authorization'];
+    const userId = params['authorization']?.id ?? 0;
     const qcData = (await client.query(
         'select ' +
             '   qc.title as title, ' +
@@ -19,7 +20,7 @@ export const getAllExerciseCategories = withDatabaseOperation(async function (
             '    on aq.question_id = q.id and aq.user_id = $1::int\n' +
             'group by qc.id, qc.title\n' +
             'order by qc.id;',
-        [userId ?? 0]
+        [userId]
     )).rows;
 
     const { solved, total, wrong } = qcData.reduce(
@@ -45,7 +46,7 @@ const SQL_SELECT_STATEMENT =
         q.category_id as "categoryId",
         qg.title as "categoryTitle",
         q.text as "questionText",
-        q.image_id as "questionImage",
+        q.image_id as "questionImageId",
         array_agg(jsonb_build_object('answerId', a.id, 'description', a.description)) as "answers"
     from 
         question q 
@@ -79,7 +80,7 @@ export const getUnsolvedQuestionByCategory = withDatabaseOperation(async functio
     client, _req, _res, params
 ) {
     const categoryId = params['path']['id'];
-    const userId = params['authorization'] ?? 0;
+    const userId = params['authorization']?.id ?? 0;
     const qData = (
         await client.query(
             `${SQL_SELECT_STATEMENT}
@@ -162,6 +163,9 @@ export const getSolution = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
     const questionId = params['path']['id'];
+    if (!Number.isInteger(questionId)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_ID}, 'Invalid question id');
+    }
     const results = (await client.query(
         'select \n' +
         '        a.id as "answerId", \n' +
@@ -173,5 +177,14 @@ export const getSolution = withDatabaseOperation(async function (
         [questionId]
     )).rows;
 
+    if (results.length === 0) {
+        return new ServiceResponse(404, {errorCode: ErrorCodes.QUESTION_NOT_FOUND}, 'Question not found');
+    }
+
+    let minAnswerId = Number.MAX_SAFE_INTEGER;
+    for (const answer of results) {
+        minAnswerId = Math.min(minAnswerId, answer['answerId']);
+    }
+    results.forEach((answer) => { answer['answerId'] -= minAnswerId });
     return new ServiceResponse(200, results, 'Successfully retrieved question answers');
 });

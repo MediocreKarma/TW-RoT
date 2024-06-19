@@ -1,4 +1,5 @@
 import { ErrorCodes } from '../../common/constants.js';
+import { isStringValidInteger } from '../../common/utils.js';
 import { withDatabaseOperation } from '../_common/db.js';
 import { ImageResponse, ServiceResponse } from '../_common/serviceResponse.js';
 import dotenv from 'dotenv';
@@ -29,13 +30,29 @@ export const getSignCategory = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
     const id = params['path']['id'];
-    const categoryInfo = (
+    if (!isStringValidInteger(id)) {
+        return new ServiceResponse(
+            400,
+            { errorCode: ErrorCodes.INVALID_SIGN_CATEGORY },
+            'Invalid id format'
+        );
+    }
+    const results = (
         await client.query(
             'select id, title, design, purpose, suggestion, image_id as "imageId" from sign_category where id=$1::int',
             [id]
         )
-    ).rows[0];
-    categoryInfo['image'] = API_IMAGE_URL.replace(/{id}/g, categoryInfo['imageId']);
+    ).rows;
+
+    if (results.length === 0) {
+        return new ServiceResponse(
+            404,
+            { errorCode: ErrorCodes.SIGN_CATEGORY_NOT_FOUND },
+            'No sign category with given id'
+        );
+    }
+
+    const categoryInfo = buildImageForObj(results[0]);
     const signCategory = (
         await client.query(
             'select s.id, s.title, s.description, s.image_id as "imageId"' +
@@ -43,9 +60,7 @@ export const getSignCategory = withDatabaseOperation(async function (
             [id]
         )
     ).rows;
-    for (const sign of signCategory) {
-        sign['image'] = API_IMAGE_URL.replace(/{id}/g, sign['imageId'])
-    }
+    signCategory.forEach((sign) => buildImageForObj(sign));
     return new ServiceResponse(
         200,
         { category: categoryInfo, signs: signCategory },
