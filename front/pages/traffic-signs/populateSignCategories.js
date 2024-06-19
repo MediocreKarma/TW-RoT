@@ -1,10 +1,7 @@
 import { fetchCategories } from './requests.js';
-
-import API from '/js/api.js';
-
-const showLoading = (domNode) => {
-    domNode.innerText = 'Se încarcă...';
-};
+import { setLoading } from '/js/render.js';
+import { renderError } from '/js/errors.js';
+import { showInfoModal } from '/js/modals.js';
 
 const renderCategory = (categoryData) => {
     const anchor = document.createElement('a');
@@ -38,14 +35,19 @@ const renderCategory = (categoryData) => {
 
 const renderCategories = async () => {
     const container = document.getElementById('category-container');
-    showLoading(container);
+    setLoading(container);
+    try {
+        const categoriesData = await fetchCategories();
+        container.innerHTML = '';
 
-    const categoriesData = await fetchCategories();
-    container.innerHTML = '';
-
-    categoriesData.forEach((category) => {
-        container.appendChild(renderCategory(category));
-    });
+        categoriesData.forEach((category) => {
+            container.appendChild(renderCategory(category));
+        });
+    } catch (e) {
+        showInfoModal(renderError(e), () => {
+            window.location.href = '/';
+        });
+    }
 };
 
 window.addEventListener('load', renderCategories);

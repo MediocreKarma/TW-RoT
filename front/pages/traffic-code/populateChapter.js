@@ -1,17 +1,14 @@
-import { showInfoModal } from '/js/modals.js';
 import { fetchChapter, fetchChapters } from './requests.js';
 import { renderError } from '/js/errors.js';
+import { setLoading } from '/js/render.js';
+import { showInfoModal } from '/js/modals.js';
 
-const showLoading = (domNode) => {
-    domNode.innerText = 'Se încarcă...';
-};
-
-const populateChapterContent = async (chapterId) => {
+const renderChapter = async (chapterId) => {
     const titleContainer = document.getElementById('chapter-title');
     const contentContainer = document.getElementById('chapter-content');
 
-    showLoading(titleContainer);
-    showLoading(contentContainer);
+    setLoading(titleContainer);
+    setLoading(contentContainer);
 
     try {
         const data = await fetchChapter(chapterId);
@@ -27,14 +24,21 @@ const populateChapterContent = async (chapterId) => {
     }
 };
 
-const populateChapterSidebar = async (currentId) => {
+const renderChapterSidebar = async (currentId) => {
     const sidebar = document.getElementById('chapter-sidebar');
     if (!sidebar) {
         return;
     }
-    showLoading(sidebar);
+    setLoading(sidebar);
 
-    const data = await fetchChapters();
+    let data;
+    try {
+        data = await fetchChapters();
+    } catch (e) {
+        // don't even show sidebar
+        sidebar.innerText = '';
+        return;
+    }
 
     sidebar.innerText = '';
 
@@ -61,6 +65,6 @@ window.addEventListener('load', async () => {
         .split('/')
         .pop();
 
-    await populateChapterContent(chapterId);
-    await populateChapterSidebar(parseInt(chapterId));
+    await renderChapter(chapterId);
+    await renderChapterSidebar(parseInt(chapterId));
 });

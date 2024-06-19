@@ -1,10 +1,7 @@
 import { fetchCategory } from './requests.js';
-
-import API from '/js/api.js';
-
-const showLoading = (domNode) => {
-    domNode.innerText = 'Se încarcă...';
-};
+import { renderError } from '/js/errors.js';
+import { showInfoModal } from '/js/modals.js';
+import { setLoading } from '/js/render.js';
 
 function renderCard(cardData) {
     // Create the main card div
@@ -52,16 +49,20 @@ const renderCategory = async () => {
     const id = document.location.pathname.replace(/\/+$/, '').split('/').pop();
 
     const container = document.getElementById('category-container');
-    showLoading(container);
+    setLoading(container);
 
     const title = document.getElementById('sign-category-title');
-    showLoading(title);
+    setLoading(title);
 
-    const categoryData = await fetchCategory(id);
-    renderCards(container, categoryData.signs);
-    title.innerText = categoryData.category.title;
-
-    console.log(categoryData);
+    try {
+        const categoryData = await fetchCategory(id);
+        renderCards(container, categoryData.signs);
+        title.innerText = categoryData.category.title;
+    } catch (e) {
+        showInfoModal(renderError(e), () => {
+            window.location.href = '/traffic-signs';
+        });
+    }
 };
 
 window.addEventListener('load', renderCategory);

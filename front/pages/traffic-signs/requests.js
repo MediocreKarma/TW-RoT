@@ -1,15 +1,12 @@
 import API from '/js/api.js';
-
-// TODO: wrapper over any fetch function to throw error if bad request
+import { get } from '/js/requests.js';
 
 export const fetchCategories = async () => {
-    const response = await fetch(`${API.TRAFFIC_SIGNS}/sign-categories`);
-    const data = await response.json();
-    return data;
+    const response = await get(`${API.TRAFFIC_SIGNS}/sign-categories`);
+    return await response.json();
 };
 
 export const fetchCategory = async (id) => {
-    const response = await fetch(`${API.TRAFFIC_SIGNS}/sign-categories/${id}`);
-    const data = await response.json();
-    return data;
+    const response = await get(`${API.TRAFFIC_SIGNS}/sign-categories/${id}`);
+    return await response.json();
 };

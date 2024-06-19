@@ -22,6 +22,12 @@ const errors = {
     // COOKIE_HEADER_NOT_FOUND: 21,
     // AUTH_COOKIE_NOT_FOUND: 22,
     // AUTH_COOKIE_INVALID: 23,
+    26: 'Capitolul cerut din Codul Rutier nu există',
+    27: 'Capitolul cerut din Codul Rutier este invalid',
+    28: 'Întrebare invalidă',
+    29: 'Întrebare inexistentă',
+    30: 'Categoria de indicatoare rutiere cerută este invalidă',
+    31: 'Categoria de indicatoare rutiere cerută nu există',
 };
 
 export const getErrorMessageFromCode = (errorCode) => {

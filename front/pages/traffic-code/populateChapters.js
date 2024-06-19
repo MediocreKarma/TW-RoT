@@ -1,4 +1,6 @@
-import { fetchChapter, fetchChapters } from './requests.js';
+import { fetchChapters } from './requests.js';
+import { renderError } from '/js/errors.js';
+import { showInfoModal } from '/js/modals.js';
 
 const renderChapters = (chapterContainer, chapters) => {
     if (!Array.isArray(chapters)) {
@@ -42,16 +44,11 @@ window.addEventListener('load', async () => {
 
     try {
         const chapters = await fetchChapters();
-
         renderChapters(chapterContainer, chapters);
     } catch (e) {
-        // TODO: proper error handling using error codes :)
-        console.log(e);
-        chapterContainer.textContent = `Ne pare rău! A intervenit o eroare: ${JSON.stringify(
-            e,
-            null,
-            2
-        )}`;
+        showInfoModal(renderError(e), () => {
+            window.location.href = '/';
+        });
         return;
     }
 });
