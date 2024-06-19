@@ -25,4 +25,6 @@ export const ErrorCodes = Object.freeze({
     AUTH_COOKIE_INVALID: 23,
     INVALID_IMAGE_ID: 24,
     TRAFFIC_SIGNS_IMAGE_NOT_FOUND: 25,
+    CHAPTER_NOT_FOUND: 26,
+    INVALID_CHAPTER_ID: 27
 });

@@ -1,5 +1,6 @@
 import { withDatabaseOperation } from '../_common/db.js';
 import { ServiceResponse } from '../_common/serviceResponse.js';
+import { ErrorCodes } from '../../common/constants.js';
 
 export const getAllChapters = withDatabaseOperation(async function (
     client, _req, _res, _params
@@ -18,12 +19,18 @@ export const getChapterContent = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
     const id = params['path']['id'];
+    if (!Number.isInteger(id)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_CHAPTER_ID}, 'Invalid id format');
+    }
     const chapter = (
         await client.query(
             'select number, title, content, isAddendum from chapter where id=$1::int',
             [id]
         )
-    ).rows[0];
+    ).rows;
+    if (chapter.length === 0) {
+        return new ServiceResponse(404, {errorCode: ErrorCodes.CHAPTER_NOT_FOUND}, 'No chapter with given id');
+    }
     return new ServiceResponse(
         200,
         chapter,

@@ -4,6 +4,7 @@ import {parse} from "node:url";
 import {sendEmptyResponse, sendJsonResponse} from "../../common/response.js";
 import {ErrorCodes} from "../../common/constants.js";
 import { withResponse } from './serviceResponse.js';
+import {getAuth} from './authMiddleware.js';
 
 export const Methods = Object.freeze({
     GET:    'GET',
@@ -12,6 +13,10 @@ export const Methods = Object.freeze({
     DELETE: 'DELETE',
     PATCH:  'PATCH',
 });
+
+export const Authentication = Object.freeze({
+    REQUIRE: true, IGNORE: false
+})
 
 export class AppRouter extends Server {
     routes = new Map([
@@ -22,16 +27,23 @@ export class AppRouter extends Server {
         [Methods.PATCH,  new Map()],
     ]);
 
-    constructor() {
+    constructor(auth = Authentication.IGNORE) {
         super((req, res) => this.requestHandler(req, res));
+        this.middlewares = [];
+        this.auth = auth;
+    }
+
+    registerMiddleware(handler) {
+        this.middlewares.push(handler);
+        return this;
     }
 
     get(route, handler) {
-        this.registerRoute(Methods.GET, route, handler);
+        return this.registerRoute(Methods.GET, route, handler);
     }
 
     post(route, handler) {
-        this.registerRoute(Methods.POST, route, handler);
+        return this.registerRoute(Methods.POST, route, handler);
     }
 
     registerRoute(method, route, handler) {
@@ -40,6 +52,7 @@ export class AppRouter extends Server {
             throw new Error(`Route ${method} not found`);
         }
         this.routes.get(method).set(route, withResponse(handler));
+        return this;
     }
 
      async requestHandler(req, res) {
@@ -78,7 +91,7 @@ export class AppRouter extends Server {
                 query: query,
                 body: body,
                 path: pathParams,
-                authorization: this.getIdFromAuthorization(req)
+                authorization: this.auth ? await getAuth(req) : {}
             };
             handler(req, res, params);
             return;
@@ -107,14 +120,6 @@ export class AppRouter extends Server {
             }
         }
         return params;
-    }
-
-    getIdFromAuthorization(req) {
-        const authHeader = req.headers['authorization'];
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return null;
-        }
-        return authHeader.split(' ')[1];
     }
 
     getRequestBody(req){

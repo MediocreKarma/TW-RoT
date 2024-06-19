@@ -2,14 +2,14 @@ import dotenv from 'dotenv';
 
 dotenv.config({path: '../../.env'});
 
-import {AppRouter} from "../_common/appRouter.js";
+import {AppRouter, Authentication} from "../_common/appRouter.js";
 import {
     getAllExerciseCategories,
     getIncorrectlySolvedQuestion, getSolution,
     getUnsolvedQuestionByCategory
 } from "./service.js";
 
-const app = new AppRouter();
+const app = new AppRouter(Authentication.REQUIRE);
 
 app.get('/api/v1/exercises/categories', getAllExerciseCategories);
 app.get('/api/v1/exercises/unsolved/:id', getUnsolvedQuestionByCategory);
