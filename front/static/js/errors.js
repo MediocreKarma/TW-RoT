@@ -24,15 +24,24 @@ const errors = {
     // AUTH_COOKIE_INVALID: 23,
 };
 
-export const getErrorMessage = (errorData) => {
-    console.log(errorData);
-    if (errorData?.body?.errorCode in errors) {
-        return errors[errorData?.body?.errorCode];
+export const getErrorMessageFromCode = (errorCode) => {
+    console.log(errorCode);
+    if (errorCode in errors) {
+        return errors[errorCode];
     }
     return 'Eroare necunoscută';
 };
 
-export const showError = (errorData, container = undefined) => {
+export const getErrorCode = (errorData) => {
+    return errorData?.body?.errorCode;
+};
+
+export const getErrorMessage = (errorData) => {
+    console.log(errorData);
+    return getErrorMessageFromCode(errorData?.body?.errorCode);
+};
+
+export const renderError = (errorData) => {
     // let errorContainer = document.createElement('div');
     // errorContainer.className = 'error';
 
@@ -53,6 +62,8 @@ export const showError = (errorData, container = undefined) => {
     errorDetails.innerText = errorMessage;
     errorInfoContainer.appendChild(errorDetails);
 
+    return errorInfoContainer;
+
     // let button = document.createElement('a');
     // button.className = 'button';
     // button.textContent = 'Acasă';
@@ -61,10 +72,10 @@ export const showError = (errorData, container = undefined) => {
 
     // errorContainer.appendChild(errorInfoContainer);
 
-    if (!container) {
-        container = document.querySelector('.main-container');
-    }
+    // if (!container) {
+    //     container = document.querySelector('.main-container');
+    // }
 
-    container.innerHTML = '';
-    container.appendChild(errorInfoContainer);
+    // container.innerHTML = '';
+    // container.appendChild(errorInfoContainer);
 };

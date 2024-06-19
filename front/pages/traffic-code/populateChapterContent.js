@@ -1,6 +1,6 @@
+import { showInfoModal } from '/js/modals.js';
 import { fetchChapter, fetchChapters } from './requests.js';
-
-import { showError } from '/js/errors.js';
+import { renderError } from '/js/errors.js';
 
 const showLoading = (domNode) => {
     domNode.innerText = 'Se încarcă...';
@@ -21,7 +21,9 @@ const populateChapterContent = async (chapterId) => {
         } ${data.number}: ${data.title}`;
         contentContainer.innerHTML = data.content;
     } catch (e) {
-        showError(e);
+        showInfoModal(renderError(e), () => {
+            window.location.href = '/traffic-code';
+        });
     }
 };
 
@@ -54,7 +56,6 @@ const populateChapterSidebar = async (currentId) => {
 };
 
 window.addEventListener('load', async () => {
-    // const chapterId = new URLSearchParams(document.location.search).get('id');
     const chapterId = document.location.pathname
         .replace(/\/+$/, '')
         .split('/')

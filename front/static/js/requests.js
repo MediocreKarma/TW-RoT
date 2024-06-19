@@ -24,6 +24,7 @@ const wrappedFetch = withFetch(fetch);
 export const get = async (url, options = {}) => {
     return await wrappedFetch(url, {
         method: 'GET',
+        credentials: 'include',
         ...options,
     });
 };
@@ -31,6 +32,7 @@ export const get = async (url, options = {}) => {
 export const post = async (url, data, options = {}) => {
     return await wrappedFetch(url, {
         method: 'POST',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
             ...options.headers,
@@ -43,6 +45,7 @@ export const post = async (url, data, options = {}) => {
 export const put = async (url, data, options = {}) => {
     return await wrappedFetch(url, {
         method: 'PUT',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
             ...options.headers,
@@ -55,6 +58,7 @@ export const put = async (url, data, options = {}) => {
 export const del = async (url, options = {}) => {
     return await wrappedFetch(url, {
         method: 'DELETE',
+        credentials: 'include',
         ...options,
     });
 };
