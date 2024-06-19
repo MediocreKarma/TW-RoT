@@ -16,6 +16,7 @@ const CHANGE_CREDENTIAL_SUBJECT = 'Solicitare de schimbare a credențialelor pe 
 const CHANGE_EMAIL_SUBJECT = 'Confirmarea noului email de pe ProRutier';
 const oneHourInMs = 60 * 60 * 1000;
 const AUTH_COOKIE_NAME = 'TW-RoT-Auth-Cookie';
+const AUTH_COOKIE_PROPERTIES = `Max-Age=${60 * 60 * 24 * 30}; SameSite=Strict; HttpOnly; Secure`;
 
 const validationProperties = Object.freeze({
     password: [8, 64],
@@ -179,7 +180,7 @@ export const login = withDatabaseOperation(async function (
             [userAccount[0]['id'], token]
         );
 
-        const cookie = `${AUTH_COOKIE_NAME}=${token}; Max-Age=${60 * 60 * 24 * 30}; SameSite=Strict; HttpOnly; Secure`;
+        const cookie = `${AUTH_COOKIE_NAME}=${token}; ${AUTH_COOKIE_PROPERTIES}`;
         res.setHeader('Set-Cookie', cookie);
     } catch (e) {
         await sleep(timerBegin + msTimeout - new Date().getTime());
@@ -409,8 +410,13 @@ const getAuthCookie = (req) => {
     return token;
 };
 
+const expireAuthCookie = (res) => {
+    res.setHeader('Set-Cookie', `${AUTH_COOKIE_NAME}=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; ${AUTH_COOKIE_PROPERTIES}`);
+    return res;
+};
+
 export const isAuthenticated = withDatabaseOperation(async function(
-    client, req, _res, _params
+    client, req, res, _params
 ) {
     const cookieOutput = getAuthCookie(req);
     if (cookieOutput instanceof ServiceResponse) {
@@ -422,19 +428,21 @@ export const isAuthenticated = withDatabaseOperation(async function(
         [cookieOutput]
     )).rows;
     if (result.length === 0) {
+        expireAuthCookie(res);
         return new ServiceResponse(401, {errorCode: ErrorCodes.AUTH_COOKIE_INVALID}, 'Auth cookie is invalid');
     }
     return new ServiceResponse(200, {user: result[0]}, 'Token is valid');
 });
 
 export const logout = withDatabaseOperation(async function(
-    client, req, _res, _params
+    client, req, res, _params
 ) {
     const cookieOutput = getAuthCookie(req);
     const result = await client.query(
         `delete from user_token where token_type = 'session' and token_value = $1::varchar`,
         [cookieOutput]
     );
+    expireAuthCookie(res);
     if (result['rowCount'] === 0) {
         return new ServiceResponse(401, {errorCode: ErrorCodes.AUTH_COOKIE_INVALID}, 'Auth cookie is invalid');
     }
