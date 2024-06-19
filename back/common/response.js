@@ -1,6 +1,7 @@
 export function setCorsHeaders(response) {
     response.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
     response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Specify allowed methods
+    response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Specify allowed headers
     response.setHeader('Access-Control-Allow-Credentials', true); // Allow credentials
     response.setHeader('Access-Control-Max-Age', 60 * 60 * 24); // Cache the preflight request for 24 hours
     return response;
