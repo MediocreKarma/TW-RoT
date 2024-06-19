@@ -1,5 +1,4 @@
-drop function generate_questionnaire(int);
-
+drop function if exists generate_questionnaire(int);
 create or replace function generate_questionnaire(u_id int) 
 returns table(
     questionnaire_id int,
@@ -76,11 +75,13 @@ begin
     return query select qstnr_id, gen_time, true;
 end; $$ language plpgsql;
 
+drop type if exists answer_t;
 create type answer_t as (
     id int, 
     description varchar(4096)
 );
 
+drop function if exists get_questionnaire_by_id(int);
 create or replace function get_questionnaire_by_id(qstr_id int) 
 returns table (
     generated_question_id int,
@@ -107,6 +108,7 @@ begin
         group by gq.id, q.text, q.image_id;    
 end; $$ language PLPGSQL;
 
+drop function if exists get_questionnaire_by_user_id(int);
 create or replace function get_questionnaire_by_user_id(u_id int) 
 returns table (
     generated_question_id int,
@@ -135,7 +137,7 @@ begin
         group by gq.id, q.text, q.image_id;   
 end; $$ language PLPGSQL;
 
-
+drop function if exists get_answer_bitset(integer);
 create or replace function get_answer_bitset(q_id integer) returns int
 as $$
 declare
@@ -158,6 +160,7 @@ BEGIN
     
 end; $$ language PLPGSQL;
 
+drop function if exists register_answer(int, int, int);
 create or replace function register_answer(u_id integer, q_id integer, answer_bitset integer) 
 returns table (
     answer_id int,
@@ -175,6 +178,7 @@ BEGIN
     return query select a.id, a.correct from answer a join question q on a.question_id = q.id where q.id = q_id;
 end; $$ language PLPGSQL;
 
+drop function if exists finish_questionnaire(int);
 create or replace function finish_questionnaire(user_id int) returns int
 as $$
 declare
@@ -210,6 +214,7 @@ begin
     return score;
 end; $$ language plpgsql;
 
+drop function if exists submit_questionnaire_solution(int, int, int, int);
 create or replace function submit_questionnaire_solution(u_id int, qstr_id int, gq_id int, answer_bitset int) 
 returns table (
     answer_id int,

@@ -389,7 +389,8 @@ paths:
   /auth/login:
     post:
       summary: Login a user
-      tags: ['Auth']
+      tags:
+        - Auth
       servers:
         - url: http://localhost:{AUTH_PORT}/api/v1
       requestBody:
@@ -399,10 +400,9 @@ paths:
             schema:
               type: object
               properties:
-                email:
+                identifier:
                   type: string
-                  format: email
-                  description: The email of the user
+                  description: The email/username of the user
                   example: user@example.com
                 password:
                   type: string
@@ -410,7 +410,13 @@ paths:
                   example: password123
       responses:
         '200':
-          description: Successful login, returns the user ID
+          description: Successful login, returns user data and an auth cookie
+          headers: 
+            Set-Cookie:
+              description: Set the authentication cookie
+              schema: 
+                type: string
+                example: TW-RoT-Auth-Cookie=token_value; Max-Age=100000; SameSite=Strict; HttpOnly; Secure
           content:
             application/json:
               schema:
@@ -420,6 +426,18 @@ paths:
                     type: integer
                     description: The ID of the logged-in user
                     example: 1
+                  username:
+                    type: string
+                    description: The username of the logged-in user
+                    example: example_username
+                  updatedAt:
+                    type: string
+                    description: The last date the account was updated in any way
+                    example: 2012-04-23T18:25:43.511Z
+                  roles:
+                    type: integer
+                    description: The roles of the logged-in user
+                    example: 0
         '400':
           description: Invalid input, object invalid
           content:
@@ -427,9 +445,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Invalid email or password
+                  errorCode:
+                    type: integer
+                    example: 0
         '401':
           description: Unauthorized, invalid credentials
           content:
@@ -437,9 +455,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Unauthorized
+                  errorCode:
+                    type: integer
+                    example: 0
         '500':
           description: Internal server error
           content:
@@ -447,9 +465,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Internal server error
+                  errorCode:
+                    type: integer
+                    example: 0
 
   /auth/verify:
     post:
@@ -491,9 +509,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Invalid token
+                  errorCode:
+                    type: integer
+                    example: 0
         '401':
           description: Unauthorized, token is invalid or expired
           content:
@@ -501,9 +519,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Unauthorized
+                  errorCode:
+                    type: integer
+                    example: 0
         '500':
           description: Internal server error
           content:
@@ -511,9 +529,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Internal server error
+                  errorCode:
+                    type: integer
+                    example: 0
 
   /auth/change-credentials:
     post:
@@ -553,9 +571,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Invalid email or request type
+                  errorCode:
+                    type: integer
+                    example: 0
         '500':
           description: Internal server error
           content:
@@ -563,9 +581,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Internal server error
+                  errorCode:
+                    type: integer
+                    example: 0
 
   /auth/change-password:
     post:
@@ -603,9 +621,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Invalid token or password
+                  errorCode:
+                    type: integer
+                    example: 0
         '500':
           description: Internal server error
           content:
@@ -613,9 +631,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Internal server error
+                  errorCode:
+                    type: integer
+                    example: 0
 
   /auth/change-email:
     post:
@@ -653,9 +671,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Invalid token or email
+                  errorCode:
+                    type: integer
+                    example: 0
         '500':
           description: Internal server error
           content:
@@ -663,9 +681,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Internal server error
+                  errorCode:
+                    type: integer
+                    example: 0
 
   /auth/change-username:
     post:
@@ -703,9 +721,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Invalid token or username
+                  errorCode:
+                    type: integer
+                    example: 0
         '500':
           description: Internal server error
           content:
@@ -713,9 +731,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Internal server error
+                  errorCode:
+                    type: integer
+                    example: 0
 
   /auth/logout:
     post:
@@ -737,9 +755,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Unauthorized
+                  errorCode:
+                    type: integer
+                    example: 0
         '500':
           description: Internal server error
           content:
@@ -747,9 +765,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Internal server error
+                  errorCode:
+                    type: integer
+                    example: 0
 
   /auth/authenticated:
     post:
@@ -793,9 +811,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Unauthorized
+                  errorCode:
+                    type: integer
+                    example: 0
         '500':
           description: Internal server error
           content:
@@ -803,9 +821,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-                    example: Internal server error
+                  errorCode:
+                    type: integer
+                    example: 0
 
   /exercises/{id}/solution:
     get:

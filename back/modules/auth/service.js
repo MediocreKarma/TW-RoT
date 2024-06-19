@@ -1,11 +1,13 @@
 import {withDatabaseOperation, withDatabaseTransaction, wrapOperationWithTransaction} from "../_common/db.js";
 import {ServiceResponse} from "../_common/serviceResponse.js";
 import { ErrorCodes } from "../../common/constants.js";
+import {sleep} from "../../common/utils.js"
 import pkg from 'bcryptjs';
 const {genSalt, hash, compare} = pkg;
 import { nanoid } from "nanoid";
 import { createTransport } from "nodemailer";
 import { readFileSync } from "fs";
+import {parse} from "node:url";
 import dotenv from 'dotenv';
 dotenv.config({path: '../../.env'});
 
@@ -59,10 +61,10 @@ const validate = (field, fieldName) => {
 }
 
 const hashWithBcrypt = async (target) => {
-    return await hash(password, await genSalt());
+    return await hash(target, await genSalt());
 };
 
-const registerAccount = withDatabaseOperation(async (client, username, email, password) => {
+const registerAccount = withDatabaseTransaction(async (client, username, email, password) => {
     try {
         const exists = (await client.query(
             `select count(' ') as exists from user_account 
@@ -70,9 +72,10 @@ const registerAccount = withDatabaseOperation(async (client, username, email, pa
             [email]
         )).rows[0]['exists'];
         if (parseInt(exists) !== 0) {
+            client.query('ROLLBACK');
             return;
         }
-        const hashedPass = hashWithBcrypt(password);
+        const hashedPass = await hashWithBcrypt(password);
 
         const id = (await client.query(
             `insert into user_account (username, new_email, hash)
@@ -101,6 +104,7 @@ const registerAccount = withDatabaseOperation(async (client, username, email, pa
         });
     }
     catch(e) {
+        client.query('ROLLBACK');
         console.log(e);
     } // mute error
 });
@@ -124,7 +128,7 @@ export const register = withDatabaseOperation(async function (
     const email = params['body']['email'];
     const emailValidationStatus = validate(email, 'email');
     if (emailValidationStatus) {
-        emailValidationStatus.body.errorCode = BAD_EMAIL;
+        emailValidationStatus.body.errorCode = ErrorCodes.BAD_EMAIL;
         return emailValidationStatus;
     }
     if (!email.includes('@')) {
@@ -154,15 +158,15 @@ export const login = withDatabaseOperation(async function (
         return passwordValidationStatus;
     }
     const identifier = params['body']['identifier'];
-    idType = identifier.includes('@') ? 'email' : 'username';
+    const idType = identifier.includes('@') ? 'email' : 'username';
     const timerBegin = new Date().getTime();
     const userAccount = (await client.query(
-        `select id, username, updated_at as updatedAt, roles, hash from user_account where ${idType} = $1::varchar`,
+        `select id, username, updated_at as "updatedAt", flags, hash from user_account where ${idType} = $1::varchar`,
         [identifier],
     )).rows;
     
     if (userAccount.length === 0 || !(await compare(password, userAccount[0]['hash']))) {
-        sleep(timerBegin + msTimeout - new Date().getTime());
+        await sleep(timerBegin + msTimeout - new Date().getTime());
         return new ServiceResponse(400, null, 'Invalid credentials');
     }
     delete userAccount[0]['hash'];
@@ -178,7 +182,7 @@ export const login = withDatabaseOperation(async function (
         const cookie = `${AUTH_COOKIE_NAME}=${token}; Max-Age=${60 * 60 * 24 * 30}; SameSite=Strict; HttpOnly; Secure`;
         res.setHeader('Set-Cookie', cookie);
     } catch (e) {
-        sleep(timerBegin + msTimeout - new Date().getTime());
+        await sleep(timerBegin + msTimeout - new Date().getTime());
         throw e;
     }
     return new ServiceResponse(200, {user: userAccount[0]}, 'Account successfully logged in');
@@ -199,7 +203,7 @@ export const verify = withDatabaseOperation(async function(
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_VERIFICATION_TOKEN}, 'No such token exists');
     }
     const tokenInfo = result[0];
-    if (tokenInfo['createdAt'].getTime() + oneHour < new Date().getTime()) {
+    if (tokenInfo['createdAt'].getTime() + oneHourInMs < new Date().getTime()) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.EXPIRED_VERIFICATION_TOKEN}, 'Token is expired');
     }
     await wrapOperationWithTransaction(client, () => {
@@ -330,7 +334,7 @@ const updatePassword = async (client, userId, newPassword) => {
     const hashedPass = await hashWithBcrypt(newPassword);
     await client.query(
         `update user_account
-            set username = $1::varchar
+            set hash = $1::varchar
             where id = $2::int`,
         [hashedPass, userId]
     );
@@ -340,7 +344,7 @@ const updatePassword = async (client, userId, newPassword) => {
 export const verifyChangeRequest = withDatabaseTransaction(async function (
     client, req, _res, params
 ) {
-    const type = /\/change-([a-z]+)/.exec(parse(req.url, false).pathname)[1];
+    const type = (/\/change-([a-z]+)/.exec(parse(req.url, false).pathname))[1];
     if (!(['email', 'password', 'username'].includes(type))) {
         return new ServiceResponse(500, {errorCode: ErrorCodes.SERVER_ERROR}, 'Invalid verification route');
     }
@@ -413,9 +417,9 @@ export const isAuthenticated = withDatabaseOperation(async function(
         return cookieOutput;
     }
     
-    const result = (client.query(
-        `select id, username, updated_at as "updatedAt", roles from validate_session($1::varchar)`,
-        cookieOutput
+    const result = (await client.query(
+        `select id, username, updated_at as "updatedAt", flags from validate_session($1::varchar)`,
+        [cookieOutput]
     )).rows;
     if (result.length === 0) {
         return new ServiceResponse(401, {errorCode: ErrorCodes.AUTH_COOKIE_INVALID}, 'Auth cookie is invalid');
@@ -427,7 +431,7 @@ export const logout = withDatabaseOperation(async function(
     client, req, _res, _params
 ) {
     const cookieOutput = getAuthCookie(req);
-    result = await client.query(
+    const result = await client.query(
         `delete from user_token where token_type = 'session' and token_value = $1::varchar`,
         [cookieOutput]
     );

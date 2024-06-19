@@ -1,35 +1,35 @@
 -- Active: 1717142263895@@127.0.0.1@5432@tw_rot@tw_rot
 set schema 'tw_rot';
 
-drop table chapter cascade;
+drop table if exists chapter cascade;
 
-drop table sign_category cascade;
+drop table if exists sign_category cascade;
 
-drop table sign cascade;
+drop table if exists sign cascade;
 
-drop table sign_to_category_relation cascade;
+drop table if exists sign_to_category_relation cascade;
 
-drop table user_account cascade;
+drop table if exists user_account cascade;
 
-drop table user_token cascade;
+drop table if exists user_token cascade;
 
-drop table question_category cascade;
+drop table if exists question_category cascade;
 
-drop table question cascade;
+drop table if exists question cascade;
 
-drop table answer cascade;
+drop table if exists answer cascade;
 
-drop table answered_question cascade;
+drop table if exists answered_question cascade;
 
-drop table comparison_category cascade;
+drop table if exists comparison_category cascade;
 
-drop table comparison cascade;
+drop table if exists comparison cascade;
 
-drop table comparison_sign cascade;
+drop table if exists comparison_sign cascade;
 
-drop table generated_questionnaire cascade;
+drop table if exists generated_questionnaire cascade;
 
-drop table generated_question cascade;
+drop table if exists generated_question cascade;
 
 create table chapter (
     id serial primary key,

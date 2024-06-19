@@ -1,3 +1,4 @@
+drop procedure if exists insert_question_category(jsonb);
 create or replace procedure insert_question_category(
     category_data jsonb
 )
@@ -41,6 +42,7 @@ begin
 end;
 $$ language plpgsql;
 
+drop procedure if exists insert_sign_category(jsonb);
 create or replace procedure insert_sign_category(
     category_data jsonb
 )
@@ -81,6 +83,7 @@ begin
 end;
 $$ language plpgsql;
 
+drop PROCEDURE if exists insert_comparison_category(jsonb);
 create or replace procedure insert_comparison_category(
     category_data jsonb
 )

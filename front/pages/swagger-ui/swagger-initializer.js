@@ -14,13 +14,7 @@ window.onload = function() {
             SwaggerUIBundle.plugins.DownloadUrl
         ],
         layout: "StandaloneLayout",
-        requestInterceptor: (request) => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                request.headers['Authorization'] = `Bearer ${token}`;
-            }
-            return request;
-        }
+        withCredentials: true,
     });
 
     //</editor-fold>
