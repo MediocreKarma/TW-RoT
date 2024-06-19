@@ -50,7 +50,7 @@ export const getChapterContent = withDatabaseOperation(async function (
     }
     return new ServiceResponse(
         200,
-        chapter,
+        chapter[0],
         'Chapter content retrieved successfully'
     );
 });

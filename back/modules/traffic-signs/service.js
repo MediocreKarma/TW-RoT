@@ -4,19 +4,25 @@ import { withDatabaseOperation } from '../_common/db.js';
 import { ImageResponse, ServiceResponse } from '../_common/serviceResponse.js';
 import dotenv from 'dotenv';
 import fs from 'fs';
-dotenv.config({path: '../../.env'});
+dotenv.config({ path: '../../.env' });
 
 const API_IMAGE_URL = `${process.env.TRAFFIC_SIGNS_URL}/api/v1/images/{id}.png`;
 
 const buildImageForObj = (obj) => {
     obj['image'] = API_IMAGE_URL.replace(/{id}/g, obj['imageId']);
-}
+    return obj;
+};
 
 export const getAllSignCategories = withDatabaseOperation(async function (
-    client, _req, _res, _params
+    client,
+    _req,
+    _res,
+    _params
 ) {
     const signCategories = (
-        await client.query('select id, title, image_id as "imageId" from sign_category')
+        await client.query(
+            'select id, title, image_id as "imageId" from sign_category'
+        )
     ).rows;
     signCategories.forEach((obj) => buildImageForObj(obj));
     return new ServiceResponse(
@@ -27,7 +33,10 @@ export const getAllSignCategories = withDatabaseOperation(async function (
 });
 
 export const getSignCategory = withDatabaseOperation(async function (
-    client, _req, _res, params
+    client,
+    _req,
+    _res,
+    params
 ) {
     const id = params['path']['id'];
     if (!isStringValidInteger(id)) {
@@ -68,16 +77,22 @@ export const getSignCategory = withDatabaseOperation(async function (
     );
 });
 
-export const getSignImage = async function (
-    _req, _res, params
-) {
+export const getSignImage = async function (_req, _res, params) {
     const filename = params['path']['name'];
     if (!filename) {
-        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_IMAGE_ID}, 'Image id is invalid');
+        return new ServiceResponse(
+            400,
+            { errorCode: ErrorCodes.INVALID_IMAGE_ID },
+            'Image id is invalid'
+        );
     }
     const path = `./images/${filename}`;
     if (!fs.existsSync(path)) {
-        return new ServiceResponse(404, {errorCode: ErrorCodes.TRAFFIC_SIGNS_IMAGE_NOT_FOUND}, 'Image does not exist');
+        return new ServiceResponse(
+            404,
+            { errorCode: ErrorCodes.TRAFFIC_SIGNS_IMAGE_NOT_FOUND },
+            'Image does not exist'
+        );
     }
     return new ImageResponse(200, path, 'Successfully retrieved image');
-}
+};
