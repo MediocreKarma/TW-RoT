@@ -3,5 +3,10 @@ export function zip(arr1, arr2) {
 }
 
 export async function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms)); 
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+export const isStringValidInteger = (str) => {
+    const parsed = parseInt(str, 10);
+    return !isNaN(parsed) && parsed.toString() === str;
+};
