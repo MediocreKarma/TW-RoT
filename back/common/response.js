@@ -28,5 +28,8 @@ export function sendFileResponse(response, status, file, contentType = '', messa
             'Content-Type': contentType,
         });
     }
+    else {
+        response.writeHead(status, message)
+    }
     response.end(file);
 }

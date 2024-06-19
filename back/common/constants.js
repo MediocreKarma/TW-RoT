@@ -23,4 +23,6 @@ export const ErrorCodes = Object.freeze({
     COOKIE_HEADER_NOT_FOUND: 21,
     AUTH_COOKIE_NOT_FOUND: 22,
     AUTH_COOKIE_INVALID: 23,
+    INVALID_IMAGE_ID: 24,
+    TRAFFIC_SIGNS_IMAGE_NOT_FOUND: 25,
 });

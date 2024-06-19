@@ -4,14 +4,14 @@ import https from 'https';
 import fs from 'fs';
 import { headers } from './utils.js';
 import { v4 as uuid4 } from 'uuid';
+import { sleep } from '../common/utils.js';
 
 async function downloadImage(url) {
     return new Promise((resolve, reject) => {
         const protocol = url.startsWith('https') ? https : http;
-
+        const chunks = [];
         protocol
             .get(url, { headers }, (response) => {
-                const chunks = [];
 
                 response.on('data', (chunk) => chunks.push(chunk));
                 response.on('end', () => resolve(Buffer.concat(chunks)));
@@ -82,8 +82,19 @@ async function saveImageBuffer(imageBuffer, imageId, outputDirectory) {
 export async function saveWikiImages(imageUrls, outputDirectory) {
     const imageBuffers = await Promise.all(
         imageUrls.map(async (url) => {
-            const data = await downloadImage(url);
-            return data;
+            let attempts = 8;
+            let latest_error;
+            while (attempts--) {
+                try {
+                    const data = await downloadImage(url);
+                    return data;
+                } 
+                catch (e) {
+                    latest_error = e;
+                }
+                await sleep(1000);
+            }
+            throw latest_error;
         })
     );
 

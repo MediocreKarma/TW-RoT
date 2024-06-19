@@ -89,6 +89,10 @@ paths:
                       type: integer
                     title:
                       type: string
+                    imageId:
+                      type: string
+                    image:
+                      type: string
   /sign-categories/{id}:
     get:
       summary: Get sign category
@@ -111,10 +115,81 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
-                    type: integer
-                  title:
+                  category:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      imageId:
+                        type: string
+                      image:
+                        type: string
+                      design:
+                        type: string
+                      purpose:
+                        type: string
+                      suggestion:
+                        type: string
+                  signs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        description:
+                          type: string
+                        imageId:
+                          type: string
+                        image:
+                          type: string
+  /images/{name}:
+    get:
+      summary: Get an image
+      description: Retrieve an image by its name.
+      servers:
+        - url: http://localhost:12736/api/v1
+      tags:
+        - Sign Categories
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: The name of the image to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response with the image
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Image not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
                     type: string
+                    example: Image not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
   /exercises/categories:
     get:
       summary: Get all exercise categories
