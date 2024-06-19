@@ -15,7 +15,7 @@ const renderCategory = (categoryData) => {
     cardBodyDiv.className = 'category-card__body';
 
     const img = document.createElement('img');
-    img.src = `${API.TRAFFIC_SIGNS}/img/${categoryData['image_id']}`;
+    img.src = categoryData['image'];
     img.alt = categoryData.title;
     img.className = 'category-card__img';
 

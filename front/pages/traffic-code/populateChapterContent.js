@@ -1,5 +1,7 @@
 import { fetchChapter, fetchChapters } from './requests.js';
 
+import { showError } from '/js/errors.js';
+
 const showLoading = (domNode) => {
     domNode.innerText = 'Se încarcă...';
 };
@@ -19,12 +21,15 @@ const populateChapterContent = async (chapterId) => {
         } ${data.number}: ${data.title}`;
         contentContainer.innerHTML = data.content;
     } catch (e) {
-        console.log(e);
+        showError(e);
     }
 };
 
 const populateChapterSidebar = async (currentId) => {
     const sidebar = document.getElementById('chapter-sidebar');
+    if (!sidebar) {
+        return;
+    }
     showLoading(sidebar);
 
     const data = await fetchChapters();

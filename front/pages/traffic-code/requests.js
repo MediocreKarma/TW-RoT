@@ -1,15 +1,12 @@
 import API from '/js/api.js';
-
-// TODO: wrapper over any fetch function to throw error if bad request
+import { get } from '/js/requests.js';
 
 export const fetchChapter = async (id) => {
-    const response = await fetch(`${API.CHAPTERS}/chapters/${id}`);
-    const data = await response.json();
-    return data;
+    const response = await get(`${API.CHAPTERS}/chapters/${id}`);
+    return await response.json();
 };
 
 export const fetchChapters = async () => {
-    const response = await fetch(`${API.CHAPTERS}/chapters`);
-    const data = await response.json();
-    return data;
+    const response = await get(`${API.CHAPTERS}/chapters`);
+    return await response.json();
 };

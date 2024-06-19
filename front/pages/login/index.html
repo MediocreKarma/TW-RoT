@@ -9,7 +9,7 @@
         <script src="/components/header/header.js" type="module"></script>
         <script src="/components/footer/footer.js" type="module"></script>
 
-        <script src="/login/login.js"></script>
+        <script src="/login/login.js" type="module"></script>
     </head>
     <body>
         <header class="header header--no-js" id="header"></header>
@@ -17,17 +17,17 @@
         <div class="flex-center-container login-container">
             <div class="login-card">
                 <h2 class="login-card__title">Autentificare</h2>
-                <form id="login-form" class="login-form">
+                <form id="login-form" class="login-form" action="">
                     <div class="login-form__group">
                         <label for="email" class="login-form__label"
                             >Nume de utilizator sau email</label
                         >
                         <input
-                            type="email"
-                            id="email"
-                            name="email"
+                            type="identifier"
+                            id="identifier"
+                            name="identifier"
                             class="login-form__input"
-                            placeholder="Scrie-ți email-ul aici"
+                            placeholder="Scrie numele de utilizator/email-ul aici"
                             required
                         />
                     </div>
@@ -40,7 +40,7 @@
                             id="password"
                             name="password"
                             class="login-form__input"
-                            placeholder="Scrie-ți parola aici"
+                            placeholder="Scrie parola aici"
                             required
                         />
                     </div>

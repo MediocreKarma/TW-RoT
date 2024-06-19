@@ -17,7 +17,7 @@ function renderCard(cardData) {
 
     // Create the image element
     const img = document.createElement('img');
-    img.src = `${API.TRAFFIC_SIGNS}/img/${cardData['image_id']}`;
+    img.src = cardData['image'];
     img.alt = cardData.title;
     img.className = 'card-img mb-2';
 

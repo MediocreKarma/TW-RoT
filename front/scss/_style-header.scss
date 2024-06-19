@@ -1,5 +1,5 @@
-@use "vars";
-@use "color-themes";
+@use 'vars';
+@use 'color-themes';
 
 @mixin header-mobile-view {
     .header {
@@ -12,21 +12,21 @@
         ul {
             width: 100%;
         }
-    
+
         li {
             display: block;
             //position: relative;
             width: 100%;
             float: left;
         }
-    
+
         &__list {
             clear: both;
             max-height: 0;
-            transition: max-height .3s ease-out;
+            transition: max-height 0.3s ease-out;
             position: relative;
         }
-    
+
         &__icon {
             display: block;
         }
@@ -34,9 +34,8 @@
 }
 
 .header {
-
     a {
-        color: #FFF;
+        color: #fff;
     }
 
     &__dark-switch {
@@ -48,7 +47,7 @@
     }
 
     background-color: color-themes.$primary-color;
-    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, .1);
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.1);
     position: fixed;
     width: 100%;
     z-index: 100;
@@ -74,7 +73,6 @@
         &:hover {
             background-color: color-themes.$primary-color--hover;
         }
-
     }
 
     .logo {
@@ -100,21 +98,21 @@
         display: none;
 
         .navicon {
-            background-color: #FFF;
+            background-color: #fff;
             display: block;
             height: 2px;
             position: relative;
-            transition: .2s ease-out;
+            transition: 0.2s ease-out;
             width: 18px;
 
-            &:before, 
+            &:before,
             &:after {
-                background: #FFF;
+                background: #fff;
                 content: '';
                 display: block;
                 height: 100%;
                 position: absolute;
-                transition: all .2s ease-out;
+                transition: all 0.2s ease-out;
                 width: 100%;
             }
 
@@ -142,7 +140,6 @@
                 max-height: 40rem;
             }
 
-
             ~ .header__icon {
                 .navicon {
                     background: transparent;
@@ -150,33 +147,25 @@
                     &:before {
                         transform: rotate(-45deg);
                     }
-    
+
                     &:after {
-                        transform: rotate( 45deg);
+                        transform: rotate(45deg);
                     }
                 }
 
                 &:not(.steps) .navicon {
-                    &:before, 
+                    &:before,
                     &:after {
                         top: 0;
                     }
                 }
-
             }
-
         }
-
-    }
-
-    &__profile-info {
-        h4 {display: inline;}
     }
 
     &--mobile-view {
         @include header-mobile-view;
     }
-
 }
 
 @media only screen and (max-width: vars.$media-query-size-big) {

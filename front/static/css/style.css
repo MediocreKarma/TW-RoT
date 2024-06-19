@@ -92,7 +92,7 @@ body[data-theme=dark] {
   top: 0;
 }
 .header a {
-  color: #FFF;
+  color: #fff;
 }
 .header__dark-switch {
   top: 0.1rem;
@@ -138,7 +138,7 @@ body[data-theme=dark] {
   display: none;
 }
 .header__icon .navicon {
-  background-color: #FFF;
+  background-color: #fff;
   display: block;
   height: 2px;
   position: relative;
@@ -146,7 +146,7 @@ body[data-theme=dark] {
   width: 18px;
 }
 .header__icon .navicon:before, .header__icon .navicon:after {
-  background: #FFF;
+  background: #fff;
   content: "";
   display: block;
   height: 100%;
@@ -182,9 +182,6 @@ body[data-theme=dark] {
 }
 .header__button:checked ~ .header__icon:not(.steps) .navicon:before, .header__button:checked ~ .header__icon:not(.steps) .navicon:after {
   top: 0;
-}
-.header__profile-info h4 {
-  display: inline;
 }
 .header--mobile-view .header__dark-switch {
   position: relative;
@@ -363,6 +360,26 @@ body[data-theme=dark] {
     flex: 2 0px;
   }
 }
+.error {
+  padding: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.error__details {
+  color: red;
+}
+.error__info {
+  text-align: center;
+}
+.error__info .button {
+  background-color: #ea9a4b;
+  color: #fff;
+}
+.error__info .button:hover {
+  background-color: #f0c395;
+}
+
 .welcome-container {
   min-height: 100vh;
   width: 100%;
