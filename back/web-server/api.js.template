@@ -1,0 +1,12 @@
+const API_PREFIX = '/api/v1';
+const HOST = "http://localhost"
+
+const API = {
+    CHAPTERS: `${HOST}:{CHAPTERS_PORT}${API_PREFIX}`,
+    TRAFFIC_SIGNS: `${HOST}:{TRAFFIC_SIGNS_PORT}${API_PREFIX}`,
+    EXERCISES: `${HOST}:{EXERCISES_PORT}${API_PREFIX}`,
+    USERS: `${HOST}:{USERS_PORT}${API_PREFIX}`,
+    AUTH: `${HOST}:{AUTH_PORT}${API_PREFIX}`,
+};
+
+export default API;

@@ -1,6 +1,10 @@
 import { WebServer } from './webServer.js';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'url';
+
+import initOpenApi from './openapiGen.js';
+import initApiJs from './apiConstantsGen.js';
+
 import dotenv from 'dotenv';
 
 dotenv.config({
@@ -10,7 +14,10 @@ dotenv.config({
     path: join(dirname(fileURLToPath(import.meta.url)), '.env'),
 });
 
-const FRONT = process.env.FRONT;
+initOpenApi();
+initApiJs();
+
+const FRONT = process.env.FRONTEND_PATH;
 const server = new WebServer();
 
 server.setNotFoundRoute('/not-found', `${FRONT}/pages/not-found/index.html`);
