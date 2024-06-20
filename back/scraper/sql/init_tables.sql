@@ -105,19 +105,19 @@ create table answer (
 );
 
 create table generated_questionnaire (
-    id serial primary key,
+    id int primary key references user_account (id),
     generated_time timestamp,
-    user_id int references user_account (id) unique,
     registered bool default false
 );
 
 create table generated_question (
-    id serial primary key,
+    id int primary key,
     questionnaire_id int references generated_questionnaire (id),
     question_id int references question (id),
     selected_fields int,
     sent bool,
-    solved bool
+    solved bool,
+    check ((questionnaire_id - 1) * 26 < id and id <= questionnaire_id * 26)
 );
 
 create table answered_question (

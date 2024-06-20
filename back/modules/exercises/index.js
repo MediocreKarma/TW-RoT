@@ -8,12 +8,27 @@ import {
     getIncorrectlySolvedQuestion, getSolution,
     getUnsolvedQuestionByCategory
 } from "./service.js";
+import { 
+    addQuestionSolution, 
+    createQuestionnaire, 
+    getQuestionnaire, 
+    submitQuestionnaireSolution 
+} from './questionnaire.js';
+import {getImage} from '../_common/getLocalImage.js'
 
 const app = new AppRouter(Authentication.REQUIRE);
+
+app.get('/api/v1/images/:name', getImage);
 
 app.get('/api/v1/exercises/categories', getAllExerciseCategories);
 app.get('/api/v1/exercises/unsolved/:id', getUnsolvedQuestionByCategory);
 app.get('/api/v1/exercises/incorrectly-solved', getIncorrectlySolvedQuestion);
 app.get('/api/v1/exercises/:id/solution', getSolution);
+
+app.post('/api/v1/users/:id/solutions', addQuestionSolution);
+
+app.get('/api/v1/users/:id/questionnaire', getQuestionnaire);
+app.post('/api/v1/users/:id/questionnaire', createQuestionnaire);
+app.post('/api/v1/questionnaires/:questionnaireId/question/:gqId/solution', submitQuestionnaireSolution);
 
 app.listen(process.env.EXERCISES_PORT);

@@ -353,6 +353,8 @@ paths:
                       type: string
                     questionText:
                       type: string
+                    questionImageId:
+                      type: string
                     questionImage:
                       type: string
                     answers:
@@ -397,6 +399,8 @@ paths:
                       type: string
                     questionText:
                       type: string
+                    questionImageId:
+                      type: string
                     questionImage:
                       type: string
                     answers:
@@ -421,7 +425,7 @@ paths:
       tags:
         - Exercises
       servers:
-        - url: https://localhost:12738/api/v1
+        - url: https://localhost:12737/api/v1
       parameters:
         - name: id
           in: path
@@ -454,12 +458,14 @@ paths:
                 - questionId
                 - answers
               example:
-                questionId: 123
+                questionId: 1
                 answers:
-                  - answerId: 1
+                  - answerId: 0
                     selected: true
-                  - answerId: 2
+                  - answerId: 1
                     selected: false
+                  - answerId: 2
+                    selected: true
       security:
         - bearerAuth: []
       responses:
@@ -470,9 +476,20 @@ paths:
               schema:
                 type: object
                 properties:
-                  message:
-                    type: string
-                    example: Solutions submitted successfully
+                  isCorrect:
+                    type: boolean
+                    description: indicates solution correctness
+                  correctAnswers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        answerId:
+                          type: integer
+                          description: The ID of the answer
+                        correct:
+                          type: boolean
+                          description: Whether the answer is actually correct
         '400':
           description: Invalid input
           content:
@@ -1028,7 +1045,7 @@ paths:
       tags:
         - Questionnaire
       servers:
-        - url: https://localhost:12738/api/v1
+        - url: https://localhost:12737/api/v1
       security:
         - bearerAuth: []
       parameters:
@@ -1067,7 +1084,7 @@ paths:
       tags:
         - Questionnaire
       servers:
-        - url: https://localhost:12738/api/v1
+        - url: https://localhost:12737/api/v1
       security:
         - bearerAuth: []
       parameters:
@@ -1124,7 +1141,7 @@ paths:
       tags:
         - Questionnaire
       servers:
-        - url: https://localhost:12738/api/v1
+        - url: https://localhost:12737/api/v1
       requestBody:
         required: true
         content:

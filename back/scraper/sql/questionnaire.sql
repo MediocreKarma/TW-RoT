@@ -7,7 +7,6 @@ returns table(
 )
 as $$
 declare
-    qstnr_id int;
     category_count int;
     category_question_count int;
     question_id int;
@@ -17,18 +16,17 @@ declare
     has_generated_questionnaire int;
     gen_time timestamp;
     already_registered bool;
+    genereated_qst_id int;
 begin
     select 
-        gq.id, gq.generated_time, gq.registered 
+        gq.generated_time, gq.registered 
     into 
-        qstnr_id, gen_time, already_registered 
-    from generated_questionnaire gq where gq.user_id = u_id;
+        gen_time, already_registered 
+    from generated_questionnaire gq where gq.id = u_id; -- gen_qstr has same id as user (always)
 
-    if found and  then
-
-        raise notice '% % %', qstnr_id, gen_time, (current_timestamp - interval '30 minutes');
+    if found then
         if gen_time >= (current_timestamp - interval '30 minutes') THEN
-            return query select qstnr_id, gen_time, false;
+            return query select u_id, gen_time, false;
             return;
         end if;
         raise notice 'but here';
@@ -36,18 +34,17 @@ begin
             perform finish_questionnaire(u_id);
         end if;
 
-        delete from generated_question      gq where gq.questionnaire_id = qstnr_id;
-        delete from generated_questionnaire gq where gq.id = qstnr_id;
+        delete from generated_question      gq where gq.questionnaire_id = u_id;
+        delete from generated_questionnaire gq where gq.id = u_id;
     end if;
 
-    insert into generated_questionnaire (user_id)
-        values (u_id)
-    returning id into qstnr_id;
+    insert into generated_questionnaire (id) values (u_id);
     
     select count(' ') into category_count from question_category;
     
     questions_per_category := 26 / category_count;
     extra_questions := 26 % category_count;
+    genereated_qst_id := 26 * (u_id - 1) + 1;
     
     for qc_id in select qc.id from question_category qc order by random() loop
         
@@ -59,8 +56,10 @@ begin
         
         for question_id in select q.id from question q where q.category_id = qc_id order by random() limit category_question_count loop
             
-            insert into generated_question (questionnaire_id, question_id, selected_fields, sent, solved)
-                values (qstnr_id, question_id, 0, false, false);
+            insert into generated_question (id, questionnaire_id, question_id, selected_fields, sent, solved)
+                values (genereated_qst_id, u_id, question_id, 0, false, false);
+
+            genereated_qst_id := genereated_qst_id + 1;
         end loop;
     end loop;
 
@@ -70,9 +69,9 @@ begin
         set 
             generated_time = gen_time
         where 
-            id = qstnr_id;
+            id = u_id;
 
-    return query select qstnr_id, gen_time, true;
+    return query select u_id, gen_time, true;
 end; $$ language plpgsql;
 
 drop type if exists answer_t;
@@ -81,21 +80,24 @@ create type answer_t as (
     description varchar(4096)
 );
 
-drop function if exists get_questionnaire_by_id(int);
-create or replace function get_questionnaire_by_id(qstr_id int) 
+drop function if exists get_questionnaire_questions_by_id(int);
+create or replace function get_questionnaire_questions_by_id(qstr_id int) 
 returns table (
     generated_question_id int,
     question_text varchar(4096),
-    question_image varchar(256),
+    question_image_id varchar(256),
     answers jsonb[]
 ) as $$
 begin  
     return query 
         select 
-            gq.id as generated_question_id, 
+            gq.id as generated_question_id,
+            gq.sent,
+            gq.solved,
+            gq.
             q.text as question_text, 
             q.image_id as question_image,
-            array_agg(jsonb_build_object('id', a.id, 'description', a.description)) as answer
+            array_agg(jsonb_build_object('id', a.id, 'description', a.description) order by random()) as answers
         FROM
             generated_question gq
         join 
@@ -106,35 +108,6 @@ begin
         where 
             gq.questionnaire_id = qstr_id
         group by gq.id, q.text, q.image_id;    
-end; $$ language PLPGSQL;
-
-drop function if exists get_questionnaire_by_user_id(int);
-create or replace function get_questionnaire_by_user_id(u_id int) 
-returns table (
-    generated_question_id int,
-    question_text varchar(4096),
-    question_image varchar(256),
-    answers jsonb[]
-) as $$
-begin  
-    return query 
-        select 
-            gq.id as generated_question_id, 
-            q.text as question_text, 
-            q.image_id as question_image,
-            array_agg(jsonb_build_object('id', a.id, 'description', a.description)) as answer
-        FROM
-            generated_question gq
-        join 
-            question q
-                on q.id = gq.question_id
-        join answer a 
-            on q.id = a.question_id
-        join generated_questionnaire qstr
-            on qstr.id = gq.questionnaire_id
-        where 
-            qstr.user_id = u_id
-        group by gq.id, q.text, q.image_id;   
 end; $$ language PLPGSQL;
 
 drop function if exists get_answer_bitset(integer);

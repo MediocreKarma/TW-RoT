@@ -170,7 +170,7 @@ export const login = withDatabaseOperation(async function (
     
     if (userAccount.length === 0 || !(await compare(password, userAccount[0]['hash']))) {
         await sleep(timerBegin + msTimeout - new Date().getTime());
-        return new ServiceResponse(400, null, 'Invalid credentials');
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_CREDENTIALS}, 'Invalid credentials');
     }
     delete userAccount[0]['hash'];
     try {
@@ -413,7 +413,7 @@ const getAuthCookie = (req) => {
 };
 
 const expireAuthCookie = (res) => {
-    res.setHeader('Set-Cookie', `${AUTH_COOKIE_NAME}=; Expires=Thu, 01 Jan 1970 00:00:00 GMT`);
+    res.setHeader('Set-Cookie', `${AUTH_COOKIE_NAME}=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=None`);
     return res;
 };
 

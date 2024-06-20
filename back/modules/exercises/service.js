@@ -62,6 +62,12 @@ const SQL_GROUPING_STATEMENT =
     order by 
         random();`
 
+export const addImageToQuestion = (question) => {
+    question?.questionImageId
+    ? question['questionImage'] = API_IMAGE_URL.replace(/{id}/g, question.questionImageId)
+    : delete question.questionImageId;
+    return question;
+}
 
 export const getUnsolvedQuestionByCategory = withDatabaseOperation(async function (
     client, _req, _res, params
@@ -100,9 +106,7 @@ export const getUnsolvedQuestionByCategory = withDatabaseOperation(async functio
             'No unsolved question could be retrieved'
         );
     }
-
-    qData[0]['questionImage'] = API_IMAGE_URL.replace(/id/g, qData[0]['questionImageId']);
-
+    addImageToQuestion(qData[0]);
     return new ServiceResponse(
         200,
         qData[0],
@@ -146,7 +150,7 @@ export const getIncorrectlySolvedQuestion = withDatabaseOperation(async function
             'No wrongly solved question could be retrieved'
         );
     }
-
+    addImageToQuestion(qData[0]);
     return new ServiceResponse(
         200,
         qData[0],
@@ -154,16 +158,26 @@ export const getIncorrectlySolvedQuestion = withDatabaseOperation(async function
     );
 });
 
+
+export const adjustOutputAnswerSet = (answers) => {
+    let minAnswerId = Number.MAX_SAFE_INTEGER;
+    for (const answer of answers) {
+        minAnswerId = Math.min(minAnswerId, answer['id']);
+    }
+    answers.forEach((ans) => ans['id'] -= minAnswerId);
+    return answers;
+}
+
 export const getSolution = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
     const questionId = params['path']['id'];
-    if (!Number.isInteger(questionId)) {
+    if (!isStringValidInteger(questionId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_ID}, 'Invalid question id');
     }
     const results = (await client.query(
         'select \n' +
-        '        a.id as "answerId", \n' +
+        '        a.id as "id", \n' +
         '        a.correct as "correct"\n' +
         '    from answer a \n' +
         '    join question q\n' +
@@ -175,11 +189,7 @@ export const getSolution = withDatabaseOperation(async function (
     if (results.length === 0) {
         return new ServiceResponse(404, {errorCode: ErrorCodes.QUESTION_NOT_FOUND}, 'Question not found');
     }
-
-    let minAnswerId = Number.MAX_SAFE_INTEGER;
-    for (const answer of results) {
-        minAnswerId = Math.min(minAnswerId, answer['answerId']);
-    }
-    results.forEach((answer) => { answer['answerId'] -= minAnswerId });
+    adjustOutputAnswerSet(results);
     return new ServiceResponse(200, results, 'Successfully retrieved question answers');
 });
+
