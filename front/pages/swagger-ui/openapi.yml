@@ -609,8 +609,8 @@ paths:
               schema:
                 type: string
                 example: >-
-                  TW-RoT-Auth-Cookie=token_value; Max-Age=100000;
-                  SameSite=Strict; httpsOnly; Secure
+                  TW-RoT-Auth-Cookie=token_value; Max-Age=100000; SameSite=None;
+                  HttpsOnly; Secure
           content:
             application/json:
               schema:
@@ -1258,6 +1258,70 @@ paths:
                   errorMessage:
                     type: string
                     example: An error occurred while processing the request
+  /users/{id}/questionnaire/submitted:
+    put:
+      summary: Submit a user's questionnaire
+      tags:
+        - Questionnaire
+      servers:
+        - url: https://localhost:12737/api/v1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the user
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Questionnaire submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  solved:
+                    type: integer
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        sent:
+                          type: boolean
+                        solved:
+                          type: boolean
+                        selectedFields:
+                          type: integer
+                        text:
+                          type: string
+                        imageId:
+                          type: string
+                        image:
+                          type: string
+                        answers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              description:
+                                type: string
+                              correct:
+                                type: boolean
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
 components:
   securitySchemes:
     cookieAuth:
