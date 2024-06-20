@@ -189,8 +189,8 @@ begin
     return score;
 end; $$ language plpgsql;
 
-drop function if exists submit_questionnaire_solution(int, int, int, int);
-create or replace function submit_questionnaire_solution(u_id int, qstr_id int, gq_id int, answer_bitset int) 
+drop function if exists submit_questionnaire_solution(int, int, int);
+create or replace function submit_questionnaire_solution(qstr_id int, gq_id int, answer_bitset int) 
 returns table (
     answer_id int,
     correct bool
@@ -200,18 +200,15 @@ DECLARE
     correct_bitset int;
     correctness bool := false;
     q_id int;
-    actual_qstr_id int;
-    actual_user_id int;
+    snt bool;
 BEGIN
-    select gq.question_id, gq.questionnaire_id, gq.user_id 
-        into q_id, actual_qstr_id, actual_user_id 
-        from generated_question gq where gq.id = gq_id; 
-
-    if actual_qstr_id != qstr_id THEN
-        raise exception '1:Invalid questionnaire id';
-    end if;
-    if actual_user_id != u_id THEN
-        raise exception '2:Wrong user id';
+    select sent, question_id
+        into snt, q_id
+        from generated_question
+        where id = gq_id; 
+    
+    if snt THEN
+        return;
     end if;
 
     correct_bitset := get_answer_bitset(q_id);
@@ -219,7 +216,7 @@ BEGIN
     update generated_question
         set 
             sent = true,
-            selected_fields = bitset,
+            selected_fields = answer_bitset,
             solved = correctness 
         where id = gq_id;
     return query select a.id, a.correct from answer a join question q on a.question_id = q.id where q.id = q_id;

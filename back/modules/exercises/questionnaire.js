@@ -4,6 +4,8 @@ import { ServiceResponse } from "../_common/serviceResponse.js";
 import { withDatabaseOperation } from "../_common/db.js";
 import { addImageToQuestion, adjustOutputAnswerSet } from "./service.js";
 
+const thirtyMinutesInMs = 30 * 60 * 1000;
+
 const calculateBitsetOfAnswers = (answers, fieldName = 'selected') => {
     answers.sort((a, b) => a['id'] - b['id']);
 
@@ -16,7 +18,7 @@ const calculateBitsetOfAnswers = (answers, fieldName = 'selected') => {
 }
 
 const validateAuth = (auth, userId = -1) => {
-    if (!Number.isInteger(auth?.user.id)) {
+    if (!Number.isInteger(auth?.user?.id)) {
         return new ServiceResponse(401, {errorCode: ErrorCodes.UNAUTHENTICATED}, 'Unauthenticated');
     }
     if (userId === -1) {
@@ -49,6 +51,31 @@ const adjustQuestionnaireOutputAnswerSets = (questions) => {
     return questions;
 }
 
+const validateAnswerSetInput = (answers) => {
+    const answerIds = Array.from({length: answers.length + 1}, _ => false);
+    answerIds[0] = true;
+    for (const answer of answers) {
+        const answerIdValidation = validateId(answer['id'], 'answer_id');
+        if (answerIdValidation) {
+            return answerIdValidation;
+        }
+        if (!isBoolean(answer['selected'])) {
+            return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_ANSWER_FORMAT}, 'Missing selected property');
+        }
+        if (answer['id'] < 1) {
+            return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_ID_TOO_LOW}, 'Answer id too low');
+        }
+        if (answer['id'] >= answerIds.length) {
+            return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_ID_TOO_HIGH}, 'Answer id too high');
+        }
+        answerIds[answer['id']] = true;
+    }
+    if (!answerIds.every((b) => b)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.REPEATED_ANSWER_IDS}, 'Answer id was repeated');
+    }
+    return null;
+}
+
 export const addQuestionSolution = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
@@ -63,27 +90,10 @@ export const addQuestionSolution = withDatabaseOperation(async function (
     if (questionIdValidation) {
         return questionIdValidation;
     }
-    const answerIds = Array.from({length: answers.length}, _ => false);
-    for (const answer of answers) {
-        const answerIdValidation = validateId(answer['id'], 'answer_id');
-        if (answerIdValidation) {
-            return answerIdValidation;
-        }
-        if (!isBoolean(answer['selected'])) {
-            return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_ANSWER_FORMAT}, 'Missing selected property');
-        }
-        if (answer['id'] < 0) {
-            return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_ID_TOO_LOW}, 'Answer id too low');
-        }
-        if (answer['id'] > answerIds.length) {
-            return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_ID_TOO_HIGH}, 'Answer id too high');
-        }
-        answerIds[answer['id']] = true;
+    const answerInputValidation = validateAnswerSetInput(answers);
+    if (answerInputValidation) {
+        return answerInputValidation;
     }
-    if (!answerIds.every((b) => b)) {
-        return new ServiceResponse(400, {errorCode: ErrorCodes.REPEATED_ANSWER_IDS}, 'Answer id was repeated');
-    }
-
     const bitset = calculateBitsetOfAnswers(answers);
     const correctAnswers = adjustOutputAnswerSet((await client.query(
         'select answer_id as "id", correct as "correct" from register_answer($1::int, $2::int, $3::int)',
@@ -101,6 +111,10 @@ export const addQuestionSolution = withDatabaseOperation(async function (
 const addImageToQuestions = (questions) => {
     questions.forEach((question) => addImageToQuestion(question));
     return questions;
+}
+
+const markQuestionnaireFinished = async (client, userId) => {
+    await client.query('select finish_questionnaire($1::int)', [userId]);
 }
 
 export const getQuestionnaire = withDatabaseOperation(async function (
@@ -121,6 +135,11 @@ export const getQuestionnaire = withDatabaseOperation(async function (
         return new ServiceResponse(404, {errorCode: ErrorCodes.NO_USER_QUESTIONNAIRE}, 'User has never generated a questionnaire');
     }
     const questionnaire = questionnaireResult[0];
+    if (!questionnaire['registered'] && questionnaire['generatedTime'].getTime() + thirtyMinutesInMs < new Date().getTime()) {
+        questionnaire['registered'] = true;
+        markQuestionnaireFinished(client, userId);
+    }
+
     const result = (await client.query(
         `select 
             generated_question_id as "id",
@@ -150,8 +169,6 @@ export const createQuestionnaire = withDatabaseOperation(async function (
     if (validationResult) {
         return validationResult;
     }
-
-    const thirtyMinutesInMs = 30 * 60 * 1000;
     const questionnaireObj = (await client.query(
         'select ' +
             '    questionnaire_id as "id", ' +
@@ -162,9 +179,7 @@ export const createQuestionnaire = withDatabaseOperation(async function (
     )).rows[0];
     if (questionnaireObj['new']) {
         setTimeout(
-            withDatabaseOperation((client) => {
-                client.query('perform finish_questionnaire($1::int)', [userId]);
-            }),
+            withDatabaseOperation((client) => markQuestionnaireFinished(client, userId)),
             thirtyMinutesInMs
         );
     }
@@ -191,20 +206,59 @@ export const createQuestionnaire = withDatabaseOperation(async function (
 export const submitQuestionnaireSolution = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const userId = params['authorization'];
-    if (!Number.isInteger(userId)) {
-        return new ServiceResponse(403, null, 'Unauthorized');
+    const userId = params['path']['id'];
+    const validationResult = validateAuth(params['authorization'], userId);
+    if (validationResult) {
+        return validationResult;
     }
-    const {questionnaireId, gqId, answers} = params;
-    const bitset = calculateBitsetOfAnswers(answers);
+    const questionId = params['path']['qId'];
+    if (!isStringValidInteger(questionId)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_ID}, 'Invalid question id');
+    }
+    const questionIdInteger = parseInt(questionId, 10);
+    const userIdInteger = parseInt(userId, 10);
+    if ((userIdInteger - 1) * 26 >= questionIdInteger || questionIdInteger > userIdInteger * 26) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.QUESTION_ID_NOT_IN_QUESTIONNAIRE}, 'Invalid question id');
+    }
 
-    const result = (await client.query(
+    const answers = params['body'];
+    const answerInputValidation = validateAnswerSetInput(answers);
+    if (answerInputValidation) {
+        return answerInputValidation;
+    }
+    const bitset = calculateBitsetOfAnswers(answers);
+    const correctAnswers = adjustOutputAnswerSet((await client.query(
         `select 
             answer_id as "id",
-            correct as "correct"
-        from submit_questionnaire_solution($1::int, $2::int, $3::int, $4::int)`,
-        [userId, questionnaireId, gqId, bitset]
-    )).rows;
+            correct
+        from submit_questionnaire_solution($1::int, $2::int, $3::int)`,
+        [userId, questionId, bitset]
+    )).rows);
 
-    return new ServiceResponse(200, result, 'Successfully submitted questionnaire');
+    if (correctAnswers.length === 0) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.QUESTION_SOLUTION_ALREADY_SUBMITTED}, 'Already submitted');
+    }
+
+    const correctBitset = calculateBitsetOfAnswers(correctAnswers, 'correct');
+
+    return new ServiceResponse(
+        200, 
+        {isCorrect: correctBitset === bitset, correctAnswers: correctAnswers}, 
+        'Successfully submitted questionnaire question'
+    );
+});
+
+export const finishQuestionnaire = withDatabaseOperation(async function (
+    client, _req, _res, params
+) {
+    const userId = params['path']['id'];
+    const validationResult = validateAuth(params['authorization'], userId);
+    if (validationResult) {
+        return validationResult;
+    }
+    markQuestionnaireFinished(client, userId);
+
+    const result = (await client.query(
+
+    )).rows;
 });

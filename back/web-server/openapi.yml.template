@@ -309,7 +309,7 @@ paths:
       servers:
         - url: https://localhost:{EXERCISES_PORT}/api/v1
       security:
-        - bearerAuth: [ ]
+        - cookieAuth: [ ]
       responses:
         '200':
           description: A list of exercise categories
@@ -354,7 +354,7 @@ paths:
           schema:
             type: integer
       security:
-        - bearerAuth: [ ]
+        - cookieAuth: [ ]
       responses:
         '200':
           description: Successful response
@@ -399,7 +399,7 @@ paths:
       servers:
         - url: https://localhost:{EXERCISES_PORT}/api/v1
       security:
-        - bearerAuth: [ ]
+        - cookieAuth: [ ]
       responses:
         '200':
           description: Successful response
@@ -480,14 +480,14 @@ paths:
               example:
                 id: 1
                 answers:
-                  - id: 0
-                    selected: true
                   - id: 1
-                    selected: false
+                    selected: true
                   - id: 2
+                    selected: false
+                  - id: 3
                     selected: true
       security:
-        - bearerAuth: [ ]
+        - cookieAuth: [ ]
       responses:
         '200':
           description: Solutions submitted successfully
@@ -1068,46 +1068,7 @@ paths:
       servers:
         - url: https://localhost:{EXERCISES_PORT}/api/v1
       security:
-        - bearerAuth: [ ]
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    generatedQuestionId:
-                      type: integer
-                    questionText:
-                      type: string
-                    questionImage:
-                      type: string
-                    answers:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                          description:
-                            type: string
-
-    get:
-      summary: Get questionnaire for a user
-      tags: [Questionnaire]
-      servers:
-        - url: https://localhost:{EXERCISES_PORT}/api/v1
-      security:
-        - bearerAuth: [ ]
+        - cookieAuth: [ ]
       parameters:
         - in: path
           name: id
@@ -1122,18 +1083,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  questionnaireId:
-                    type: integer
                   questions:
                     type: array
                     items:
                       type: object
                       properties:
-                        generatedQuestionId:
+                        id:
                           type: integer
-                        questionText:
+                        text:
                           type: string
-                        questionImage:
+                        imageId:
+                          type: string
+                        image:
                           type: string
                         answers:
                           type: array
@@ -1144,17 +1105,79 @@ paths:
                                 type: integer
                               description:
                                 type: string
+                  questionnaire:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      generationTime:
+                        type: string
+                      new:
+                        type: boolean
 
-  /questionnaires/{questionnaireId}/question/{gqId}/solution:
+    get:
+      summary: Get questionnaire for a user
+      tags: [Questionnaire]
+      servers:
+        - url: https://localhost:{EXERCISES_PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        text:
+                          type: string
+                        imageId:
+                          type: string
+                        image:
+                          type: string
+                        answers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              description:
+                                type: string
+                  questionnaire:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      generationTime:
+                        type: string
+                      registered:
+                        type: boolean
+
+  /users/{id}/questionnaire/questions/{qId}/solution:
     post:
       parameters:
-        - name: questionnaireId
+        - name: id
           in: path
           required: true
           schema:
             type: integer
-          description: The Id of questionnaire
-        - name: gqId
+          description: The Id of the user
+        - name: qId
           in: path
           required: true
           schema:
@@ -1168,32 +1191,25 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                questionId:
-                  type: integer
-                  description: The ID of the question
-                answers:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                        description: The ID of the answer
-                      selected:
-                        type: boolean
-                        description: Whether the answer was selected
-              required:
-                - answers
-              example:
-                answers:
-                  - id: 1
-                    selected: true
-                  - id: 2
-                    selected: false
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the answer
+                  selected:
+                    type: boolean
+                    description: Whether the answer was selected
+            example:
+              - id: 1
+                selected: true
+              - id: 2
+                selected: false
+              - id: 3
+                selected: true
       security:
-        - bearerAuth: [ ]
+        - cookieAuth: [ ]
       responses:
         '200':
           description: Solutions submitted successfully
@@ -1202,9 +1218,20 @@ paths:
               schema:
                 type: object
                 properties:
-                  message:
-                    type: string
-                    example: Solutions submitted successfully
+                  isCorrect:
+                    type: boolean
+                    description: indicates solution correctness
+                  correctAnswers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the answer
+                        correct:
+                          type: boolean
+                          description: Whether the answer is actually correct
         '400':
           description: Invalid input
           content:

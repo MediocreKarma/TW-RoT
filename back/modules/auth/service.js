@@ -397,7 +397,7 @@ export const requestCredentialChange = withDatabaseOperation(async function (
     );
 });
 
-const updateEmail = async (client, userId, newEmail, username = '') => {
+const updateEmail = async (client, userId, newEmail, username = '\b') => {
     await client.query(
         `update user_account 
             set new_email = $1::varchar
@@ -409,7 +409,7 @@ const updateEmail = async (client, userId, newEmail, username = '') => {
     await client.query(
         `insert into user_token (user_id, token_type, token_value, created_at)
             values($1::int, 'confirm_email', $2::varchar, now()::timestamp)`,
-        [id, token]
+        [userId, token]
     );
     const link = `${process.env.FRONTEND_URL}/verify?token=${token}`;
     let template = readFileSync('templates/updateEmail.html', 'utf-8');
@@ -419,7 +419,7 @@ const updateEmail = async (client, userId, newEmail, username = '') => {
         .replace(/{WEBSITE_NAME}/g, process.env.WEBSITE_NAME);
     await emailTransporter.sendMail({
         from: `${process.env.EMAIL_NAME} <${process.env.EMAIL_ADDRESS}>`,
-        to: email,
+        to: newEmail,
         subject: CHANGE_EMAIL_SUBJECT,
         html: template,
     });

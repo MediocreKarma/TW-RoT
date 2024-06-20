@@ -78,7 +78,7 @@ export const adjustOutputAnswerSet = (answers) => {
     for (const answer of answers) {
         minAnswerId = Math.min(minAnswerId, answer['id']);
     }
-    answers.forEach((ans) => ans['id'] -= minAnswerId);
+    answers.forEach((ans) => ans['id'] -= (minAnswerId - 1));
     return answers;
 }
 

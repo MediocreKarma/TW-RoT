@@ -11,6 +11,7 @@ import {
 import { 
     addQuestionSolution, 
     createQuestionnaire, 
+    finishQuestionnaire, 
     getQuestionnaire, 
     submitQuestionnaireSolution 
 } from './questionnaire.js';
@@ -29,6 +30,7 @@ app.post('/api/v1/users/:id/solutions', addQuestionSolution);
 
 app.get('/api/v1/users/:id/questionnaire', getQuestionnaire);
 app.post('/api/v1/users/:id/questionnaire', createQuestionnaire);
-app.post('/api/v1/questionnaires/:questionnaireId/question/:gqId/solution', submitQuestionnaireSolution);
+app.post('/api/v1/users/:id/questionnaire/questions/:qId/solution', submitQuestionnaireSolution);
+app.put('/api/v1/users/:id/questionnaire/submitted', finishQuestionnaire);
 
 app.listen(process.env.EXERCISES_PORT);
