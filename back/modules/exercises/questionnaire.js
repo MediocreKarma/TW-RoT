@@ -257,8 +257,41 @@ export const finishQuestionnaire = withDatabaseOperation(async function (
         return validationResult;
     }
     markQuestionnaireFinished(client, userId);
-
     const result = (await client.query(
-
+        `SELECT 
+            gq.id,
+            gq.sent,
+            gq.solved,
+            gq.selected_fields as "selectedFields",
+            q.text,
+            q.image_id as "imageId",
+            ARRAY_AGG(
+                JSONB_BUILD_OBJECT(
+                    'id', a.id,
+                    'description', a.description,
+                    'correct', a.correct
+                ) 
+            ) AS answers
+        FROM 
+            generated_question gq
+        JOIN 
+            answer a ON gq.question_id = a.question_id
+        JOIN
+            question q on gq.question_id = q.id
+        where 
+            gq.questionnaire_id = 1
+        GROUP BY 
+            gq.id, q.text, q.image_id
+        order by gq.id;`
     )).rows;
+    adjustQuestionnaireOutputAnswerSets(result);
+    addImageToQuestions(result);
+    const count = parseInt((await client.query(
+        `select count(' ') filter (where q.solved) as cnt
+            from generated_question q  
+            where q.questionnaire_id = $1::int`,
+        [userId]
+    )).rows[0]['cnt'], 10);
+    
+    return new ServiceResponse(200, {solved: count, questions: result}, 'Successfully finished questionnaire');
 });
