@@ -1,7 +1,6 @@
-@use "utils";
-@use "vars";
-@use "color-themes";
-
+@use 'utils';
+@use 'vars';
+@use 'color-themes';
 
 .comparison {
     @include utils.main-page-container;
@@ -15,17 +14,17 @@
     &__select {
         border-radius: vars.$border-radius;
         position: relative;
-        width: 20%;
+        width: 400px;
 
-        @media only screen and (max-width: vars.$media-query-size-small) {
+        @media only screen and (max-width: vars.$media-query-size-big) {
             width: 80%;
         }
 
         &:after {
-            color:#333;
+            color: #333;
             content: '<>';
-            
-            font: 17px "Consolas", monospace;
+
+            font: 17px 'Consolas', monospace;
             transform: rotate(90deg);
             right: 11px;
 
@@ -41,11 +40,12 @@
             border-radius: vars.$border-radius;
             display: block;
             width: 100%;
-            max-width: 320px;
+            max-width: 600px;
             height: 3rem;
             float: right;
             margin: 5px 0px;
             padding: 0px 24px;
+            padding-right: 44px;
             font-size: 16px;
             line-height: 1.75;
             color: #333;
@@ -75,7 +75,7 @@
 
 .compare-card {
     @include utils.card;
-    
+
     display: flex;
     flex: 0 0 30%;
     @media only screen and (max-width: vars.$media-query-size-big) {
