@@ -1,4 +1,6 @@
 @use 'color-themes';
+@use 'vars';
+@use 'utils';
 
 .modal__overlay {
     display: flex;
@@ -31,6 +33,22 @@
         padding: 8px;
         align-self: flex-end;
         justify-self: flex-end;
+    }
+
+    &__buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: vars.$padding-small;
+    }
+
+    &__button {
+        &--cancel {
+            background-color: color-themes.$neutral-color;
+        }
+        &--confirm {
+            @include color-themes.secondary;
+        }
     }
 }
 

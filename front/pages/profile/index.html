@@ -13,7 +13,8 @@
         <script src="/components/footer/footer.js" type="module"></script>
         <script src="/components/backToTop.js"></script>
 
-        <script src="/profile/resetMailConfirmation.js"></script>
+        <script src="/profile/profile.js" type="module"></script>
+        <script src="/js/loginGuard.js" type="module"></script>
     </head>
 
     <body>
@@ -30,29 +31,38 @@
                             <p>Nume de utilizator</p>
                         </div>
                         <div class="profile-field__content">
-                            <p>random_username123</p>
-                            <button class="button">Schimbă numele</button>
+                            <p id="username">Se încarcă...</p>
+                            <button
+                                type="button"
+                                class="button"
+                                __type="username"
+                            >
+                                Schimbă numele
+                            </button>
                         </div>
                     </div>
                     <div class="profile-card__row">
                         <div class="profile-field__title"><p>Email</p></div>
                         <div class="profile-field__content">
-                            <p>user@mail.com</p>
-                            <button id="submit-button" class="button">
-                                Resetează email-ul
+                            <button type="button" class="button" __type="email">
+                                Schimbă email-ul
                             </button>
                         </div>
                     </div>
                     <div class="profile-card__row">
                         <div class="profile-field__title"><p>Parolă</p></div>
                         <div class="profile-field__content">
-                            <a href="reset/request-password" class="button">
-                                Resetează parola
-                            </a>
+                            <button
+                                type="button"
+                                class="button"
+                                __type="password"
+                            >
+                                Schimbă parola
+                            </button>
                         </div>
                     </div>
                     <div class="profile-card__buttons">
-                        <a class="button" href="/">Delogare</a>
+                        <a class="button" href="/logout">Delogare</a>
                         <a class="button" href="/login">Șterge contul</a>
                     </div>
                 </div>

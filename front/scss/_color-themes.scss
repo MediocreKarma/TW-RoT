@@ -44,5 +44,9 @@ body {
         &:hover {
             background-color: $secondary-color--hover;
         }
+        &[disabled],
+        &:disabled {
+            background-color: $neutral-color;
+        }
     }
 }

@@ -27,8 +27,10 @@ const createOrUpdateModal = (innerNode, id = '__modal', confirm = false) => {
 };
 
 export const showInfoModal = (modalContent, onClose = undefined) => {
-    let modal = createOrUpdateModal(modalContent, 'error-modal');
-    const closeBtn = document.getElementById('error-modal-close');
+    const id = Math.random().toString(36).slice(2, 9);
+    const modalId = `error-modal-${id}`;
+    let modal = createOrUpdateModal(modalContent, modalId);
+    const closeBtn = document.getElementById(`${modalId}-close`);
 
     closeBtn.onclick = function (e) {
         if (onClose) {
@@ -38,46 +40,46 @@ export const showInfoModal = (modalContent, onClose = undefined) => {
     };
 };
 
-// export const showConfirmModal = (
-//     modalContent,
-//     onClose = undefined,
-//     waitToConfirm = true
-// ) => {
-//     return new Promise((resolve, reject) => {
-//         const modal = createOrUpdateModal(innerNode);
+export const showConfirmModal = (
+    modalContent,
+    onClose = undefined,
+    waitToConfirm = true // not sure if I'll need this but... I'm keeping it around for whenever I *might* add an onConfirm callback
+) => {
+    return new Promise((resolve) => {
+        const id = 'confirm-modal';
+        const modal = createOrUpdateModal(modalContent, id);
+        const closeBtn = document.getElementById(`${id}-close`);
 
-//         const closeBtn = document.getElementsByClassName('close')[0];
-//         const confirmBtn = document.getElementById('confirmBtn');
-//         const cancelBtn = document.getElementById('cancelBtn');
+        const buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('modal__buttons');
 
-//         modal.style.display = 'block';
+        const cancelButton = document.createElement('button');
+        cancelButton.type = 'button';
+        cancelButton.innerText = 'Anulare';
+        cancelButton.classList.add('modal__button--cancel');
+        buttonContainer.appendChild(cancelButton);
 
-//         closeBtn.onclick = function () {
-//             modal.style.display = 'none';
-//             resolve(false);
-//         };
+        const confirmButton = document.createElement('button');
+        confirmButton.type = 'button';
+        confirmButton.innerText = 'Confirmare';
+        confirmButton.classList.add('modal__button--confirm');
+        buttonContainer.appendChild(confirmButton);
 
-//         confirmBtn.onclick = function () {
-//             modal.style.display = 'none';
-//             resolve(true);
-//         };
+        modal.querySelector('.modal').appendChild(buttonContainer);
 
-//         // When the user clicks on "Cancel" button, close the modal and resolve false
-//         cancelBtn.onclick = function () {
-//             modal.style.display = 'none';
-//             resolve(false);
-//         };
+        closeBtn.onclick = function () {
+            modal.parentNode?.removeChild(modal);
+            resolve(false);
+        };
 
-//         // When the user clicks anywhere outside of the modal, close it
-//         window.onclick = function (event) {
-//             if (event.target == modal) {
-//                 modal.style.display = 'none';
-//                 resolve(false);
-//             }
-//         };
-//     });
-// };
+        confirmButton.onclick = function () {
+            modal.parentNode?.removeChild(modal);
+            resolve(true);
+        };
 
-// TODO
-
-// export const showFormModal = () => {};
+        cancelButton.onclick = function () {
+            modal.parentNode?.removeChild(modal);
+            resolve(false);
+        };
+    });
+};

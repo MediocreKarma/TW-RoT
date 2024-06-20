@@ -10,6 +10,7 @@ const DEFAULT_ID = 'default';
 const CATEGORY_ID_ATTR = '__category-id';
 
 const populateSelect = (select, values) => {
+    select.disabled = true;
     const renderOption = ({ id, title }) => {
         const option = document.createElement('option');
         option.setAttribute('value', `${id}`);
@@ -26,6 +27,7 @@ const populateSelect = (select, values) => {
     values.forEach((value) => {
         select.appendChild(renderOption(value));
     });
+    select.disabled = false;
 };
 
 const renderCard = (sign) => {
@@ -65,10 +67,12 @@ const populateComparisonCategories = async () => {
                     return;
                 }
                 try {
+                    comparisonCategorySelect.disabled = true;
                     const categorySigns = await fetchComparisonSignsInCategory(
                         comparisonCategorySelect.value
                     );
                     populateSelect(comparisonSignSelect, categorySigns);
+                    comparisonCategorySelect.disabled = false;
                     comparisonSignSelect.parentElement.style['display'] =
                         'block';
                     comparisonSignSelect.setAttribute(

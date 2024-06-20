@@ -383,6 +383,9 @@ body[data-theme=dark] {
 .error__info .button:hover {
   background-color: #f0c395;
 }
+.error__info .button[disabled], .error__info .button:disabled {
+  background-color: #808080;
+}
 
 .form__error {
   color: red;
@@ -419,6 +422,25 @@ body[data-theme=dark] {
   padding: 8px;
   align-self: flex-end;
   justify-self: flex-end;
+}
+.modal__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.modal__button--cancel {
+  background-color: #808080;
+}
+.modal__button--confirm .button {
+  background-color: #ea9a4b;
+  color: #fff;
+}
+.modal__button--confirm .button:hover {
+  background-color: #f0c395;
+}
+.modal__button--confirm .button[disabled], .modal__button--confirm .button:disabled {
+  background-color: #808080;
 }
 
 @media (max-width: 480px) {
@@ -683,6 +705,9 @@ body[data-theme=dark] {
 .not-found__info .button:hover {
   background-color: #f0c395;
 }
+.not-found__info .button[disabled], .not-found__info .button:disabled {
+  background-color: #808080;
+}
 .not-found__info h1 {
   font-size: 6rem;
 }
@@ -941,6 +966,9 @@ body[data-theme=dark] {
 .admin-dashboard .dashboard-card__actions .button:hover {
   background-color: #f0c395;
 }
+.admin-dashboard .dashboard-card__actions .button[disabled], .admin-dashboard .dashboard-card__actions .button:disabled {
+  background-color: #808080;
+}
 
 .single-card__container {
   width: 100%;
@@ -1102,6 +1130,9 @@ body[data-theme=dark] {
 .profile-card .button:hover {
   background-color: #f0c395;
 }
+.profile-card .button[disabled], .profile-card .button:disabled {
+  background-color: #808080;
+}
 .profile-card__buttons {
   display: flex;
   gap: 1rem;
@@ -1215,6 +1246,9 @@ body[data-theme=dark] {
 }
 .cod-rutier .chapters-container .chapter-card--anexa .button:hover {
   background-color: #f0c395;
+}
+.cod-rutier .chapters-container .chapter-card--anexa .button[disabled], .cod-rutier .chapters-container .chapter-card--anexa .button:disabled {
+  background-color: #808080;
 }
 @media only screen and (max-width: 800px) {
   .cod-rutier .chapters-container {

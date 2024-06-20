@@ -18,6 +18,14 @@ export const userData = () => {
         : null;
 };
 
+export const isLoggedIn = () => {
+    return userData() ? true : false;
+    // if (userData() == null) {
+    //     // make a quick request to /authenticated to check
+    // }
+    // return true
+};
+
 export const clearUserData = () => {
     localStorage.removeItem(UserData.id);
     localStorage.removeItem(UserData.username);
