@@ -23,3 +23,9 @@ export const clearUserData = () => {
     localStorage.removeItem(UserData.username);
     localStorage.removeItem(UserData.flags);
 };
+
+export const setUserData = (user) => {
+    localStorage.setItem(UserData.id, user.id);
+    localStorage.setItem(UserData.username, user.username);
+    localStorage.setItem(UserData.flags, user.flags);
+};

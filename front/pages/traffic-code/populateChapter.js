@@ -1,14 +1,14 @@
 import { fetchChapter, fetchChapters } from './requests.js';
+import { renderLoading } from '/js/render.js';
 import { renderError } from '/js/errors.js';
-import { setLoading } from '/js/render.js';
 import { showInfoModal } from '/js/modals.js';
 
 const renderChapter = async (chapterId) => {
     const titleContainer = document.getElementById('chapter-title');
     const contentContainer = document.getElementById('chapter-content');
 
-    setLoading(titleContainer);
-    setLoading(contentContainer);
+    renderLoading(titleContainer);
+    renderLoading(contentContainer);
 
     try {
         const data = await fetchChapter(chapterId);
@@ -29,7 +29,7 @@ const renderChapterSidebar = async (currentId) => {
     if (!sidebar) {
         return;
     }
-    setLoading(sidebar);
+    renderLoading(sidebar);
 
     let data;
     try {

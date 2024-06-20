@@ -3,7 +3,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'url';
 
 import initOpenApi from './openapiGen.js';
-import initApiJs from './apiConstantsGen.js';
+import { initApiJs, copyConstants } from './apiConstantsGen.js';
 
 import dotenv from 'dotenv';
 
@@ -16,6 +16,7 @@ dotenv.config({
 
 initOpenApi();
 initApiJs();
+copyConstants();
 
 const FRONT = process.env.FRONTEND_PATH;
 const server = new WebServer();

@@ -26,12 +26,14 @@ const createOrUpdateModal = (innerNode, id = '__modal', confirm = false) => {
     return modalOverlay;
 };
 
-export const showInfoModal = (modalContent, onClose) => {
+export const showInfoModal = (modalContent, onClose = undefined) => {
     let modal = createOrUpdateModal(modalContent, 'error-modal');
     const closeBtn = document.getElementById('error-modal-close');
 
     closeBtn.onclick = function (e) {
-        onClose(e);
+        if (onClose) {
+            onClose(e);
+        }
         modal.parentNode?.removeChild(modal);
     };
 };

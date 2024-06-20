@@ -1,5 +1,5 @@
 const API_PREFIX = '/api/v1';
-const HOST = "http://localhost"
+const HOST = "https://localhost"
 
 const API = {
     CHAPTERS: `${HOST}:12735${API_PREFIX}`,

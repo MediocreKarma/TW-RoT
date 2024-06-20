@@ -12,7 +12,7 @@
         <script src="/components/header/header.js" type="module"></script>
         <script src="/components/footer/footer.js" type="module"></script>
 
-        <script src="/js/validateForm.js"></script>
+        <script type="module" src="/reset/request-password/submit.js"></script>
     </head>
 
     <body>
@@ -28,20 +28,14 @@
                         înregistrare, iar noi îți vom trimite un link de
                         resetare a parolei.
                     </p>
-                    <form
-                        id="login-form"
-                        class="login-form"
-                        action="javascript:void(0);"
-                    >
-                        <div class="login-form__group">
-                            <label for="email" class="login-form__label"
-                                >Email</label
-                            >
+                    <form id="form" class="form" action="javascript:void(0);">
+                        <div class="form__group">
+                            <label for="email" class="form__label">Email</label>
                             <input
                                 type="email"
                                 id="email"
                                 name="email"
-                                class="login-form__input"
+                                class="form__input"
                                 placeholder="Scrie-ți email-ul aici"
                                 required
                             />
@@ -49,7 +43,7 @@
                         <button
                             type="submit"
                             id="submit-button"
-                            class="login-form__button"
+                            class="form__button"
                         >
                             Trimite email de resetare
                         </button>

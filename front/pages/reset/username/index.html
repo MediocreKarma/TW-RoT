@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ProRutier - Învață eficient informații rutiere</title>
+        <link rel="stylesheet" href="/style/style.css" />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
+        <script src="/components/header/header.js" type="module"></script>
+        <script src="/components/footer/footer.js" type="module"></script>
+
+        <script src="/reset/username/submit.js" type="module"></script>
+    </head>
+
+    <body>
+        <header class="header header--no-js" id="header"></header>
+
+        <div class="main-container">
+            <!--reset password-->
+            <div class="reset-container">
+                <div class="login-card">
+                    <h2 class="login-card__title">
+                        Resetează numele de utilizator
+                    </h2>
+                    <form
+                        id="form"
+                        class="form"
+                        action="/confirm-change"
+                        method="post"
+                    >
+                        <div class="form__group">
+                            <label for="name" class="form__label"
+                                >Nume de utilizator (username)</label
+                            >
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                class="form__input"
+                                placeholder="Scrie-ți numele de utilizator aici"
+                                required
+                            />
+                        </div>
+                        <button type="submit" class="form__button">
+                            Resetează
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer" id="footer"></footer>
+    </body>
+</html>

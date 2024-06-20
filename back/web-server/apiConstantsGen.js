@@ -11,7 +11,7 @@ dotenv.config({
     path: join(dirname(fileURLToPath(import.meta.url)), '.env'),
 });
 
-export default function initApiJs() {
+export function initApiJs() {
     const filename = 'api.js';
     const templatePath = filename + '.template';
     let templateFileStr = readFileSync(templatePath, 'utf8');
@@ -30,5 +30,17 @@ export default function initApiJs() {
 
     console.log(
         `Placeholders in ${filename} have been replaced with actual port numbers.`
+    );
+}
+
+export function copyConstants() {
+    const filePath = '../common/constants.js';
+    let fileStr = readFileSync(filePath, 'utf8');
+    writeFileSync(
+        `${process.env.FRONTEND_PATH}/static/js/constants.js`,
+        fileStr
+    );
+    console.log(
+        `Pasted ${filePath} to ${`${process.env.FRONTEND_PATH}/static/js/constants.js`}.`
     );
 }
