@@ -8,7 +8,7 @@
         <script src="/components/header/header.js" type="module"></script>
         <script src="/components/footer/footer.js" type="module"></script>
 
-        <script src="/signup/signup.js"></script>
+        <script src="/signup/signup.js" type="module"></script>
     </head>
     <body>
         <header class="header header--no-js" id="header"></header>
@@ -16,44 +16,40 @@
         <div class="flex-center-container signup-container">
             <div class="signup-card">
                 <h2 class="signup-card__title">Înregistrare</h2>
-                <form id="signup-form" class="signup-form">
-                    <div class="signup-form__group">
-                        <label for="email" class="signup-form__label"
-                            >Email</label
-                        >
+                <form id="form" class="form">
+                    <div class="form__group">
+                        <label for="email" class="form__label">Email</label>
                         <input
                             type="email"
                             id="email"
                             name="email"
-                            class="signup-form__input"
+                            class="form__input"
                             required
                         />
                     </div>
-                    <div class="signup-form__group">
-                        <label for="password" class="signup-form__label"
-                            >Parolă</label
-                        >
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            class="signup-form__input"
-                            required
-                        />
-                    </div>
-                    <div class="signup-form__group">
-                        <label for="name" class="signup-form__label"
+                    <div class="form__group">
+                        <label for="name" class="form__label"
                             >Nume de utilizator (username)</label
                         >
                         <input
                             type="text"
-                            id="name"
-                            name="name"
-                            class="signup-form__input"
+                            id="username"
+                            name="username"
+                            class="form__input"
                             required
                         />
                     </div>
-                    <button type="submit" class="signup-form__button">
+                    <div class="form__group">
+                        <label for="password" class="form__label">Parolă</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form__input"
+                            required
+                        />
+                    </div>
+                    <button type="submit" class="form__button">
                         Înregistrare
                     </button>
                 </form>

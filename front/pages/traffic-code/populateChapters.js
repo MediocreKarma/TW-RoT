@@ -49,6 +49,5 @@ window.addEventListener('load', async () => {
         showInfoModal(renderError(e), () => {
             window.location.href = '/';
         });
-        return;
     }
 });

@@ -17,34 +17,32 @@
         <div class="flex-center-container login-container">
             <div class="login-card">
                 <h2 class="login-card__title">Autentificare</h2>
-                <form id="login-form" class="login-form" action="">
-                    <div class="login-form__group">
-                        <label for="email" class="login-form__label"
+                <form id="form" class="form" action="">
+                    <div class="form__group">
+                        <label for="email" class="form__label"
                             >Nume de utilizator sau email</label
                         >
                         <input
                             type="identifier"
                             id="identifier"
                             name="identifier"
-                            class="login-form__input"
+                            class="form__input"
                             placeholder="Scrie numele de utilizator/email-ul aici"
                             required
                         />
                     </div>
-                    <div class="login-form__group">
-                        <label for="password" class="login-form__label"
-                            >Parolă</label
-                        >
+                    <div class="form__group">
+                        <label for="password" class="form__label">Parolă</label>
                         <input
                             type="password"
                             id="password"
                             name="password"
-                            class="login-form__input"
+                            class="form__input"
                             placeholder="Scrie parola aici"
                             required
                         />
                     </div>
-                    <button type="submit" class="login-form__button">
+                    <button type="submit" class="form__button">
                         Autentificare
                     </button>
                 </form>
@@ -54,7 +52,7 @@
                 </p>
                 <p>
                     Ai uitat parola?
-                    <a href="/reset/password">Resetează parola</a>
+                    <a href="/reset/request-password">Resetează parola</a>
                 </p>
             </div>
         </div>

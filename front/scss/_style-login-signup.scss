@@ -1,24 +1,25 @@
-@use "vars";
-@use "color-themes";
-@use "utils";
+@use 'vars';
+@use 'color-themes';
+@use 'utils';
 
-.login-container, .signup-container {
+.login-container,
+.signup-container {
     position: relative;
     z-index: 1;
-    background-image: url("../img/trafic.jpg");
+    background-image: url('../img/trafic.jpg');
     overflow: hidden;
-    background-size:cover;
+    background-size: cover;
 
     &:before {
-        content: "";
+        content: '';
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         background-image: inherit;
-        background-size:cover;
-        filter: blur(0.3rem) ;
+        background-size: cover;
+        filter: blur(0.3rem);
         z-index: -1;
     }
 }
@@ -29,8 +30,8 @@
 //     justify-content: center;
 // }
 
-
-.login-card, .signup-card {
+.login-card,
+.signup-card {
     @include utils.card;
 
     position: relative;
@@ -70,8 +71,7 @@
     }
 }
 
-
-.login-form, .signup-form {
+.form {
     &__group {
         margin-bottom: 15px;
     }

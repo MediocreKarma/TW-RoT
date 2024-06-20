@@ -11,6 +11,8 @@
         />
         <script src="/components/header/header.js" type="module"></script>
         <script src="/components/footer/footer.js" type="module"></script>
+
+        <script src="/verify/verify.js" type="module"></script>
     </head>
 
     <body>
@@ -19,12 +21,8 @@
         <div class="main-container">
             <div class="single-card__container">
                 <div class="single-card__card">
-                    <h1>Schimbarea *?* a fost realizata cu succes.</h1>
-                    <h3>Foloseste-ti noua *?* pentru a te reconecta.</h3>
-                    <div class="single-card__button">
-                        <a href="/login" class="button">
-                            Înapoi la autentificare
-                        </a>
+                    <div class="single-card__body" id="verify-container">
+                        <p id="verify-text">Se verifică...</p>
                     </div>
                 </div>
             </div>

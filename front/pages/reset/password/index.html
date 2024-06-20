@@ -12,7 +12,7 @@
         <script src="/components/header/header.js" type="module"></script>
         <script src="/components/footer/footer.js" type="module"></script>
 
-        <script src="/js/validateForm.js"></script>
+        <script src="/reset/password/submit.js" type="module"></script>
     </head>
 
     <body>
@@ -24,25 +24,25 @@
                 <div class="login-card">
                     <h2 class="login-card__title">Resetează parola</h2>
                     <form
-                        id="login-form"
-                        class="login-form"
+                        id="form"
+                        class="form"
                         action="/confirm-change"
                         method="post"
                     >
-                        <div class="login-form__group">
-                            <label for="password" class="login-form__label"
+                        <div class="form__group">
+                            <label for="password" class="form__label"
                                 >Parolă</label
                             >
                             <input
                                 type="password"
                                 id="password"
                                 name="password"
-                                class="login-form__input"
+                                class="form__input"
                                 placeholder="Scrie-ți parola nouă"
                                 required
                             />
                         </div>
-                        <button type="submit" class="login-form__button">
+                        <button type="submit" class="form__button">
                             Resetează
                         </button>
                     </form>

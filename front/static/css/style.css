@@ -306,6 +306,10 @@ body[data-theme=dark] {
 .footer__button:hover {
   background-color: #8a7cd1;
 }
+.footer__button:disabled, .footer__button[disabled] {
+  cursor: default;
+  background-color: #808080;
+}
 .footer ul {
   list-style: none;
   padding-left: 0;
@@ -378,6 +382,10 @@ body[data-theme=dark] {
 }
 .error__info .button:hover {
   background-color: #f0c395;
+}
+
+.form__error {
+  color: red;
 }
 
 .modal__overlay {
@@ -679,14 +687,16 @@ body[data-theme=dark] {
   font-size: 6rem;
 }
 
-.login-container, .signup-container {
+.login-container,
+.signup-container {
   position: relative;
   z-index: 1;
   background-image: url("../img/trafic.jpg");
   overflow: hidden;
   background-size: cover;
 }
-.login-container:before, .signup-container:before {
+.login-container:before,
+.signup-container:before {
   content: "";
   position: absolute;
   top: 0;
@@ -699,7 +709,8 @@ body[data-theme=dark] {
   z-index: -1;
 }
 
-.login-card, .signup-card {
+.login-card,
+.signup-card {
   box-shadow: 0px 0px 2px rgba(119, 119, 119, 0.8);
   border-radius: 3px;
   box-sizing: border-box;
@@ -711,11 +722,13 @@ body[data-theme=dark] {
   width: 100%;
   top: 60px;
 }
-.login-card__title, .signup-card__title {
+.login-card__title,
+.signup-card__title {
   text-align: center;
   margin-bottom: 20px;
 }
-.login-card button, .signup-card button {
+.login-card button,
+.signup-card button {
   padding: 1rem;
   font-family: "Space Grotesk", sans-serif;
   font-size: 1rem;
@@ -727,37 +740,48 @@ body[data-theme=dark] {
   transition: background-color 0.3s ease;
   width: 100%;
 }
-.login-card button:hover, .signup-card button:hover {
+.login-card button:hover,
+.signup-card button:hover {
   background-color: #8a7cd1;
 }
-.login-card p, .signup-card p {
+.login-card button:disabled, .login-card button[disabled],
+.signup-card button:disabled,
+.signup-card button[disabled] {
+  cursor: default;
+  background-color: #808080;
+}
+.login-card p,
+.signup-card p {
   text-align: center;
 }
-.login-card a, .signup-card a {
+.login-card a,
+.signup-card a {
   color: var(--link-color);
 }
 @media only screen and (min-width: 821px) {
-  .login-card, .signup-card {
+  .login-card,
+  .signup-card {
     width: 50%;
     padding: 3.5rem;
     margin: 3.5rem;
   }
 }
 @media only screen and (max-height: 820px) {
-  .login-card, .signup-card {
+  .login-card,
+  .signup-card {
     bottom: 70px;
     margin-bottom: 70px;
   }
 }
 
-.login-form__group, .signup-form__group {
+.form__group {
   margin-bottom: 15px;
 }
-.login-form__label, .signup-form__label {
+.form__label {
   display: block;
   margin-bottom: 5px;
 }
-.login-form__input, .signup-form__input {
+.form__input {
   margin: 0;
   box-sizing: border-box;
   width: 100%;
@@ -2056,6 +2080,10 @@ button {
 }
 button:hover {
   background-color: #8a7cd1;
+}
+button:disabled, button[disabled] {
+  cursor: default;
+  background-color: #808080;
 }
 
 .flex-center-container {

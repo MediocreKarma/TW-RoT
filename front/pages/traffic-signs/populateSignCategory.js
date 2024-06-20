@@ -1,7 +1,7 @@
 import { fetchCategory } from './requests.js';
-import { renderError } from '/js/errors.js';
 import { showInfoModal } from '/js/modals.js';
-import { setLoading } from '/js/render.js';
+import { renderLoading } from '/js/render.js';
+import { renderError } from '/js/errors.js';
 
 function renderCard(cardData) {
     // Create the main card div
@@ -49,10 +49,10 @@ const renderCategory = async () => {
     const id = document.location.pathname.replace(/\/+$/, '').split('/').pop();
 
     const container = document.getElementById('category-container');
-    setLoading(container);
+    renderLoading(container);
 
     const title = document.getElementById('sign-category-title');
-    setLoading(title);
+    renderLoading(title);
 
     try {
         const categoryData = await fetchCategory(id);

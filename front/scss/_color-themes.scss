@@ -1,4 +1,3 @@
-
 $primary-color: #6353aa;
 $primary-color--dark: #3d3469;
 $primary-color--hover: #8a7cd1;
@@ -6,6 +5,8 @@ $primary-color--hover: #8a7cd1;
 $secondary-color: #ea9a4b;
 $secondary-color--dark: #b66d24;
 $secondary-color--hover: #f0c395;
+
+$neutral-color: #808080;
 
 $bg--light: #fff;
 $text-color--light: #222;
@@ -21,14 +22,14 @@ body {
     --button-color: #{$primary-color};
     --button-color--hover: #{$primary-color--hover};
 
-    &[data-theme="light"] {
+    &[data-theme='light'] {
         --text-color: #{$text-color--light};
         --background-color: #{$bg--light};
         --link-color: #{$primary-color};
         --leaderboard-nth-even-color: #{$leaderboard-nth-even-color--light};
     }
 
-    &[data-theme="dark"] {
+    &[data-theme='dark'] {
         --text-color: #{$text-color--dark};
         --background-color: #{$bg--dark};
         --link-color: #{$secondary-color};

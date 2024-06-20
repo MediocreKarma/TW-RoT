@@ -1,5 +1,5 @@
-@use "vars";
-@use "color-themes";
+@use 'vars';
+@use 'color-themes';
 
 @mixin full-screen {
     min-height: 100vh;
@@ -50,6 +50,12 @@
     &:hover {
         background-color: color-themes.$primary-color--hover;
     }
+
+    &:disabled,
+    &[disabled] {
+        cursor: default;
+        background-color: color-themes.$neutral-color;
+    }
 }
 
 @mixin main-page-container {
@@ -86,6 +92,5 @@
         max-width: 100rem;
     }
 
-    align-self:center;
-
+    align-self: center;
 }
