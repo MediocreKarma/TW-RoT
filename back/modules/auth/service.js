@@ -141,8 +141,7 @@ export const register = withDatabaseOperation(async function (
         `select count(' ') as exists from user_account where username = $1::varchar`,
         [username]
     )).rows;
-
-    if (rows[0]['exists'] === 1) {
+    if (parseInt(rows[0]['exists'], 10) === 1) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.USERNAME_ALREADY_EXISTS}, 'Username is taken');
     }
     registerAccount(username, email, password); // launch async task after validations

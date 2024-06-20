@@ -13,9 +13,9 @@ export const getAllExerciseCategories = withDatabaseOperation(async function (
         'select ' +
             '   qc.title as title, ' +
             '   qc.id as id, ' +
-            '   count(q.id) filter (where aq.answered_correctly) as solved_questions, ' +
-            '   count(q.id) filter (where not aq.answered_correctly) as wrong_questions, ' +
-            '   count(q.id) as total_questions \n' +
+            '   count(q.id) filter (where aq.answered_correctly) as "solved", ' +
+            '   count(q.id) filter (where not aq.answered_correctly) as "wrong", ' +
+            '   count(q.id) as "total" \n' +
             'from question_category qc\n' +
             'left join question q\n' +
             '    on q.category_id = qc.id\n' +
@@ -28,9 +28,13 @@ export const getAllExerciseCategories = withDatabaseOperation(async function (
 
     const { solved, total, wrong } = qcData.reduce(
         (acc, category) => {
-            acc.solved += parseInt(category['solved_questions'], 10) ?? 0;
-            acc.total += parseInt(category['total_questions'], 10) ?? 0;
-            acc.wrong += parseInt(category['wrong_questions'], 10) ?? 0;
+            // why are these not ints by default, weird
+            category['solved'] = parseInt(category['solved'], 10);
+            acc.solved += category['solved'];
+            category['total'] = parseInt(category['total'], 10);
+            acc.total += category['total'];
+            category['wrong'] = parseInt(category['wrong'], 10);
+            acc.wrong += category['wrong'];
             return acc;
         },
         { solved: 0, total: 0, wrong: 0 }
@@ -45,12 +49,12 @@ export const getAllExerciseCategories = withDatabaseOperation(async function (
 
 const SQL_SELECT_STATEMENT =
     `select
-        q.id as "questionId",
+        q.id as "id",
         q.category_id as "categoryId",
         qg.title as "categoryTitle",
-        q.text as "questionText",
-        q.image_id as "questionImageId",
-        array_agg(jsonb_build_object('answerId', a.id, 'description', a.description)) as "answers"
+        q.text as "text",
+        q.image_id as "imageId",
+        array_agg(jsonb_build_object('id', a.id, 'description', a.description) order by random()) as "answers"
     from 
         question q 
         join answer a on q.id = a.question_id 
@@ -63,10 +67,19 @@ const SQL_GROUPING_STATEMENT =
         random();`
 
 export const addImageToQuestion = (question) => {
-    question?.questionImageId
-    ? question['questionImage'] = API_IMAGE_URL.replace(/{id}/g, question.questionImageId)
-    : delete question.questionImageId;
+    question?.imageId
+    ? question['image'] = API_IMAGE_URL.replace(/{id}/g, question.imageId)
+    : delete question.imageId;
     return question;
+}
+
+export const adjustOutputAnswerSet = (answers) => {
+    let minAnswerId = Number.MAX_SAFE_INTEGER;
+    for (const answer of answers) {
+        minAnswerId = Math.min(minAnswerId, answer['id']);
+    }
+    answers.forEach((ans) => ans['id'] -= minAnswerId);
+    return answers;
 }
 
 export const getUnsolvedQuestionByCategory = withDatabaseOperation(async function (
@@ -107,6 +120,7 @@ export const getUnsolvedQuestionByCategory = withDatabaseOperation(async functio
         );
     }
     addImageToQuestion(qData[0]);
+    adjustOutputAnswerSet(qData[0].answers);
     return new ServiceResponse(
         200,
         qData[0],
@@ -151,22 +165,13 @@ export const getIncorrectlySolvedQuestion = withDatabaseOperation(async function
         );
     }
     addImageToQuestion(qData[0]);
+    adjustOutputAnswerSet(qData[0].answers);
     return new ServiceResponse(
         200,
         qData[0],
         'Successfully retrieved incorrectly solved question'
     );
 });
-
-
-export const adjustOutputAnswerSet = (answers) => {
-    let minAnswerId = Number.MAX_SAFE_INTEGER;
-    for (const answer of answers) {
-        minAnswerId = Math.min(minAnswerId, answer['id']);
-    }
-    answers.forEach((ans) => ans['id'] -= minAnswerId);
-    return answers;
-}
 
 export const getSolution = withDatabaseOperation(async function (
     client, _req, _res, params

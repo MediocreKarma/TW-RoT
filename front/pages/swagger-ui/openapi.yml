@@ -299,27 +299,37 @@ paths:
         - Exercises
       servers:
         - url: https://localhost:12737/api/v1
-      parameters:
-        - name: Authorization
-          in: header
-          required: false
-          schema:
-            type: string
-            description: Bearer token for optional authorization
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: A list of exercise categories
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    name:
-                      type: string
+                type: object
+                properties:
+                  solved:
+                    type: integer
+                  wrong:
+                    type: integer
+                  total:
+                    type: integer
+                  categories:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        solved:
+                          type: integer
+                        wrong:
+                          type: integer
+                        total:
+                          type: integer
+                        id:
+                          type: integer
+                        title:
+                          type: string
   /exercises/unsolved/{id}:
     get:
       summary: Get an unsolved question by category
@@ -341,33 +351,31 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    questionId:
-                      type: integer
-                    categoryId:
-                      type: integer
-                    categoryTitle:
-                      type: string
-                    questionText:
-                      type: string
-                    questionImageId:
-                      type: string
-                    questionImage:
-                      type: string
-                    answers:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          answerId:
-                            type: integer
-                          description:
-                            type: string
-        '401':
-          description: Unauthorized
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  categoryId:
+                    type: integer
+                  categoryTitle:
+                    type: string
+                  text:
+                    type: string
+                  imageId:
+                    type: string
+                  image:
+                    type: string
+                  answers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        description:
+                          type: string
+        '400':
+          description: Bad request
         '404':
           description: Not Found
         '500':
@@ -387,33 +395,33 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    questionId:
-                      type: integer
-                    categoryId:
-                      type: integer
-                    categoryTitle:
-                      type: string
-                    questionText:
-                      type: string
-                    questionImageId:
-                      type: string
-                    questionImage:
-                      type: string
-                    answers:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          answerId:
-                            type: integer
-                          description:
-                            type: string
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  categoryId:
+                    type: integer
+                  categoryTitle:
+                    type: string
+                  text:
+                    type: string
+                  imageId:
+                    type: string
+                  image:
+                    type: string
+                  answers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        description:
+                          type: string
+        '400':
+          description: Bad request
         '401':
-          description: Unauthorized
+          description: Unauthenticated
         '404':
           description: Not Found
         '500':
@@ -440,7 +448,7 @@ paths:
             schema:
               type: object
               properties:
-                questionId:
+                id:
                   type: integer
                   description: The ID of the question
                 answers:
@@ -448,23 +456,23 @@ paths:
                   items:
                     type: object
                     properties:
-                      answerId:
+                      id:
                         type: integer
                         description: The ID of the answer
                       selected:
                         type: boolean
                         description: Whether the answer was selected
               required:
-                - questionId
+                - id
                 - answers
               example:
-                questionId: 1
+                id: 1
                 answers:
-                  - answerId: 0
+                  - id: 0
                     selected: true
-                  - answerId: 1
+                  - id: 1
                     selected: false
-                  - answerId: 2
+                  - id: 2
                     selected: true
       security:
         - bearerAuth: []
@@ -484,7 +492,7 @@ paths:
                     items:
                       type: object
                       properties:
-                        answerId:
+                        id:
                           type: integer
                           description: The ID of the answer
                         correct:
@@ -1032,12 +1040,12 @@ paths:
                 items:
                   type: object
                   properties:
-                    answerId:
+                    id:
                       type: integer
                     correct:
                       type: boolean
                   required:
-                    - answerId
+                    - id
                     - correct
   /users/{id}/questionnaire:
     post:
@@ -1157,7 +1165,7 @@ paths:
                   items:
                     type: object
                     properties:
-                      answerId:
+                      id:
                         type: integer
                         description: The ID of the answer
                       selected:
@@ -1167,9 +1175,9 @@ paths:
                 - answers
               example:
                 answers:
-                  - answerId: 1
+                  - id: 1
                     selected: true
-                  - answerId: 2
+                  - id: 2
                     selected: false
       security:
         - bearerAuth: []

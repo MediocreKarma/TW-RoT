@@ -5,7 +5,7 @@ import { withDatabaseOperation } from "../_common/db.js";
 import { addImageToQuestion, adjustOutputAnswerSet } from "./service.js";
 
 const calculateBitsetOfAnswers = (answers, fieldName = 'selected') => {
-    answers.sort((a, b) => a['answerId'] - b['answerId']);
+    answers.sort((a, b) => a['id'] - b['id']);
 
     let bitset = 0;
     for (const answer of answers) {
@@ -57,27 +57,28 @@ export const addQuestionSolution = withDatabaseOperation(async function (
     if (validationResult) {
         return validationResult;
     }
-    const {questionId, answers} = params['body'];
+    const answers = params['body']['answers'];
+    const questionId = params['body']['id'];
     const questionIdValidation = validateId(questionId, 'question_id');
     if (questionIdValidation) {
         return questionIdValidation;
     }
     const answerIds = Array.from({length: answers.length}, _ => false);
     for (const answer of answers) {
-        const answerIdValidation = validateId(answer['answerId'], 'answer_id');
+        const answerIdValidation = validateId(answer['id'], 'answer_id');
         if (answerIdValidation) {
             return answerIdValidation;
         }
         if (!isBoolean(answer['selected'])) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_ANSWER_FORMAT}, 'Missing selected property');
         }
-        if (answer['answerId'] < 0) {
+        if (answer['id'] < 0) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_ID_TOO_LOW}, 'Answer id too low');
         }
-        if (answer['answerId'] > answerIds.length) {
+        if (answer['id'] > answerIds.length) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_ID_TOO_HIGH}, 'Answer id too high');
         }
-        answerIds[answer['answerId']] = true;
+        answerIds[answer['id']] = true;
     }
     if (!answerIds.every((b) => b)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.REPEATED_ANSWER_IDS}, 'Answer id was repeated');
@@ -85,7 +86,7 @@ export const addQuestionSolution = withDatabaseOperation(async function (
 
     const bitset = calculateBitsetOfAnswers(answers);
     const correctAnswers = adjustOutputAnswerSet((await client.query(
-        'select answer_id as "answerId", correct as "correct" from register_answer($1::int, $2::int, $3::int)',
+        'select answer_id as "id", correct as "correct" from register_answer($1::int, $2::int, $3::int)',
         [userId, questionId, bitset],
     )).rows);
     const correctBitset = calculateBitsetOfAnswers(correctAnswers, 'correct');
@@ -113,9 +114,7 @@ export const getQuestionnaire = withDatabaseOperation(async function (
 
     const questionnaireResult = (await client.query(
         `select gq.id, gq.generated_time as "generatedTime", gq.registered from 
-            generated_questionnaire gq 
-            join user_account ua on ua.id = gq.user_id 
-            where ua.id = $1::int`,
+            generated_questionnaire gq where gq.id = $1::int`,
         [userId]
     )).rows;    
     if (questionnaireResult.length === 0) {
@@ -124,9 +123,9 @@ export const getQuestionnaire = withDatabaseOperation(async function (
     const questionnaire = questionnaireResult[0];
     const result = (await client.query(
         `select 
-            generated_question_id as "generatedQuestionId",
-            question_text as "questionText",
-            question_image_id as "questionImageId",
+            generated_question_id as "id",
+            question_text as "text",
+            question_image_id as "imageId",
             answers as "answers"
         from 
             get_questionnaire_questions_by_id($1::int)`,
@@ -171,9 +170,9 @@ export const createQuestionnaire = withDatabaseOperation(async function (
     }
     const result = (await client.query(
         `select 
-            generated_question_id as "generatedQuestionId",
-            question_text as "questionText",
-            question_image_id as "questionImageId",
+            generated_question_id as "id",
+            question_text as "text",
+            question_image_id as "imageId",
             answers as "answers"
         from get_questionnaire_questions_by_id($1::int)`,
         [questionnaireObj['id']]
@@ -201,7 +200,7 @@ export const submitQuestionnaireSolution = withDatabaseOperation(async function 
 
     const result = (await client.query(
         `select 
-            answer_id as "answerId",
+            answer_id as "id",
             correct as "correct"
         from submit_questionnaire_solution($1::int, $2::int, $3::int, $4::int)`,
         [userId, questionnaireId, gqId, bitset]

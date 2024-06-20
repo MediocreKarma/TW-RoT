@@ -84,6 +84,9 @@ drop function if exists get_questionnaire_questions_by_id(int);
 create or replace function get_questionnaire_questions_by_id(qstr_id int) 
 returns table (
     generated_question_id int,
+    sent boolean,
+    solved boolean,
+    selected_fields int,
     question_text varchar(4096),
     question_image_id varchar(256),
     answers jsonb[]
@@ -94,7 +97,7 @@ begin
             gq.id as generated_question_id,
             gq.sent,
             gq.solved,
-            gq.
+            gq.selected_fields,
             q.text as question_text, 
             q.image_id as question_image,
             array_agg(jsonb_build_object('id', a.id, 'description', a.description) order by random()) as answers
@@ -152,19 +155,18 @@ BEGIN
 end; $$ language PLPGSQL;
 
 drop function if exists finish_questionnaire(int);
-create or replace function finish_questionnaire(user_id int) returns int
+create or replace function finish_questionnaire(qstnr_id int) returns int
 as $$
 declare
-    qstnr_id int;
     score int;
     already_registered bool;
 begin 
-    select qstnr.id, count(' ') filter (where q.solved), qstnr.registered
-        into qstnr_id, score, already_registered
+    select count(' ') filter (where q.solved), qstnr.registered
+        into score, already_registered
     from generated_questionnaire qstnr 
     join generated_question q 
         on qstnr.id = q.questionnaire_id 
-        where qstnr.user_id = 1
+        where qstnr.id = qstnr_id
         group by qstnr.id, qstnr.registered;
 
     if not found THEN
@@ -182,7 +184,7 @@ begin
             solved_questionnaires = solved_questionnaires + (score >= 22)::int,
             total_questions = total_questions + 26,
             solved_questions = solved_questions + score
-        where id = user_id;
+        where id = qstnr_id; -- same id as user
 
     return score;
 end; $$ language plpgsql;
