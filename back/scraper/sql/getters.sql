@@ -33,6 +33,7 @@ begin
 end;
 $$ language plpgsql;
 
+
 drop function if exists validate_session(varchar);
 create or replace function validate_session(p_token_value varchar) returns table (
     id int,

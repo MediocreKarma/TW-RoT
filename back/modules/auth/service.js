@@ -291,7 +291,7 @@ export const verify = withDatabaseOperation(async function (
     await wrapOperationWithTransaction(client, () => {
         client.query(
             `update user_account
-                set email = new_email, new_email = null
+                set updated_at = now()::timestamp, email = new_email, new_email = null
                 where id = $1::int`,
             [result[0]['userId']]
         );
@@ -414,7 +414,7 @@ export const requestCredentialChange = withDatabaseOperation(async function (
 const updateEmail = async (client, userId, newEmail, username = '\b') => {
     await client.query(
         `update user_account 
-            set new_email = $1::varchar
+            set updated_at = now()::timestamp, new_email = $1::varchar
             where id = $2::int`,
         [newEmail, userId]
     );
@@ -442,7 +442,7 @@ const updateEmail = async (client, userId, newEmail, username = '\b') => {
 const updateUsername = async (client, userId, newUsername) => {
     await client.query(
         `update user_account
-            set username = $1::varchar
+            set updated_at = now()::timestamp, username = $1::varchar
             where id = $2::int`,
         [newUsername, userId]
     );
@@ -452,7 +452,7 @@ const updatePassword = async (client, userId, newPassword) => {
     const hashedPass = await hashWithBcrypt(newPassword);
     await client.query(
         `update user_account
-            set hash = $1::varchar
+            set updated_at = now()::timestamp, hash = $1::varchar
             where id = $2::int`,
         [hashedPass, userId]
     );

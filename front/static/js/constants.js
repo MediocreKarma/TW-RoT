@@ -55,3 +55,9 @@ export const ErrorCodes = Object.freeze({
     QUESTION_SOLUTION_ALREADY_SUBMITTED: 53,
     NO_COOKIE_OR_EMAIL: 54,
 });
+
+export const USER_ROLES = Object.freeze({
+    USER: 0b0,
+    ADMIN: 0b1,
+    BANNED: 0b10,
+});

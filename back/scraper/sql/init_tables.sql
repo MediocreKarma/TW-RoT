@@ -57,8 +57,8 @@ create table sign(
 
 create table sign_to_category_relation (
     id serial primary key,
-    category_id int references sign_category (id),
-    sign_id int references sign(id)
+    category_id int references sign_category (id) on delete cascade,
+    sign_id int references sign(id) on delete cascade 
 );
 
 create table user_account (
@@ -77,7 +77,7 @@ create table user_account (
 
 create table user_token (
     id serial primary key,
-    user_id int references user_account (id),
+    user_id int references user_account (id) on delete cascade,
     token_type varchar(32) check (
         token_type in ('session', 'change_password', 'change_email', 'change_username', 'confirm_email')
     ),
@@ -92,28 +92,28 @@ create table question_category (
 
 create table question (
     id serial primary key,
-    category_id int references question_category (id),
+    category_id int references question_category (id) on delete cascade,
     text varchar(4096),
     image_id varchar(256)
 );
 
 create table answer (
     id serial primary key,
-    question_id int references question (id),
+    question_id int references question (id) on delete cascade,
     description varchar(4096),
     correct bool
 );
 
 create table generated_questionnaire (
-    id int primary key references user_account (id),
+    id int primary key references user_account (id) on delete cascade,
     generated_time timestamp,
     registered bool default false
 );
 
 create table generated_question (
     id int primary key,
-    questionnaire_id int references generated_questionnaire (id),
-    question_id int references question (id),
+    questionnaire_id int references generated_questionnaire (id) on delete cascade,
+    question_id int references question (id) on delete cascade,
     selected_fields int,
     sent bool,
     solved bool,
@@ -122,8 +122,8 @@ create table generated_question (
 
 create table answered_question (
     id bigserial primary key,
-    user_id int references user_account (id),
-    question_id int references question (id),
+    user_id int references user_account (id) on delete cascade,
+    question_id int references question (id) on delete cascade,
     answered_correctly bool,
     unique(user_id, question_id)
 );
@@ -135,13 +135,13 @@ create table comparison_category (
 
 create table comparison (
     id serial primary key,
-    category_id int references comparison_category (id),
+    category_id int references comparison_category (id) on delete cascade,
     title varchar(256)
 );
 
 create table comparison_sign (
     id serial primary key,
-    comparison_id int references comparison (id),
+    comparison_id int references comparison (id) on delete cascade,
     image_id varchar(512),
     country varchar(128)
 );

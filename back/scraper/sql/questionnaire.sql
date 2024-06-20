@@ -63,11 +63,13 @@ begin
         end loop;
     end loop;
 
-    gen_time := current_timestamp;
+    update user_account
+        set updated_at = now()::timestamp
+        where id = u_id;
 
     update generated_questionnaire
         set 
-            generated_time = gen_time
+            generated_time = now()::timestamp
         where 
             id = u_id;
 
@@ -151,6 +153,9 @@ BEGIN
     correctness := (answer_bitset = correct_bitset);
     insert into answered_question (user_id, question_id, answered_correctly) values (u_id, q_id, correctness)
         on conflict (user_id, question_id) do update set answered_correctly = excluded.answered_correctly;
+    update user_account
+        set updated_at = now()::timestamp
+        where id = u_id;
     return query select a.id, a.correct from answer a join question q on a.question_id = q.id where q.id = q_id;
 end; $$ language PLPGSQL;
 
@@ -180,6 +185,7 @@ begin
     update generated_questionnaire set registered = true where id = qstnr_id;
     update user_account
         set 
+            updated_at = now()::timestamp,
             total_questionnaires = total_questionnaires + 1,
             solved_questionnaires = solved_questionnaires + (score >= 22)::int,
             total_questions = total_questions + 26,
@@ -213,11 +219,17 @@ BEGIN
 
     correct_bitset := get_answer_bitset(q_id);
     correctness := (answer_bitset = correct_bitset);
+
     update generated_question
         set 
             sent = true,
             selected_fields = answer_bitset,
             solved = correctness 
         where id = gq_id;
+
+    update user_account
+        set updated_at = now()::timestamp
+        where id = qstr_id; -- same id
+    
     return query select a.id, a.correct from answer a join question q on a.question_id = q.id where q.id = q_id;
 end; $$ language PLPGSQL;

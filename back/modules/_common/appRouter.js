@@ -63,6 +63,10 @@ export class AppRouter extends Server {
         return this.registerRoute(Methods.PUT, route, handler);
     }
 
+    delete(route, handler) {
+        return this.registerRoute(Methods.DELETE, route, handler);
+    }
+
     registerRoute(method, route, handler) {
         const routeMethods = this.routes.get(method);
         if (!routeMethods) {
