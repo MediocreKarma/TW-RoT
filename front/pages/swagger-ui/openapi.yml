@@ -1083,6 +1083,12 @@ paths:
                           type: string
                         image:
                           type: string
+                        sent:
+                          type: boolean
+                        solved:
+                          type: boolean
+                        selectedFields:
+                          type: integer
                         answers:
                           type: array
                           items:
@@ -1092,6 +1098,8 @@ paths:
                                 type: integer
                               description:
                                 type: string
+                              selected:
+                                type: boolean
                   questionnaire:
                     type: object
                     properties:
@@ -1136,6 +1144,12 @@ paths:
                           type: string
                         image:
                           type: string
+                        sent:
+                          type: boolean
+                        solved:
+                          type: boolean
+                        selectedFields:
+                          type: integer
                         answers:
                           type: array
                           items:
@@ -1145,6 +1159,8 @@ paths:
                                 type: integer
                               description:
                                 type: string
+                              selected:
+                                type: boolean
                   questionnaire:
                     type: object
                     properties:
@@ -1313,6 +1329,8 @@ paths:
                               description:
                                 type: string
                               correct:
+                                type: boolean
+                              selected:
                                 type: boolean
         '400':
           description: Bad Request

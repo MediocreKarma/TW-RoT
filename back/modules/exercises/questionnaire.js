@@ -117,6 +117,39 @@ const markQuestionnaireFinished = async (client, userId) => {
     await client.query('select finish_questionnaire($1::int)', [userId]);
 }
 
+const getQuestionnaireQuestions = async (client, qstrId) => {
+    return (await client.query(
+        `select 
+            generated_question_id as "id",
+            question_text as "text",
+            question_image_id as "imageId",
+            answers,
+            sent,
+            solved,
+            selected_fields as "selectedFields"
+        from 
+            get_questionnaire_questions_by_id($1::int)`,
+        [qstrId]
+    )).rows;
+}
+
+const addSelectedToAnswers = async (question) => {
+    if (question?.selectedFields === undefined || question?.answers === undefined) {
+        return question;
+    }
+    question.answers.sort((a, b) => a['id'] - b['id']);
+    let bitset = question.selectedFields;
+    for (let i = question.answers.length - 1; i >= 0; --i) {
+        question.answers[i]['selected'] = (bitset % 2 !== 0);
+        bitset = Math.floor(bitset / 2);
+    }
+}
+
+const addSelectedToQuestionSet = async (questions) => {
+    questions.forEach(q => addSelectedToAnswers(q));
+    return questions;
+}
+
 export const getQuestionnaire = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
@@ -140,19 +173,11 @@ export const getQuestionnaire = withDatabaseOperation(async function (
         markQuestionnaireFinished(client, userId);
     }
 
-    const result = (await client.query(
-        `select 
-            generated_question_id as "id",
-            question_text as "text",
-            question_image_id as "imageId",
-            answers as "answers"
-        from 
-            get_questionnaire_questions_by_id($1::int)`,
-        [questionnaire['id']]
-    )).rows;
+    const result = await getQuestionnaireQuestions(client, questionnaire['id']);
 
     adjustQuestionnaireOutputAnswerSets(result);
     addImageToQuestions(result);
+    addSelectedToQuestionSet(result);
 
     return new ServiceResponse(
         200,
@@ -183,18 +208,10 @@ export const createQuestionnaire = withDatabaseOperation(async function (
             thirtyMinutesInMs
         );
     }
-    const result = (await client.query(
-        `select 
-            generated_question_id as "id",
-            question_text as "text",
-            question_image_id as "imageId",
-            answers as "answers"
-        from get_questionnaire_questions_by_id($1::int)`,
-        [questionnaireObj['id']]
-    )).rows;
-
+    const result = await getQuestionnaireQuestions(client, questionnaireObj['id']);
     adjustQuestionnaireOutputAnswerSets(result);
     addImageToQuestions(result);
+    addSelectedToQuestionSet(result);
 
     return new ServiceResponse(
         200,
@@ -292,6 +309,7 @@ export const finishQuestionnaire = withDatabaseOperation(async function (
             where q.questionnaire_id = $1::int`,
         [userId]
     )).rows[0]['cnt'], 10);
+    addSelectedToQuestionSet(result);
     
     return new ServiceResponse(200, {solved: count, questions: result}, 'Successfully finished questionnaire');
 });
