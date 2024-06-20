@@ -96,3 +96,62 @@ export const getSignImage = async function (_req, _res, params) {
     }
     return new ImageResponse(200, path, 'Successfully retrieved image');
 };
+
+export const getComparisonCategories = withDatabaseOperation(async function (
+    client, _req, _res, _params
+) {
+    const result = (await client.query(
+        'select id, title from comparison_category'
+    )).rows;
+
+    return new ServiceResponse(200, result, 'Successfully retrieved comparison categories');
+});
+
+export const getComparisonCategory = withDatabaseOperation(async function (
+    client, _req, _res, params
+) {
+    const id = params['path']['ccId'];
+    if (!isStringValidInteger(id)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_COMPARISON_CATEGORY_ID}, 'Invalid comparison category id');
+    }
+    const result = (await client.query(
+        `select c.id, c.title 
+            from comparison c join comparison_sign cs 
+                on cs.comparison_id = c.id
+            join comparison_category cc 
+                on cc.id = c.category_id 
+            where cc.id = $1::int
+            group by c.id, cc.id, c.title`,
+        [id]
+    )).rows;
+    if (result.length === 0) {
+        return new ServiceResponse(404, {errorCode: ErrorCodes.COMPARISON_CATEGORY_NOT_FOUND}, 'Comparison category not found');
+    }
+    return new ServiceResponse(200, result, 'Successfully retrieved comparison category');
+});
+
+export const getComparison = withDatabaseOperation(async function (
+    client, _req, _res, params
+) {
+    const ccId = params['path']['ccId'];
+    if (!isStringValidInteger(ccId)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_COMPARISON_CATEGORY_ID}, 'Invalid comparison category id');
+    }
+    const id = params['path']['cId'];
+    if (!isStringValidInteger(id)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_COMPARISON_ID}, 'Invalid comparison id');
+    }
+    const result = (await client.query(
+        `select cs.id, cs.country, cs.image_id as "imageId"
+            from comparison c join comparison_sign cs 
+                on cs.comparison_id = c.id
+            join comparison_category cc 
+                on cc.id = c.category_id where c.id = $1::int and cc.id = $2::int`,
+        [id, ccId]
+    )).rows;
+    if (result.length === 0) {
+        return new ServiceResponse(404, {errorCode: ErrorCodes.COMPARISON_NOT_FOUND}, 'Comparison not found');
+    }
+    result.forEach(sign => buildImageForObj(sign));
+    return new ServiceResponse(200, result, 'Successfully retrieved comparison category');
+});

@@ -106,7 +106,7 @@ begin
         
         for sign_variant in select * from jsonb_array_elements(signs_record -> 'variants') loop
             
-            select * into sign_image from jsonb_array_elements(sign_variant -> 'images') limit 1;
+            select trim(both '"' from (sign_variant -> 'images' -> 0)::varchar) into sign_image;
 
             insert into comparison_sign values (default, comparison_id, sign_image, sign_variant ->> 'country');
 
