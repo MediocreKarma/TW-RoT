@@ -581,7 +581,12 @@ export const isAuthenticated = withDatabaseOperation(async function (
 
     const result = (
         await client.query(
-            `select id, username, updated_at as "updatedAt", flags from validate_session($1::varchar)`,
+            `select id, username, updated_at as "updatedAt", flags,
+                    solved_questionnaires as "solvedQuestionnaires",
+                    total_questionnaires as "totalQuestionnaires",
+                    solved_questions as "solvedQuestions",
+                    total_questions as "totalQuestions"
+                from validate_session($1::varchar)`,
             [cookieOutput]
         )
     ).rows;

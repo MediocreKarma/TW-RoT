@@ -26,7 +26,7 @@ app.get('/api/v1/exercises/unsolved/:id', getUnsolvedQuestionByCategory);
 app.get('/api/v1/exercises/incorrectly-solved', getIncorrectlySolvedQuestion);
 app.get('/api/v1/exercises/:id/solution', getSolution);
 
-app.post('/api/v1/users/:id/solutions', addQuestionSolution);
+app.post('/api/v1/users/:id/submissions', addQuestionSolution);
 
 app.get('/api/v1/users/:id/questionnaire', getQuestionnaire);
 app.post('/api/v1/users/:id/questionnaire', createQuestionnaire);

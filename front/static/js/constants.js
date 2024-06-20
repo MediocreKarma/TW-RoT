@@ -54,10 +54,14 @@ export const ErrorCodes = Object.freeze({
     QUESTION_ID_NOT_IN_QUESTIONNAIRE: 52,
     QUESTION_SOLUTION_ALREADY_SUBMITTED: 53,
     NO_COOKIE_OR_EMAIL: 54,
+    START_NOT_INTEGER: 55,
+    COUNT_NOT_INTEGER: 56,
+    START_NOT_NONNEGATIVE_INTEGER: 57,
+    COUNT_NOT_NONNEGATIVE_INTEGER: 58,
 });
 
 export const USER_ROLES = Object.freeze({
-    USER: 0b0,
-    ADMIN: 0b1,
+    USER:   0b00,
+    ADMIN:  0b01,
     BANNED: 0b10,
 });

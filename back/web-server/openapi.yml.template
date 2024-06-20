@@ -438,7 +438,7 @@ paths:
         '500':
           description: Internal Server Error
 
-  /users/{id}/solutions:
+  /users/{id}/submissions:
     post:
       summary: Submit solutions for a user
       description: Submits a set of solutions for a specific user.
@@ -1009,6 +1009,14 @@ paths:
                     type: integer
                     description: The roles assigned to the authenticated user
                     example: 2
+                  solvedQuestionnaires:
+                    type: integer
+                  totalQuestionnaires:
+                    type: integer
+                  solvedQuestions:
+                    type: integer
+                  totalQuestions:
+                    type: integer
         '401':
           description: Unauthorized, invalid authentication
           content:
@@ -1372,7 +1380,33 @@ paths:
       responses:
         '204':
           description: User deleted successfully
-          content: {}
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+
+  /users/{id}/progress:
+    delete:
+      summary: Reset a user's progress  
+      tags: [Users]
+      servers:
+        - url: https://localhost:{USERS_PORT}/api/v1
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the user whose progress is being reset
+      responses:
+        '204':
+          description: User progress reset successfully
         '400':
           description: Bad Request
         '401':
@@ -1486,6 +1520,8 @@ paths:
                         solvedQuestions:
                           type: integer
                         totalQuestions:
+                          type: integer
+                        flags:
                           type: integer
                   total:
                     type: integer
