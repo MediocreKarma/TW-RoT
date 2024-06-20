@@ -197,7 +197,6 @@ export const register = withDatabaseOperation(async function (
     return new ServiceResponse(200, null, 'Account successfully registered');
 });
 
-// TODO: Authentication token
 export const login = withDatabaseOperation(async function (
     client,
     _req,
@@ -363,12 +362,27 @@ const handleRequestChange = withDatabaseOperation(async function (
 });
 
 export const requestCredentialChange = withDatabaseOperation(async function (
-    _client,
-    _req,
+    client,
+    req,
     _res,
     params
 ) {
-    const email = params['body']['email'];
+    let email = params['body']?.email;
+    if (!email) {
+        const cookie = getAuthCookie(req);
+        if (cookie instanceof ServiceResponse) {
+            return new ServiceResponse(400, {errorCode: ErrorCodes.NO_COOKIE_OR_EMAIL}, 'Missing cookie | email from request');
+        }
+        const emailResult = (await client.query(
+            `select ua.email from user_account ua join user_token ut on ut.user_id = ua.id 
+                where ut.token_type = 'session' and ut.token_value = $1::varchar`,
+            [cookie]
+        )).rows;
+        if (emailResult.length === 0) {
+            return new ServiceResponse(400, {errorCode: ErrorCodes.UNAUTHENTICATED}, 'Invalid cookie');
+        }
+        email = emailResult[0]['email'];
+    }
     const emailValidationStatus = validate(email, 'email');
     if (emailValidationStatus) {
         return emailValidationStatus;
