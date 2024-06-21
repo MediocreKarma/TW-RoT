@@ -9,7 +9,7 @@ import { validateAuth, validateStartAndCountParams } from "../_common/utils.js";
 export const deleteUser = withDatabaseOperation(async function(
     client, _req, res, params
 ) {
-    const userId = params['path']['id'];
+    const userId = params['path']?.id;
     if (!isStringValidInteger(userId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_USER_ID}, 'Invalid user id');
     }
@@ -33,7 +33,7 @@ export const deleteUser = withDatabaseOperation(async function(
 export const resetProgress = withDatabaseTransaction(async function (
     client, _req, _res, params
 ) {
-    const userId = params['path']['id'];
+    const userId = params['path']?.id;
     if (!isStringValidInteger(userId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_USER_ID}, 'Invalid user id');
     }
@@ -65,8 +65,8 @@ export const resetProgress = withDatabaseTransaction(async function (
 export const getLeaderboard = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const start = params['query']['start'] ?? '0';
-    const count = params['query']['count'] ?? '5';
+    const start = params['query']?.start ?? '0';
+    const count = params['query']?.count ?? '5';
     const validation = validateStartAndCountParams(start, count);
     if (validation instanceof ServiceResponse) {
         return validation;
@@ -104,14 +104,14 @@ export const getUsers = withDatabaseOperation(async function(
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
 
-    const start = params['query']['start'] ??  '0';
-    const count = params['query']['count'] ??  '5'; 
+    const start = params['query']?.start ??  '0';
+    const count = params['query']?.count ??  '5'; 
     const validation = validateStartAndCountParams(start, count);
     if (validation instanceof ServiceResponse) {
         return validation;
     }
 
-    const query = params['query']['query'] ?? '';
+    const query = params['query']?.query ?? '';
 
     const userCount = parseInt((await client.query(
         `select count(' ') as cnt from user_account
@@ -144,14 +144,14 @@ export const changeBanStatus = withDatabaseOperation(async function (
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
 
-    const isBanned = params['body']['banned'];
+    const isBanned = params['body']?.banned;
     if (isBanned === null || isBanned === undefined) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.BANNED_STATUS_NOT_IN_BODY}, 'Missing banned from body');
     }
     if (!(isBanned === false || isBanned === true)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_BANNED_STATUS}, 'Banned status not boolean');
     }
-    const userId = params['path']['id'];
+    const userId = params['path']?.id;
     if (!isStringValidInteger(userId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_USER_ID}, 'Invalid user id');
     }

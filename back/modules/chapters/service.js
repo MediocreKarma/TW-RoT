@@ -25,7 +25,7 @@ export const getChapterContent = withDatabaseOperation(async function (
     _res,
     params
 ) {
-    const id = params['path']['id'];
+    const id = params['path']?.id;
 
     if (!isStringValidInteger(id)) {
         return new ServiceResponse(

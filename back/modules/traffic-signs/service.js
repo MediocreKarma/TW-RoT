@@ -38,7 +38,7 @@ export const getSignCategory = withDatabaseOperation(async function (
     _res,
     params
 ) {
-    const id = params['path']['id'];
+    const id = params['path']?.id;
     if (!isStringValidInteger(id)) {
         return new ServiceResponse(
             400,
@@ -90,7 +90,7 @@ export const getComparisonCategories = withDatabaseOperation(async function (
 export const getComparisonCategory = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const id = params['path']['ccId'];
+    const id = params['path']?.ccId;
     if (!isStringValidInteger(id)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_COMPARISON_CATEGORY_ID}, 'Invalid comparison category id');
     }
@@ -113,11 +113,11 @@ export const getComparisonCategory = withDatabaseOperation(async function (
 export const getComparison = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const ccId = params['path']['ccId'];
+    const ccId = params['path']?.ccId;
     if (!isStringValidInteger(ccId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_COMPARISON_CATEGORY_ID}, 'Invalid comparison category id');
     }
-    const id = params['path']['cId'];
+    const id = params['path']?.cId;
     if (!isStringValidInteger(id)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_COMPARISON_ID}, 'Invalid comparison id');
     }

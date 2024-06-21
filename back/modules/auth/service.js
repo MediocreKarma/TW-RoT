@@ -153,7 +153,7 @@ export const register = withDatabaseOperation(async function (
     _res,
     params
 ) {
-    const username = params['body']['username'];
+    const username = params['body']?.username;
     const usernameValidationStatus = validate(username, 'username');
     if (usernameValidationStatus) {
         return usernameValidationStatus;
@@ -165,12 +165,12 @@ export const register = withDatabaseOperation(async function (
             'Username contains illegal characters'
         );
     }
-    const password = params['body']['password'];
+    const password = params['body']?.password;
     const passwordValidationStatus = validate(password, 'password');
     if (passwordValidationStatus) {
         return passwordValidationStatus;
     }
-    const email = params['body']['email'];
+    const email = params['body']?.email;
     const emailValidationStatus = validate(email, 'email');
     if (emailValidationStatus) {
         emailValidationStatus.body.errorCode = ErrorCodes.BAD_EMAIL;
@@ -208,12 +208,12 @@ export const login = withDatabaseOperation(async function (
     params
 ) {
     const msTimeout = 5000;
-    const password = params['body']['password'];
+    const password = params['body']?.password;
     const passwordValidationStatus = validate(password, 'password');
     if (passwordValidationStatus) {
         return passwordValidationStatus;
     }
-    const identifier = params['body']['identifier'];
+    const identifier = params['body']?.identifier;
     const idType = identifier.includes('@') ? 'email' : 'username';
     const timerBegin = new Date().getTime();
     const userAccount = (
@@ -271,7 +271,7 @@ export const verify = withDatabaseOperation(async function (
     _res,
     params
 ) {
-    const token = params['body']['token'];
+    const token = params['body']?.token;
     if (!token) {
         return new ServiceResponse(
             400,
@@ -399,7 +399,7 @@ export const requestCredentialChange = withDatabaseOperation(async function (
     if (emailValidationStatus) {
         return emailValidationStatus;
     }
-    const type = params['body']['type'];
+    const type = params['body']?.type;
     if (!type) {
         return new ServiceResponse(
             400,
@@ -488,7 +488,7 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
             'Invalid verification route'
         );
     }
-    const token = params['body']['token'];
+    const token = params['body']?.token;
     if (!token) {
         return new ServiceResponse(
             400,
@@ -496,7 +496,7 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
             'Token missing in body'
         );
     }
-    const changeValue = params['body']['value'];
+    const changeValue = params['body']?.value;
     const validationStatus = validate(changeValue, type);
     if (validationStatus) {
         return validationStatus;
@@ -533,7 +533,7 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
         userId = info['userId'];
     }
     else {
-        userId = params['body']['id'];
+        userId = params['body']?.id;
         if (!isStringValidInteger(userId)) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_USER_ID}, 'Invalid user id');
         }

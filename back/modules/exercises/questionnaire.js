@@ -52,6 +52,9 @@ const adjustQuestionnaireOutputAnswerSets = (questions) => {
 }
 
 const validateAnswerSetInput = (answers) => {
+    if (!answers) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWERS_NOT_IN_BODY}, 'Answers id not in body');
+    }
     const answerIds = Array.from({length: answers.length + 1}, _ => false);
     answerIds[0] = true;
     for (const answer of answers) {
@@ -79,13 +82,13 @@ const validateAnswerSetInput = (answers) => {
 export const addQuestionSolution = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const userId = params['path']['id'];
+    const userId = params['path']?.id;
     const validationResult = validateAuth(params['authorization'], userId);
     if (validationResult) {
         return validationResult;
     }
-    const answers = params['body']['answers'];
-    const questionId = params['body']['id'];
+    const answers = params['body']?.answers;
+    const questionId = params['body']?.id;
     const questionIdValidation = validateId(questionId, 'question_id');
     if (questionIdValidation) {
         return questionIdValidation;
@@ -153,7 +156,7 @@ const addSelectedToQuestionSet = async (questions) => {
 export const getQuestionnaire = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const userId = params['path']['id'];
+    const userId = params['path']?.id;
     const validationResult = validateAuth(params['authorization'], userId);
     if (validationResult) {
         return validationResult;
@@ -189,7 +192,7 @@ export const getQuestionnaire = withDatabaseOperation(async function (
 export const createQuestionnaire = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const userId = params['path']['id'];
+    const userId = params['path']?.id;
     const validationResult = validateAuth(params['authorization'], userId);
     if (validationResult) {
         return validationResult;
@@ -223,12 +226,12 @@ export const createQuestionnaire = withDatabaseOperation(async function (
 export const submitQuestionnaireSolution = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const userId = params['path']['id'];
+    const userId = params['path']?.id;
     const validationResult = validateAuth(params['authorization'], userId);
     if (validationResult) {
         return validationResult;
     }
-    const questionId = params['path']['qId'];
+    const questionId = params['path']?.qId;
     if (!isStringValidInteger(questionId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_ID}, 'Invalid question id');
     }
@@ -268,7 +271,7 @@ export const submitQuestionnaireSolution = withDatabaseOperation(async function 
 export const finishQuestionnaire = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const userId = params['path']['id'];
+    const userId = params['path']?.id;
     const validationResult = validateAuth(params['authorization'], userId);
     if (validationResult) {
         return validationResult;

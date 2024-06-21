@@ -14,14 +14,14 @@ export const fetchQuestions = withDatabaseOperation(async function (
     if (!isAdmin(params['authorization'])) {
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
-    const start = params['query']['start'] ?? '0';
-    const count = params['query']['count'] ?? '5';
+    const start = params['query']?.start ?? '0';
+    const count = params['query']?.count ?? '5';
     const startAndCountValidation = validateStartAndCountParams(start, count);
     if (startAndCountValidation instanceof ServiceResponse) {
         return startAndCountValidation;
     }
 
-    const query = params['query']['query'] ?? '';
+    const query = params['query']?.query ?? '';
 
     if (isStringValidInteger(query)) {
         const qId = parseInt(query, 10);
