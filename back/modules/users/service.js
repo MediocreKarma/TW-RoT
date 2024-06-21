@@ -1,4 +1,4 @@
-import { Feed } from "feed";
+import RSS from "rss";
 import { expireAuthCookie } from "../../common/authMiddleware.js";
 import { ErrorCodes, USER_ROLES } from "../../common/constants.js";
 import { isAdmin, isStringValidInteger } from "../../common/utils.js";
@@ -107,42 +107,37 @@ const getLeaderboardPageForRank = (rank) => {
 let rssFeedXml = null;
 
 const convertString = (str) => {
-    return str.replace(/ă/g, '&#259');
+    return str.replace(/ă/g, '&#259;').replace(/â/g, '&#226;').replace(/ș/g, '&#537;');
 }
 
 const generateRSS = async () => {
     const leaderboard = (await getLeaderboard(null, null, {query: {start: '0', count: '100'}})).body.data;
 
-    const tmp = new Feed({
+    const tmp = new RSS({
         title: 'Cele mai mari scoruri',
-        description: convertString('Primii 100 cei mai sârguincioși utilizatori'),
-        id: `${process.env.USERS_URL}/api/v1/leaderboard/rss`,
-        link: `${process.env.USERS_URL}/api/v1/leaderboard/rss`,
-        feedLinks: {
-            rss: `${process.env.USERS_URL}/api/v1/leaderboard/rss`
-        },
-        author: {
-            name: "ProRutier",
-            email: "ProRutier@gmail.com"
-        },
+        description: 'Top 100 pe ProRutier',
+        site_url: `${process.env.FRONTEND_URL}/leaderboard/rss`,
+        feed_url: `${process.env.USERS_URL}/api/v1/leaderboard/rss`,
+        ttl: 3,
         site_url: `${process.env.FRONTEND_URL}/leaderboard`,
         language: 'ro',
-        updated: new Date()
+        pubDate: new Date()
     });
 
     leaderboard.forEach((user, i) => {
-        tmp.addItem({
-            title: `Nr. ${i + 1}\t ${user.username}`,
-            description: convertString(`Utilizatorul <strong>${user.username}</strong>:<br>`) +
-                            convertString(`    Nr. r&#259spunsuri corecte: ${user.solvedQuestions}<br>`) +
-                            convertString(`    % răspunsuri corecte: ${Math.round(user.solvedQuestions / user.totalQuestions * 100).toFixed(2)}<br>`) +
-                            convertString(`    Nr. chestionare admise: ${user.solvedQuestionnaires}<br>`),
-            link: getLeaderboardPageForRank(i),
-            guid: `${i}`,
+        tmp.item({
+            title: `Nr. ${i + 1}      ${user.username}`,
+            description: convertString(`Utilizatorul ${user.username}:<br>`) +
+                            convertString(`Nr. răspunsuri corecte: ${user.solvedQuestions}<br>`) +
+                            convertString(`% răspunsuri corecte: ${Math.round(user.solvedQuestions / user.totalQuestions * 100).toFixed(2)}<br>`) +
+                            convertString(`Nr. chestionare admise: ${user.solvedQuestionnaires}<br>`),
+            url: getLeaderboardPageForRank(i),
+            guid: `rank_${i}`,        
+
         });
     });
 
-    rssFeedXml = tmp.rss2();
+    rssFeedXml = tmp.xml({indent: true});
 }
 
 generateRSS();
