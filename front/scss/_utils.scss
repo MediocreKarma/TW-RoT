@@ -33,6 +33,10 @@
     &:hover {
         background-color: color-themes.$primary-color--hover;
     }
+
+    &--secondary {
+        @include color-themes.buttonSecondary();
+    }
 }
 
 @mixin button {

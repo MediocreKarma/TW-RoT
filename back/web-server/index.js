@@ -25,8 +25,29 @@ server.setNotFoundRoute('/not-found', `${FRONT}/pages/not-found/index.html`);
 
 server.addFixedRoute('/favicon.ico', `${FRONT}/static/img/favicon.ico`);
 
-server.addFixedAdminRoute('/dashboard/users', `${FRONT}/pages/dashboard/users.html`);
-server.addFixedAdminRoute('/dashboard/exercises', `${FRONT}/pages/dashboard/exercises.html`);
+server.addFixedAdminRoute(
+    '/dashboard/users',
+    `${FRONT}/pages/dashboard/users.html`
+);
+server.addFixedAdminRoute(
+    '/dashboard/exercises',
+    `${FRONT}/pages/dashboard/exercises.html`
+);
+
+server.addDynamicRoute(
+    '/exercises/incorrectly-solved',
+    `${FRONT}/pages/exercises/question/_incorrectly-solved.html`
+);
+
+server.addDynamicRoute(
+    '/exercises/unsolved',
+    `${FRONT}/pages/exercises/question/_unsolved.html`
+);
+
+server.addDynamicRoute(
+    '/exercises/category/:id',
+    `${FRONT}/pages/exercises/question/_category.html`
+);
 
 server.addDynamicRoute(
     '/traffic-code/chapter/:id',

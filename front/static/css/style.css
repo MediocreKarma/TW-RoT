@@ -37,6 +37,16 @@ body[data-theme=dark] {
 .button:hover {
   background-color: #8a7cd1;
 }
+.button--secondary {
+  background-color: #ea9a4b;
+  color: #fff;
+}
+.button--secondary:hover {
+  background-color: #f0c395;
+}
+.button--secondary[disabled], .button--secondary:disabled {
+  background-color: #808080;
+}
 
 .header__dark-switch {
   display: flex;

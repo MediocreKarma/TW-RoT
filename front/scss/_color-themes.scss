@@ -37,16 +37,20 @@ body {
     }
 }
 
+@mixin buttonSecondary {
+    background-color: $secondary-color;
+    color: $text-color--dark;
+    &:hover {
+        background-color: $secondary-color--hover;
+    }
+    &[disabled],
+    &:disabled {
+        background-color: $neutral-color;
+    }
+}
+
 @mixin secondary {
     .button {
-        background-color: $secondary-color;
-        color: $text-color--dark;
-        &:hover {
-            background-color: $secondary-color--hover;
-        }
-        &[disabled],
-        &:disabled {
-            background-color: $neutral-color;
-        }
+        @include buttonSecondary();
     }
 }

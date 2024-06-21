@@ -143,7 +143,7 @@ const showUserData = async () => {
         correctPercentage.innerText = (
             data.user.totalQuestions === 0
                 ? 0
-                : data.user.solvedQuestions / data.user.totalQuestions
+                : (data.user.solvedQuestions / data.user.totalQuestions) * 100
         ).toFixed(2);
     } catch (e) {
         showInfoModal(renderError(e));

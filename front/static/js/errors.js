@@ -36,7 +36,8 @@ export const errorMessages = {
     INVALID_SIGN_CATEGORY: 'Categorie de semne invalidă',
     SIGN_CATEGORY_NOT_FOUND: 'Categoria de semne nu a fost găsită',
     INVALID_QUESTION_CATEGORY_ID: 'ID-ul categoriei întrebărilor este invalid',
-    NO_MORE_QUESTIONS_FOR_CATEGORY: 'Nu mai sunt întrebări pentru categorie',
+    NO_MORE_QUESTIONS_FOR_CATEGORY:
+        'Nu există întrebări din categoria selectată la care nu s-a răspuns',
     NO_MORE_INCORRECTLY_SOLVED_QUESTIONS:
         'Nu mai sunt întrebări rezolvate incorect',
     UNAUTHENTICATED: 'Neautentificat',
