@@ -12,15 +12,13 @@
         <script src="/components/header/header.js" type="module"></script>
         <script src="/components/footer/footer.js" type="module"></script>
         <script src="/components/backToTop.js"></script>
-
-        <script src="/leaderboard/leaderboardControls.js"></script>
+        <script src="/leaderboard/leaderboard.js" type="module"></script>
     </head>
-
     <body>
         <header class="header header--no-js" id="header"></header>
         <div class="leaderboard">
             <h1>Scoruri obținute</h1>
-            <button>Exportează ca feed RSS</button>
+            <button id="export">Exportează ca feed RSS</button>
             <table>
                 <colgroup>
                     <col class="leaderboard__rank" />
@@ -38,50 +36,15 @@
                         <th>Nr. chestionare admise</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>1.</td>
-                        <td>Dinozaurul_45</td>
-                        <td>99.99%</td>
-                        <td>26025</td>
-                        <td>10001</td>
-                    </tr>
-                    <tr>
-                        <td>2.</td>
-                        <td>Alfa</td>
-                        <td>96.15%</td>
-                        <td>25</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>3.</td>
-                        <td>Beta</td>
-                        <td>66.73%</td>
-                        <td>6673</td>
-                        <td>315</td>
-                    </tr>
-                    <tr>
-                        <td>4.</td>
-                        <td>Gamma</td>
-                        <td>0%</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>5.</td>
-                        <td>Delta</td>
-                        <td>0%</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
+                <tbody id="leaderboard-table">
+                    <!-- Table rows will be dynamically inserted here -->
                 </tbody>
             </table>
             <div class="leaderboard-buttons">
-                <button class="previous">Inapoi</button>
-                <button class="continue">Inainte</button>
+                <button id="prev-page" class="previous">Inapoi</button>
+                <button id="next-page" class="continue">Inainte</button>
             </div>
         </div>
-
         <footer class="footer" id="footer"></footer>
     </body>
 </html>

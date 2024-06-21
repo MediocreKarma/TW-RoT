@@ -1,0 +1,48 @@
+<div class="intrebare-card__header">
+    <div class="header__upper">
+        <div class="intrebare-card__title">
+            <h2>
+                Întrebarea
+                <span id="questionnaire-current-question"></span> din
+                <span id="questionnaire-total-questions"></span>
+            </h2>
+        </div>
+        <h2 id="questionnaire-timer"></h2>
+    </div>
+    <div class="header__lower">
+        <p>Întrebari rămase:<span id="questionnaire-remaining"></span></p>
+        <p>Răspunsuri corecte:<span id="questionnaire-correct"></span></p>
+        <p>Răspunsuri greșite:<span id="questionnaire-wrong"></span></p>
+    </div>
+</div>
+<form class="intrebare-card__body" action="/" method="get">
+    <h3 class="intrebare-card__title" id="question-title">
+        <!-- Care dintre indicatoare te avertizează că urmează să intersectezi un
+        drum fără prioritate? -->
+    </h3>
+
+    <div class="intrebare-card__contents">
+        <ul class="intrebare-card__answers-list">
+            <!-- <li class="intrebare-card__answer">
+                <input type="checkbox" name="option-a" id="option-a" />
+                <label for="option-a" id="option-a-label">indicatorul 1</label>
+            </li>
+            <li class="intrebare-card__answer">
+                <input type="checkbox" name="option-b" id="option-b" />
+                <label for="option-b" id="option-b-label">indicatorul 2</label>
+            </li>
+            <li class="intrebare-card__answer">
+                <input type="checkbox" name="option-c" id="option-c" />
+                <label for="option-c" id="option-c-label">ambele</label>
+            </li> -->
+        </ul>
+        <div class="intrebare-card__image-wrapper">
+            <!-- <img src="img/intrebare_image.jpg" alt="" /> -->
+        </div>
+    </div>
+    <div class="intrebare-card__buttons">
+        <button id="question-answer-later">Răspunde mai târziu</button>
+        <button id="question-modify-answers">Modifică răspunsul</button>
+        <button type="submit" class="button button--secondary">Răspunde</button>
+    </div>
+</form>

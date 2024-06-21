@@ -133,17 +133,16 @@ const showUserData = async () => {
         fields.forEach((field) => {
             showLoading(field);
         });
-        const data = await userData();
+        const user = await userData();
 
-        username.innerText = data.user.username;
-        correctNumber.innerText = data.user.solvedQuestions;
-        wrongNumber.innerText =
-            data.user.totalQuestions - data.user.solvedQuestions;
-        questionnaires.innerText = data.user.solvedQuestionnaires;
+        username.innerText = user.username;
+        correctNumber.innerText = user.solvedQuestions;
+        wrongNumber.innerText = user.totalQuestions - user.solvedQuestions;
+        questionnaires.innerText = user.solvedQuestionnaires;
         correctPercentage.innerText = (
-            data.user.totalQuestions === 0
+            user.totalQuestions === 0
                 ? 0
-                : (data.user.solvedQuestions / data.user.totalQuestions) * 100
+                : (user.solvedQuestions / user.totalQuestions) * 100
         ).toFixed(2);
     } catch (e) {
         showInfoModal(renderError(e));

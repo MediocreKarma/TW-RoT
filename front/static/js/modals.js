@@ -20,7 +20,6 @@ const createOrUpdateModal = (innerNode, id = '__modal', confirm = false) => {
         modal.appendChild(modalContent);
 
         modalOverlay.appendChild(modal);
-        document.body.prepend(modalOverlay);
     }
     modalOverlay.querySelector('.modal__content').appendChild(innerNode);
     return modalOverlay;
@@ -30,6 +29,7 @@ export const showInfoModal = (modalContent, onClose = undefined) => {
     const id = Math.random().toString(36).slice(2, 9);
     const modalId = `error-modal-${id}`;
     let modal = createOrUpdateModal(modalContent, modalId);
+    document.body.append(modal);
     const closeBtn = document.getElementById(`${modalId}-close`);
 
     closeBtn.onclick = function (e) {
@@ -48,6 +48,8 @@ export const showConfirmModal = (
     return new Promise((resolve) => {
         const id = 'confirm-modal';
         const modal = createOrUpdateModal(modalContent, id);
+        document.body.append(modal);
+
         const closeBtn = document.getElementById(`${id}-close`);
 
         const buttonContainer = document.createElement('div');

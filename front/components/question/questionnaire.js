@@ -8,17 +8,27 @@ import {
 
 export { setDisabled, getFormElement }; // forward importing :)
 
-const getQuestionComponent = async () => {
-    const response = await get('/components/question/question.html');
+const getQuestionnaireComponent = async () => {
+    const response = await get('/components/question/questionnaire.html');
     return await response.text();
 };
 
-export const renderQuestion = async (data) => {
-    const questionComponent = await getQuestionComponent();
+export const renderQuestionnaireQuestion = async (data, stats) => {
+    const questionComponent = await getQuestionnaireComponent();
 
     let card = document.createElement('div');
     card.classList.add('intrebare-card');
     card.innerHTML = questionComponent;
+    document.getElementById('questionnaire-current-question').innerText =
+        questionnaire.currentQuestionIndex + 1;
+    document.getElementById('questionnaire-total-questions').innerText =
+        questionnaire.totalQuestions;
+
+    card.querySelector('#questionnaire-remaining').innerText =
+        stats.remainingQuestions;
+    card.querySelector('#questionnaire-correct').innerText =
+        stats.correctAnswers;
+    card.querySelector('#questionnaire-wrong').innerText = stats.wrongAnswers;
 
     card.querySelector('#question-title').innerText = data.text;
     card.querySelector('#question-current').innerText = data.id;
@@ -47,31 +57,4 @@ export const renderQuestion = async (data) => {
     }
 
     return card;
-};
-
-export const showCorrectAnswers = (
-    questionCard,
-    { correctAnswers, isCorrect = undefined }
-) => {
-    correctAnswers.forEach((answer) => {
-        const label = questionCard.querySelector(`label[for="${answer.id}"]`);
-        if (label) {
-            label.textContent += answer.correct ? ' [corect]' : ' [greșit]';
-        }
-    });
-
-    if (isCorrect) {
-        const resultMessage = document.createElement('p');
-        resultMessage.className = isCorrect
-            ? 'intrebare-card__right'
-            : 'intrebare-card__wrong';
-        resultMessage.textContent = `Ai răspuns ${
-            isCorrect ? 'corect' : 'greșit'
-        }!`;
-    }
-
-    const cardBody = questionCard.querySelector('.intrebare-card__body');
-    if (cardBody) {
-        cardBody.appendChild(resultMessage);
-    }
 };

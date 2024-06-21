@@ -32,7 +32,7 @@ export const userData = async () => {
     try {
         const userData = await isAuthenticated();
         setUserData(userData.user);
-        return userData;
+        return userData.user;
     } catch (e) {
         if (e?.status === 401) {
             // clear user data from localStorage too
