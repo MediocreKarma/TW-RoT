@@ -1,4 +1,5 @@
 import { ServiceResponse } from "./serviceResponse.js";
+import { isStringValidInteger } from "../../common/utils.js";
 
 export const validateAuth = (authorization) => {
     if (Number.isInteger(authorization?.errorCode)) {

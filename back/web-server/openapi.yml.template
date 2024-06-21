@@ -1550,6 +1550,26 @@ paths:
         '500':
           description: Internal server error
 
+  /leaderboard/rss:
+    get:
+      summary: Retrieve RSS feed for leaderboard
+      tags: [Users]
+      servers:
+        - url: https://localhost:{USERS_PORT}/api/v1
+      description: |
+        Retrieves an RSS feed containing leaderboard data.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/rss+xml:
+              schema:
+                type: string
+                format: utf-8
+
+        '500':
+          description: Internal server error
+
   /users:
     get:
       summary: Get leaderboard entries

@@ -1,9 +1,14 @@
+import { Feed } from "feed";
 import { expireAuthCookie } from "../../common/authMiddleware.js";
 import { ErrorCodes, USER_ROLES } from "../../common/constants.js";
 import { isAdmin, isStringValidInteger } from "../../common/utils.js";
 import {withDatabaseOperation, withDatabaseTransaction} from "../_common/db.js";
 import {ServiceResponse} from "../_common/serviceResponse.js";
 import { validateAuth, validateStartAndCountParams } from "../_common/utils.js";
+import dotenv from 'dotenv';
+import utf8 from 'utf8';
+import { sendFileResponse } from "../../common/response.js";
+dotenv.config({path: '../../.env'});
 
 
 export const deleteUser = withDatabaseOperation(async function(
@@ -92,6 +97,64 @@ export const getLeaderboard = withDatabaseOperation(async function (
 
     return new ServiceResponse(200, {total: entries, data: result}, 'Successfully retrieved leaderboard entries');
 });
+
+const getLeaderboardPageForRank = (rank) => {
+    const usersPerPage = 5;
+    const pageNumber = Math.floor(rank / usersPerPage);
+    return `${process.env.FRONTEND_URL}/leaderboard?page=${pageNumber}`
+}
+
+let rssFeedXml = null;
+
+const convertString = (str) => {
+    return str.replace(/ă/g, '&#259');
+}
+
+const generateRSS = async () => {
+    const leaderboard = (await getLeaderboard(null, null, {query: {start: '0', count: '100'}})).body.data;
+
+    const tmp = new Feed({
+        title: 'Cele mai mari scoruri',
+        description: convertString('Primii 100 cei mai sârguincioși utilizatori'),
+        id: `${process.env.USERS_URL}/api/v1/leaderboard/rss`,
+        link: `${process.env.USERS_URL}/api/v1/leaderboard/rss`,
+        feedLinks: {
+            rss: `${process.env.USERS_URL}/api/v1/leaderboard/rss`
+        },
+        author: {
+            name: "ProRutier",
+            email: "ProRutier@gmail.com"
+        },
+        site_url: `${process.env.FRONTEND_URL}/leaderboard`,
+        language: 'ro',
+        updated: new Date()
+    });
+
+    leaderboard.forEach((user, i) => {
+        tmp.addItem({
+            title: `Nr. ${i + 1}\t ${user.username}`,
+            description: convertString(`Utilizatorul <strong>${user.username}</strong>:<br>`) +
+                            convertString(`    Nr. r&#259spunsuri corecte: ${user.solvedQuestions}<br>`) +
+                            convertString(`    % răspunsuri corecte: ${Math.round(user.solvedQuestions / user.totalQuestions * 100).toFixed(2)}<br>`) +
+                            convertString(`    Nr. chestionare admise: ${user.solvedQuestionnaires}<br>`),
+            link: getLeaderboardPageForRank(i),
+            guid: `${i}`,
+        });
+    });
+
+    rssFeedXml = tmp.rss2();
+}
+
+generateRSS();
+setInterval(() => {
+    generateRSS();
+}, 1000 * 60 * 3); // update every 3 minutes
+
+export const serveRSS = async function (
+    _req, res, _params
+) {
+    sendFileResponse(res, 200, rssFeedXml, 'application/rss+xml');
+}
 
 export const getUsers = withDatabaseOperation(async function(
     client, _req, _res, params

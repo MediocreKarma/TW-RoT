@@ -488,14 +488,6 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
             'Invalid verification route'
         );
     }
-    const token = params['body']?.token;
-    if (!token) {
-        return new ServiceResponse(
-            400,
-            { errorCode: ErrorCodes.CHANGE_REQUEST_TOKEN_NOT_IN_BODY },
-            'Token missing in body'
-        );
-    }
     const changeValue = params['body']?.value;
     const validationStatus = validate(changeValue, type);
     if (validationStatus) {
@@ -504,6 +496,14 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
     const adminState = isAdmin(params['authorization']);
     let userId;
     if (!adminState) {
+        const token = params['body']?.token;
+        if (!token) {
+            return new ServiceResponse(
+                400,
+                { errorCode: ErrorCodes.CHANGE_REQUEST_TOKEN_NOT_IN_BODY },
+                'Token missing in body'
+            );
+        }
         const result = (
             await client.query(
                 `select ut.user_id as "userId", ut.created_at as "createdAt", ua.username as "username"
