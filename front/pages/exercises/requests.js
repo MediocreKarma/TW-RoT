@@ -1,0 +1,39 @@
+import API from '/js/api.js';
+import { get, post, put, patch, del } from '/js/requests.js';
+
+export const getExerciseCategories = async () => {
+    const response = await get(`${API.EXERCISES}/exercises/categories`);
+    return await response.json();
+};
+
+export const getUnsolvedExercise = async () => {
+    const response = await get(`${API.EXERCISES}/exercises/unsolved`);
+    return await response.json();
+};
+
+export const getUnsolvedExerciseByCategory = async (categoryId) => {
+    const response = await get(
+        `${API.EXERCISES}/exercises/unsolved/${categoryId}`
+    );
+    return await response.json();
+};
+
+export const getIncorrectlySolvedExercise = async () => {
+    const response = await get(`${API.EXERCISES}/exercises/incorrectly-solved`);
+    return await response.json();
+};
+
+export const getExerciseSolution = async (exerciseId) => {
+    const response = await get(
+        `${API.EXERCISES}/exercises/${exerciseId}/solution`
+    );
+    return await response.json();
+};
+
+export const submitSolution = async (userId, solutionData) => {
+    const response = await post(
+        `${API.EXERCISES}/users/${userId}/submissions`,
+        solutionData
+    );
+    return await response.json();
+};

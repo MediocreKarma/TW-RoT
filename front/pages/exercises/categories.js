@@ -1,38 +1,14 @@
-const API_URL = 'http://localhost:12734/api/v1';
-
-const showLoading = (domNode) => {
-    domNode.innerText = 'Se încarcă...';
-};
-
-const fetchCategories = async () => {
-    // get token from local storage if there
-
-    let headers = {};
-    if (localStorage.getItem('token') !== null) {
-        headers = {
-            Authorization: 'Bearer ' + localStorage.getItem('token'),
-        };
-    }
-
-    const response = await fetch(`${API_URL}/exercises/categories`, {
-        headers: headers,
-    });
-
-    if (!response.ok) {
-        console.log(response);
-    }
-
-    const data = await response.json();
-    return data;
-};
+import { getExerciseCategories } from './requests.js';
+import { renderMessage, showLoading } from '/js/render.js';
 
 const renderCategory = (categoryData) => {
     const anchor = document.createElement('a');
-    anchor.href = `/intrebare?type=unsolved&category=${categoryData.id}`;
+    anchor.href = `/exercises/category/${categoryData.id}`;
 
     const percentage =
-        (categoryData['solved_questions'] / categoryData['total_questions']) *
-        100;
+        categoryData['total'] === 0
+            ? 0
+            : (categoryData['solved'] / categoryData['total']) * 100;
 
     const cardDiv = document.createElement('div');
     cardDiv.className = 'question-category';
@@ -47,7 +23,7 @@ const renderCategory = (categoryData) => {
 
     const valueParagraph = document.createElement('p');
     valueParagraph.className = 'question-category__value';
-    valueParagraph.textContent = `${categoryData['solved_questions']}/${categoryData['total_questions']}`;
+    valueParagraph.textContent = `${categoryData['solved']}/${categoryData['total']}`;
 
     cardDiv.appendChild(fillerDiv);
     cardDiv.appendChild(titleParagraph);
@@ -58,17 +34,17 @@ const renderCategory = (categoryData) => {
     return anchor;
 };
 
-const setIncorrectData = async (wrong) => {
+const showIncorrectData = async (wrong) => {
     document
         .getElementById('incorrectly-solved')
         .querySelector('.question-category__value').innerText = wrong;
 };
 
-const renderCategories = async () => {
+const showCategories = async () => {
     const container = document.getElementById('categories');
     showLoading(container);
 
-    const categoriesData = await fetchCategories();
+    const categoriesData = await getExerciseCategories();
     console.log(categoriesData);
     container.innerHTML = '';
 
@@ -76,7 +52,7 @@ const renderCategories = async () => {
         container.appendChild(renderCategory(category));
     });
 
-    setIncorrectData(categoriesData.wrong);
+    showIncorrectData(categoriesData.wrong);
 };
 
-window.addEventListener('load', renderCategories);
+window.addEventListener('load', showCategories);

@@ -13,10 +13,7 @@
         <script src="/components/footer/footer.js" type="module"></script>
         <script src="/components/backToTop.js"></script>
 
-        <script
-            src="/exercises/populateQuestionCategories.js"
-            type="module"
-        ></script>
+        <script src="/exercises/categories.js" type="module"></script>
     </head>
 
     <body>
@@ -30,7 +27,7 @@
                         Mediu general de exersare
                     </h2>
                     <div class="question-categories__container">
-                        <a href="/intrebare">
+                        <a href="/exercises/unsolved">
                             <div class="question-category">
                                 <p class="question-category__title">
                                     Toate întrebările
@@ -44,7 +41,7 @@
                                 </p>
                             </div>
                         </a>
-                        <a href="/intrebare?type=incorrect">
+                        <a href="/exercises/incorrectly-solved">
                             <div
                                 class="question-category"
                                 id="incorrectly-solved"
@@ -53,7 +50,7 @@
                                 <p class="question-category__title">
                                     Întrebări la care ai greșit
                                 </p>
-                                <p class="question-category__value">100</p>
+                                <p class="question-category__value"></p>
                             </div>
                         </a>
                         <p></p>

@@ -1,3 +1,5 @@
+// TODO: integrate??
+
 function assignHoverColor(evt) {
     var checkbox = evt.currentTarget.cbox;
     var label = evt.currentTarget.label;

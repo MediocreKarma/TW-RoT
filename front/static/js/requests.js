@@ -55,6 +55,19 @@ export const put = async (url, data, options = {}) => {
     });
 };
 
+export const patch = async (url, data, options = {}) => {
+    return await wrappedFetch(url, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers,
+        },
+        body: JSON.stringify(data),
+        ...options,
+    });
+};
+
 export const del = async (url, options = {}) => {
     return await wrappedFetch(url, {
         method: 'DELETE',
