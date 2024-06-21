@@ -1,5 +1,5 @@
 import API from '/js/api.js';
-import { get, post } from '/js/requests.js';
+import { get, post, put } from '/js/requests.js';
 
 export const getExerciseCategories = async () => {
     const response = await get(`${API.EXERCISES}/exercises/categories`);
@@ -48,6 +48,25 @@ export const createQuestionnaire = async (userId) => {
 export const getQuestionnaire = async (userId) => {
     const response = await get(
         `${API.EXERCISES}/users/${userId}/questionnaire`
+    );
+    return await response.json();
+};
+
+export const submitQuestionnaireSolution = async (
+    userId,
+    questionId,
+    answerData
+) => {
+    const response = await post(
+        `${API.EXERCISES}/users/${userId}/questionnaire/questions/${questionId}/solution`,
+        answerData
+    );
+    return await response.json();
+};
+
+export const submitQuestionnaire = async (userId) => {
+    const response = await put(
+        `${API.EXERCISES}/users/${userId}/questionnaire/submitted`
     );
     return await response.json();
 };

@@ -1,16 +1,17 @@
 import {
     getQuestionnaire as apiGetQuestionnaire,
     createQuestionnaire as apiCreateQuestionnaire,
+    submitQuestionnaireSolution as apiSubmitQuestionnaireSolution,
+    submitQuestionnaire as apiSubmitQuestionnaire,
 } from '../requests.js';
-import { userData } from '/js/auth.js';
+import { cachedUserData } from '/js/auth.js';
 
 const saveQuestionnaire = (questionnaire) => {
     localStorage.setItem('questionnaire', JSON.stringify(questionnaire));
 };
 
 export const createQuestionnaire = async () => {
-    const user = await userData();
-    console.log(user);
+    const user = cachedUserData();
     if (!user) {
         // this should never happen, there's going to be a guard on the questionnaire routes, hopefully
         window.location.href = '/exercises';
@@ -22,16 +23,54 @@ export const createQuestionnaire = async () => {
     return questionnaire;
 };
 
+const QUESTIONNAIRE_INTERVAL_MS = 30 * 60000;
+let questionnaireTimeout;
+
+export const setQuestionnaireTimeout = async () => {
+    const questionnaire = await getQuestionnaire();
+    if (!questionnaire) {
+        return;
+    }
+    let countDownDate = new Date(
+        questionnaire.questionnaire.generatedTime
+    ).getTime();
+    countDownDate = new Date(countDownDate + QUESTIONNAIRE_INTERVAL_MS);
+    var now = new Date().getTime();
+    var distance = countDownDate - now;
+
+    if (questionnaireTimeout) {
+        clearTimeout(questionnaireTimeout);
+    }
+
+    questionnaireTimeout = setTimeout(async () => {
+        await submitQuestionnaire();
+        window.location.reload();
+    }, distance);
+};
+
 // gets user's questionnaire without creating a new one
 export const getQuestionnaire = async () => {
     const data = localStorage.getItem('questionnaire');
 
     if (data) {
-        return JSON.parse(data);
+        const jsonData = JSON.parse(data);
+
+        let countDownDate = new Date(
+            jsonData.questionnaire.generatedTime
+        ).getTime();
+        countDownDate = new Date(countDownDate + QUESTIONNAIRE_INTERVAL_MS);
+
+        var now = new Date().getTime();
+
+        var distance = countDownDate - now;
+
+        if (distance > 0 && !jsonData.questionnaire.registered) {
+            return jsonData;
+        }
     }
 
-    // fetch questionnaire
-    const user = await userData();
+    // fetch questionnaire again if registered in memory...
+    const user = await cachedUserData();
     if (!user) {
         // same as above... this should never ever happen
         window.location.href = '/exercises';
@@ -75,16 +114,17 @@ export const getQuestionnaireStats = async () => {
     }
 
     const totalQuestions = questionnaire.questions.length;
-    const unsolvedQuestions = questionnaire.questions.filter(
-        (q) => !q.solved
+    const wrongQuestions = questionnaire.questions.filter(
+        (q) => q.sent && !q.solved
     ).length;
     const unsentQuestions = questionnaire.questions.filter(
         (q) => !q.sent
     ).length;
 
     return {
+        ...questionnaire.questionnaire,
         totalQuestions,
-        unsolvedQuestions,
+        unsolvedQuestions: wrongQuestions,
         unsentQuestions,
     };
 };
@@ -107,7 +147,7 @@ export const skipQuestion = async (questionId) => {
     const question = questionnaire.questions.find((q) => q.id === questionId);
     if (question) {
         question.skipped = true;
-        saveQuestionnaire();
+        saveQuestionnaire(questionnaire);
     }
 };
 
@@ -116,18 +156,72 @@ export const getFirstUnansweredQuestion = async () => {
     let allSkipped = true;
     for (let i = 0; i < questionnaire.questions.length; i++) {
         const question = questionnaire.questions[i];
-        if (!question.solved && question.skipped !== true) {
+        if (!question.sent && question.skipped !== true) {
             allSkipped = false;
             questionnaire.currentQuestionIndex = i;
-            saveQuestionnaire();
+            saveQuestionnaire(questionnaire);
             return question;
         }
     }
     if (allSkipped) {
-        // Delete skipped status and return the first question
+        // delete skipped status and return the first question
         questionnaire.questions.forEach((q) => delete q.skipped);
-        saveQuestionnaire();
+        saveQuestionnaire(questionnaire);
         return questionnaire.questions[0];
     }
+
     return null;
+};
+
+export const submitSolution = async (questionId, answerData) => {
+    const questionnaire = await getQuestionnaire();
+    if (!questionnaire) {
+        return;
+    }
+    const user = cachedUserData();
+
+    const stats = await getQuestionnaireStats();
+    if (stats.registered === true) {
+        return;
+    }
+    if (stats.unsentQuestions === 0) {
+        await apiSubmitQuestionnaire(user.id);
+        return;
+    }
+
+    const response = await apiSubmitQuestionnaireSolution(
+        user.id,
+        questionId,
+        answerData
+    );
+
+    // save to questionnaire
+    const question = questionnaire.questions.find((q) => q.id === questionId);
+    if (question) {
+        question.sent = true;
+        question.solved = response.isCorrect;
+        saveQuestionnaire(questionnaire);
+    }
+    await trySubmittingQuestionnaireAutomatically();
+};
+
+export const trySubmittingQuestionnaireAutomatically = async () => {
+    const questionnaireStats = await getQuestionnaireStats();
+
+    const timedOut = false; // TODO: CHECK WITH GENERATED TIME....
+
+    // either you timed out or you're cooked
+    if (!timedOut && questionnaireStats.unsolvedQuestions < 4) {
+        return;
+    }
+
+    await submitQuestionnaire();
+};
+
+export const submitQuestionnaire = async () => {
+    const user = cachedUserData();
+    const questionnaire = await getQuestionnaire();
+    await apiSubmitQuestionnaire(user.id);
+    questionnaire.questionnaire.registered = true;
+    saveQuestionnaire(questionnaire);
 };
