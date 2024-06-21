@@ -1,5 +1,5 @@
 import { Server } from 'https';
-import { zip } from '../common/utils.js';
+import { isAdmin, zip } from '../common/utils.js';
 import { parse } from 'node:url';
 import {
     sendEmptyResponse,
@@ -116,10 +116,7 @@ export class WebServer extends Server {
                 continue;
             }
             const auth = await getAuth(req, res);
-            console.log(auth);
-            const flags = auth?.user?.flags ?? 0;
-
-            if ((flags & USER_ROLES.ADMIN) === 0 || (flags & USER_ROLES.BANNED) === 1) {
+            if (!isAdmin(auth)) {
                 this.serveFile(this.notFoundRoute.redirect, res, 404);
                 return;
             } 

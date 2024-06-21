@@ -1,39 +1,10 @@
 import { expireAuthCookie } from "../../common/authMiddleware.js";
 import { ErrorCodes, USER_ROLES } from "../../common/constants.js";
-import { isStringValidInteger } from "../../common/utils.js";
+import { isAdmin, isStringValidInteger } from "../../common/utils.js";
 import {withDatabaseOperation, withDatabaseTransaction} from "../_common/db.js";
 import {ServiceResponse} from "../_common/serviceResponse.js";
+import { validateAuth, validateStartAndCountParams } from "../_common/utils.js";
 
-const validateAuth = (authorization) => {
-    if (Number.isInteger(authorization?.errorCode)) {
-        return new ServiceResponse(401, {errorCode: authorization?.errorCode}, 'Unauthenticated');
-    }
-    return null;
-}
-
-const validateNonnegativeIntegerField = (field, fieldName) => {
-    const capitalizedFieldName = fieldName.toUpperCase();
-    if (!isStringValidInteger(field)) {
-        return new ServiceResponse(400, {errorCode: ErrorCodes[`${capitalizedFieldName}_NOT_INTEGER`]});
-    }
-    const value = parseInt(field, 10);
-    if (value < 0) {
-        return new ServiceResponse(400, {errorCode: ErrorCodes[`${capitalizedFieldName}_NOT_NONNEGATIVE_INTEGER`]});
-    }
-    return null;
-}
-
-const validateStartAndCountParams = (startStr, countStr) => {
-    const startValidation = validateNonnegativeIntegerField(startStr, 'start');
-    if (startValidation) {
-        return startValidation;
-    }
-    const countValidation = validateNonnegativeIntegerField(countStr, 'count');
-    if (countValidation) {
-        return countValidation;
-    }
-    return null;
-}
 
 export const deleteUser = withDatabaseOperation(async function(
     client, _req, res, params
@@ -53,8 +24,10 @@ export const deleteUser = withDatabaseOperation(async function(
         `delete from user_account where id = $1::int`,
         [userId]
     );
-    expireAuthCookie(res);
-    return new ServiceResponse(200, null, 'Successfully deleted user account');
+    if (params['authorization'].user.id === parseInt(userId, 10)) {
+        expireAuthCookie(res);
+    }
+    return new ServiceResponse(204, null, 'Successfully deleted user account');
 });
 
 export const resetProgress = withDatabaseTransaction(async function (
@@ -119,10 +92,6 @@ export const getLeaderboard = withDatabaseOperation(async function (
 
     return new ServiceResponse(200, {total: entries, data: result}, 'Successfully retrieved leaderboard entries');
 });
-
-const isAdmin = (authorization) => {
-    return !!((authorization?.user?.flags ?? 0) & USER_ROLES.ADMIN);
-}
 
 export const getUsers = withDatabaseOperation(async function(
     client, _req, _res, params
@@ -191,16 +160,16 @@ export const changeBanStatus = withDatabaseOperation(async function (
         `update user_account 
             set flags = (
                 case
-                    when $1::boolean then flags | 4,
-                    else flags & ~4
+                    when $1::boolean then flags | ${USER_ROLES.BANNED}
+                    else flags & ~${USER_ROLES.BANNED}
                 end
             )
-            where id = $2::int and flags & 1 = 0`,
+            where id = $2::int and (flags & ${USER_ROLES.ADMIN}) = 0`,
         [isBanned, userId]
     )).rowCount;
 
     if (updated === 0) {
         return new ServiceResponse(404, {errorCode: ErrorCodes.NO_BANNABLE_USER_FOUND}, `Couldn't ban given id`);
     }
-    return new ServiceResponse(200, null, 'Successfully banned user');
+    return new ServiceResponse(204, null, 'Successfully banned user');
 });

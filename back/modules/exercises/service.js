@@ -8,7 +8,7 @@ const API_IMAGE_URL = `${process.env.EXERCISES_URL}/api/v1/images/{id}.png`;
 export const getAllExerciseCategories = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const userId = params['authorization']?.user.id ?? 0;
+    const userId = params['authorization']?.user?.id ?? 0;
     const qcData = (await client.query(
         'select ' +
             '   qc.title as title, ' +
@@ -85,7 +85,7 @@ export const adjustOutputAnswerSet = (answers) => {
 export const getUnsolvedQuestion = withDatabaseOperation(async function (
     client, _req, _res, params
 ) { 
-    const userId = params['authorization']?.user.id ?? 0;
+    const userId = params['authorization']?.user?.id ?? 0;
     const qData = (await client.query(
         `${SQL_SELECT_STATEMENT}
             where 
@@ -129,7 +129,7 @@ export const getUnsolvedQuestionByCategory = withDatabaseOperation(async functio
     if (!isStringValidInteger(categoryId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_CATEGORY_ID}, 'Invalid question category id');
     }
-    const userId = params['authorization']?.user.id ?? 0;
+    const userId = params['authorization']?.user?.id ?? 0;
     const qData = (
         await client.query(
             `${SQL_SELECT_STATEMENT}
@@ -171,7 +171,7 @@ export const getUnsolvedQuestionByCategory = withDatabaseOperation(async functio
 export const getIncorrectlySolvedQuestion = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const userId = params['authorization']?.user.id;
+    const userId = params['authorization']?.user?.id;
     if (!userId) {
         return new ServiceResponse(401, {errorCode: ErrorCodes.UNAUTHENTICATED}, 'Cannot retrieve incorrectly solved for unlogged user');
     }
@@ -216,7 +216,7 @@ export const getIncorrectlySolvedQuestion = withDatabaseOperation(async function
 export const getSolution = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
-    const questionId = params['path']['id'];
+    const questionId = params['path']?.id;
     if (!isStringValidInteger(questionId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_ID}, 'Invalid question id');
     }

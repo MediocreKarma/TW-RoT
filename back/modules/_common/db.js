@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'url';
 import { ServiceResponse } from './serviceResponse.js';
+import { ErrorCodes } from '../../common/constants.js';
 
 const { Pool } = pg;
 dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '/.env') });
@@ -24,7 +25,7 @@ export function withDatabaseOperation(handler) {
             return result;
         } catch (error) {
             console.error(error);
-            return new ServiceResponse(500, null, 'Internal Server Error');
+            return new ServiceResponse(500, {errorCode: ErrorCodes.SERVER_ERROR}, 'Internal Server Error');
         } finally {
             client.release();
         }
@@ -41,7 +42,7 @@ export function wrapOperationWithTransaction(client, handler) {
         } catch (error) {
             await client.query('ROLLBACK');
             console.error(error);
-            return new ServiceResponse(500, null, 'Internal Server Error');
+            return new ServiceResponse(500, {errorCode: ErrorCodes.SERVER_ERROR}, 'Internal Server Error');
         }
     };
 }
@@ -57,7 +58,7 @@ export function withDatabaseTransaction(handler) {
         } catch (error) {
             await client.query('ROLLBACK');
             console.error(error);
-            return new ServiceResponse(500, null, 'Internal Server Error');
+            return new ServiceResponse(500, {errorCode: ErrorCodes.SERVER_ERROR}, 'Internal Server Error');
         } finally {
             client.release();
         }

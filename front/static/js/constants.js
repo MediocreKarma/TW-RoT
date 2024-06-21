@@ -61,6 +61,7 @@ export const ErrorCodes = Object.freeze({
     BANNED_STATUS_NOT_IN_BODY: 59,
     INVALID_BANNED_STATUS: 60,
     NO_BANNABLE_USER_FOUND: 61,
+    BANNED: 62,
 });
 
 export const USER_ROLES = Object.freeze({

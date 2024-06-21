@@ -627,7 +627,7 @@ paths:
                 - password
                 - email
       responses:
-        '200':
+        '204':
           description: User registered successfully
         '400':
           description: Bad Request
@@ -812,7 +812,7 @@ paths:
                 - email
                 - type
       responses:
-        '200':
+        '204':
           description: Change request accepted, further instructions sent to the user's email
         '400':
           description: Invalid input, object invalid
@@ -862,7 +862,7 @@ paths:
                 - token
                 - value
       responses:
-        '200':
+        '204':
           description: Password changed successfully
         '400':
           description: Invalid input
@@ -912,7 +912,7 @@ paths:
                 - token
                 - value
       responses:
-        '200':
+        '204':
           description: Email changed successfully
         '400':
           description: Invalid input
@@ -962,7 +962,7 @@ paths:
                 - token
                 - value
       responses:
-        '200':
+        '204':
           description: Username changed successfully
         '400':
           description: Invalid input
@@ -996,7 +996,7 @@ paths:
       security:
         - cookieAuth: []
       responses:
-        '200':
+        '204':
           description: User logged out successfully
         '401':
           description: Unauthorized
@@ -1488,7 +1488,7 @@ paths:
               required:
                 - banned
       responses:
-        '200':
+        '204':
           description: User banned status updated successfully
         '400':
           description: Bad Request

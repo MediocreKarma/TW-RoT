@@ -4,8 +4,8 @@ import {
     wrapOperationWithTransaction,
 } from '../_common/db.js';
 import { ServiceResponse } from '../_common/serviceResponse.js';
-import { ErrorCodes } from '../../common/constants.js';
-import { sleep } from '../../common/utils.js';
+import { ErrorCodes, USER_ROLES } from '../../common/constants.js';
+import { isAdmin, isStringValidInteger, sleep } from '../../common/utils.js';
 import pkg from 'bcryptjs';
 const { genSalt, hash, compare } = pkg;
 import { nanoid } from 'nanoid';
@@ -91,18 +91,21 @@ const hashWithBcrypt = async (target) => {
     return await hash(target, await genSalt());
 };
 
+const isEmailUsed = async (client, email) => {
+    const exists = (
+        await client.query(
+            `select count(' ') as exists from user_account 
+                where email = $1::varchar or new_email = $1::varchar`,
+            [email]
+        )
+    ).rows[0]['exists'];
+    return parseInt(exists, 10) !== 0;
+}
+
 const registerAccount = withDatabaseTransaction(
     async (client, username, email, password) => {
         try {
-            const exists = (
-                await client.query(
-                    `select count(' ') as exists from user_account 
-                where email = $1::varchar or new_email = $1::varchar`,
-                    [email]
-                )
-            ).rows[0]['exists'];
-            if (parseInt(exists) !== 0) {
-                client.query('ROLLBACK');
+            if (await isEmailUsed(client, email)) {
                 return;
             }
             const hashedPass = await hashWithBcrypt(password);
@@ -110,8 +113,8 @@ const registerAccount = withDatabaseTransaction(
             const id = (
                 await client.query(
                     `insert into user_account (username, new_email, hash)
-                values ($1::varchar, $2::varchar, $3::varchar)
-                returning id`,
+                        values ($1::varchar, $2::varchar, $3::varchar)
+                        returning id`,
                     [username, email, hashedPass]
                 )
             ).rows[0]['id'];
@@ -119,7 +122,7 @@ const registerAccount = withDatabaseTransaction(
             const token = await genToken();
             await client.query(
                 `insert into user_token (user_id, token_type, token_value, created_at)
-                values($1::int, 'confirm_email', $2::varchar, now()::timestamp)`,
+                    values($1::int, 'confirm_email', $2::varchar, now()::timestamp)`,
                 [id, token]
             );
             const link = `${process.env.FRONTEND_URL}/verify?token=${token}`;
@@ -195,7 +198,7 @@ export const register = withDatabaseOperation(async function (
     }
     registerAccount(username, email, password); // launch async task after validations
 
-    return new ServiceResponse(200, null, 'Account successfully registered');
+    return new ServiceResponse(204, null, 'Account successfully registered');
 });
 
 export const login = withDatabaseOperation(async function (
@@ -231,6 +234,14 @@ export const login = withDatabaseOperation(async function (
             'Invalid credentials'
         );
     }
+
+    if ((userAccount[0]['flags'] & USER_ROLES.BANNED) === 1) {
+        await sleep(timerBegin + msTimeout - new Date().getTime());
+        return new ServiceResponse(
+            400, {errorCode: ErrorCodes.BANNED}, 'Banned'
+        );
+    }
+
     delete userAccount[0]['hash'];
     try {
         const token = await genToken();
@@ -301,7 +312,7 @@ export const verify = withDatabaseOperation(async function (
         ]);
     })();
 
-    return new ServiceResponse(200, null, 'Sucessfully created account');
+    return new ServiceResponse(204, null, 'Sucessfully created account');
 });
 
 const handleRequestChange = withDatabaseOperation(async function (
@@ -412,7 +423,11 @@ export const requestCredentialChange = withDatabaseOperation(async function (
     );
 });
 
-const updateEmail = async (client, userId, newEmail, username = '\b') => {
+const updateEmail = withDatabaseTransaction(async (client, userId, newEmail, username = '\b') => {
+    if (await isEmailUsed(client, email)) {
+        return;
+    }
+
     await client.query(
         `update user_account 
             set updated_at = now()::timestamp, new_email = $1::varchar
@@ -438,18 +453,18 @@ const updateEmail = async (client, userId, newEmail, username = '\b') => {
         subject: CHANGE_EMAIL_SUBJECT,
         html: template,
     });
-};
+});
 
-const updateUsername = async (client, userId, newUsername) => {
+const updateUsername = withDatabaseOperation(async (client, userId, newUsername) => {
     await client.query(
         `update user_account
             set updated_at = now()::timestamp, username = $1::varchar
             where id = $2::int`,
         [newUsername, userId]
     );
-};
+});
 
-const updatePassword = async (client, userId, newPassword) => {
+const updatePassword = withDatabaseOperation(async (client, userId, newPassword) => {
     const hashedPass = await hashWithBcrypt(newPassword);
     await client.query(
         `update user_account
@@ -457,7 +472,7 @@ const updatePassword = async (client, userId, newPassword) => {
             where id = $2::int`,
         [hashedPass, userId]
     );
-};
+});
 
 export const verifyChangeRequest = withDatabaseTransaction(async function (
     client,
@@ -486,49 +501,60 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
     if (validationStatus) {
         return validationStatus;
     }
+    const adminState = isAdmin(params['authorization']);
+    let userId;
+    if (!adminState) {
+        const result = (
+            await client.query(
+                `select ut.user_id as "userId", ut.created_at as "createdAt", ua.username as "username"
+                from user_token ut join user_account ua 
+                    on ua.id = ut.user_id 
+                where token_value = $1::varchar and token_type = $2::varchar`,
+                [token, `change_${type}`]
+            )
+        ).rows;
+    
+        if (result.length === 0) {
+            return new ServiceResponse(
+                400,
+                { errorCode: ErrorCodes.INVALID_CHANGE_REQUEST_TOKEN },
+                'No such change request token'
+            );
+        }
 
-    const result = (
-        await client.query(
-            `select ut.user_id as "userId", ut.created_at as "createdAt", ua.username as "username"
-            from user_token ut join user_account ua 
-                on ua.id = ut.user_id 
-            where token_value = $1::varchar and token_type = $2::varchar`,
-            [token, `change_${type}`]
-        )
-    ).rows;
-
-    if (result.length === 0) {
-        return new ServiceResponse(
-            400,
-            { errorCode: ErrorCodes.INVALID_CHANGE_REQUEST_TOKEN },
-            'No such change request token'
-        );
+        const info = result[0];
+        if (info['createdAt'].getTime() + oneHourInMs < new Date().getTime()) {
+            return new ServiceResponse(
+                403,
+                { errorCode: ErrorCodes.EXPIRED_CHANGE_REQUEST_TOKEN },
+                'Change request token has expired'
+            );
+        }
+        userId = info['userId'];
     }
-    const info = result[0];
-    if (info['createdAt'].getTime() + oneHourInMs < new Date().getTime()) {
-        return new ServiceResponse(
-            403,
-            { errorCode: ErrorCodes.EXPIRED_CHANGE_REQUEST_TOKEN },
-            'Change request token has expired'
-        );
+    else {
+        userId = params['body']['id'];
+        if (!isStringValidInteger(userId)) {
+            return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_USER_ID}, 'Invalid user id');
+        }
     }
 
     await client.query(`delete from user_token where user_id = $1::int`, [
-        info['userId'],
+        userId,
     ]);
 
     switch (type) {
         case 'username':
-            updateUsername(client, info['userId'], changeValue);
+            updateUsername(info['userId'], changeValue);
             break;
         case 'password':
-            updatePassword(client, info['userId'], changeValue);
+            updatePassword(info['userId'], changeValue);
             break;
         case 'email':
-            updateEmail(client, info['userId'], changeValue, info['username']);
+            updateEmail(info['userId'], changeValue, info['username']);
             break;
     }
-    return new ServiceResponse(200, null, 'Succesfully changed credential');
+    return new ServiceResponse(204, null, 'Succesfully changed credential');
 });
 
 const getAuthCookie = (req) => {
@@ -616,5 +642,5 @@ export const logout = withDatabaseOperation(async function (
             'Auth cookie is invalid'
         );
     }
-    return new ServiceResponse(200, null, 'Successfully logged out');
+    return new ServiceResponse(204, null, 'Successfully logged out');
 });
