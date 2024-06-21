@@ -84,14 +84,14 @@ export class AppRouter extends Server {
         const method = req.method.toUpperCase();
         const {pathname, query} = parse(req.url, true);
         let body;
+        console.log(`Received request ${method} ${pathname}`);
         try {
             body = await this.getRequestBody(req);
         } catch (err) {
             sendJsonResponse(res, 400, {errorCode: ErrorCodes.INVALID_JSON_INPUT}, 'Could not parse body to json');
             return;
         }
-
-        console.log(`Received request ${method} ${pathname}`);
+        
         query || console.log(`\t- query: ${JSON.stringify(query)}`);
         body  || console.log(`\t- body: ${JSON.stringify(body)}`);
 
@@ -160,7 +160,14 @@ export class AppRouter extends Server {
             });
 
             req.on('end', () => {
-                resolve(JSON.parse(body || '{}'));
+                let tmp;
+                try {
+                    tmp = JSON.parse(body || '{}');
+                }
+                catch (e) {
+                    reject(e);
+                }
+                resolve(tmp);
             });
             req.on('error', (err) => {
                 reject(err);

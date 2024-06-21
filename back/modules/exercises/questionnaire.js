@@ -299,10 +299,11 @@ export const finishQuestionnaire = withDatabaseOperation(async function (
         JOIN
             question q on gq.question_id = q.id
         where 
-            gq.questionnaire_id = 1
+            gq.questionnaire_id = $1::int
         GROUP BY 
             gq.id, q.text, q.image_id
-        order by gq.id;`
+        order by gq.id;`,
+        [userId]
     )).rows;
     adjustQuestionnaireOutputAnswerSets(result);
     addImageToQuestions(result);

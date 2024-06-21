@@ -9,20 +9,18 @@ export const SQL_SELECT_STATEMENT =
     `select
         q.id as "id",
         q.category_id as "categoryId",
-        qg.title as "categoryTitle",
+        qc.title as "categoryTitle",
         q.text as "text",
         q.image_id as "imageId",
         array_agg(jsonb_build_object('id', a.id, 'description', a.description) order by random()) as "answers"
     from 
         question q 
         join answer a on q.id = a.question_id 
-        join question_category qg on qg.id = q.category_id`;
+        join question_category qc on qc.id = q.category_id`;
 
 export const SQL_GROUPING_STATEMENT =
     `group by
-        q.id, q.category_id, qg.title, q.text, q.image_id
-    order by 
-        random();`;
+        q.id, q.category_id, qc.title, q.text, q.image_id`;
 
 
 export const getAllExerciseCategories = withDatabaseOperation(async function (

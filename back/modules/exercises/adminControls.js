@@ -3,7 +3,13 @@ import { isAdmin, isStringValidInteger } from "../../common/utils.js";
 import { withDatabaseOperation } from "../_common/db.js"
 import { ServiceResponse } from "../_common/serviceResponse.js";
 import { validateAuth, validateStartAndCountParams } from "../_common/utils.js";
-import { SQL_SELECT_STATEMENT, SQL_GROUPING_STATEMENT } from "./service.js";
+import { SQL_SELECT_STATEMENT, SQL_GROUPING_STATEMENT, adjustOutputAnswerSet, addImageToQuestion } from "./service.js";
+
+const SQL_WHERE_FETCH_STATEMENT = 
+    `WHERE 
+        q.text LIKE '%' || $1::varchar || '%' 
+        OR qc.title LIKE '%' || $1::varchar || '%' 
+        OR a.description LIKE '%' || $1::varchar || '%'`;
 
 export const fetchQuestions = withDatabaseOperation(async function (
     client, _req, _res, params
@@ -38,9 +44,28 @@ export const fetchQuestions = withDatabaseOperation(async function (
     }
 
     const cnt = parseInt((await client.query(
-        `select count(' ') from question q join question_category qc on q.category_id = qc.id
-            `
+        `SELECT 
+            count(distinct q.id) as cnt
+        FROM 
+            question q 
+            JOIN question_category qc ON q.category_id = qc.id 
+            JOIN answer a ON a.question_id = q.id
+        ${SQL_WHERE_FETCH_STATEMENT}`,
+        [query]
     )).rows[0]['cnt'], 10);
+
+    const result = (await client.query(
+        `${SQL_SELECT_STATEMENT} ${SQL_WHERE_FETCH_STATEMENT} ${SQL_GROUPING_STATEMENT}
+            offset $2::int limit $3::int`,
+        [query, start, count]
+    )).rows;
+    result.forEach(q => {
+        q.answers.sort((a, b) => a.id - b.id); 
+        adjustOutputAnswerSet(q.answers);
+        addImageToQuestion(q);
+    });
+
+    return new ServiceResponse(200, {total: cnt, data: result}, 'Successfully fetched questions');
 })
 
 export const addQuestion = withDatabaseOperation(async function (

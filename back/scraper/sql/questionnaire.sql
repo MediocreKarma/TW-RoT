@@ -25,11 +25,10 @@ begin
     from generated_questionnaire gq where gq.id = u_id; -- gen_qstr has same id as user (always)
 
     if found then
-        if gen_time >= (current_timestamp - interval '30 minutes') THEN
+        if gen_time >= (now()::timestamp - interval '30 minutes') and not already_registered THEN
             return query select u_id, gen_time, false;
             return;
         end if;
-        raise notice 'but here';
         if not already_registered then
             perform finish_questionnaire(u_id);
         end if;
@@ -67,9 +66,11 @@ begin
         set updated_at = now()::timestamp
         where id = u_id;
 
+    gen_time = now()::timestamp;
+
     update generated_questionnaire
         set 
-            generated_time = now()::timestamp
+            generated_time = gen_time
         where 
             id = u_id;
 
