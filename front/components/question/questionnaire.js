@@ -13,27 +13,32 @@ const getQuestionnaireComponent = async () => {
     return await response.text();
 };
 
-export const renderQuestionnaireQuestion = async (data, stats) => {
+export const renderQuestionnaireQuestion = async (
+    data,
+    stats,
+    timeInterval = 30 * 60000
+) => {
     const questionComponent = await getQuestionnaireComponent();
 
     let card = document.createElement('div');
     card.classList.add('intrebare-card');
     card.innerHTML = questionComponent;
-    document.getElementById('questionnaire-current-question').innerText =
-        questionnaire.currentQuestionIndex + 1;
-    document.getElementById('questionnaire-total-questions').innerText =
-        questionnaire.totalQuestions;
+    card.querySelector('#questionnaire-current-question').innerText =
+        data.id - (stats?.id - 1) * 26;
+    card.querySelector('#questionnaire-total-questions').innerText =
+        stats.totalQuestions;
 
     card.querySelector('#questionnaire-remaining').innerText =
-        stats.remainingQuestions;
+        stats.unsentQuestions;
     card.querySelector('#questionnaire-correct').innerText =
-        stats.correctAnswers;
-    card.querySelector('#questionnaire-wrong').innerText = stats.wrongAnswers;
+        stats.totalQuestions - stats.unsolvedQuestions - stats.unsentQuestions;
+    card.querySelector('#questionnaire-wrong').innerText =
+        stats.unsolvedQuestions;
 
     card.querySelector('#question-title').innerText = data.text;
-    card.querySelector('#question-current').innerText = data.id;
-    card.querySelector('#question-category').innerText = data.categoryTitle;
-    card.querySelector('#question-next').href = window.location.href;
+    // card.querySelector('#question-current').innerText = data.id;
+    // card.querySelector('#question-category').innerText = data.categoryTitle;
+    // card.querySelector('#question-next').href = window.location.href;
 
     if (data.image != null) {
         const img = document.createElement('img');
@@ -55,6 +60,32 @@ export const renderQuestionnaireQuestion = async (data, stats) => {
             resetOptions(card);
         });
     }
+
+    let countDownDate = new Date(stats.generatedTime).getTime();
+    countDownDate = new Date(countDownDate + timeInterval);
+
+    let functionInterval;
+    const updateTimer = () => {
+        let now = new Date().getTime();
+
+        let distance = countDownDate - now;
+
+        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        card.querySelector('#questionnaire-timer').innerText =
+            minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+
+        if (distance < 0) {
+            if (functionInterval) {
+                clearInterval(functionInterval);
+            }
+            card.querySelector('#questionnaire-timer').innerText = '0:00';
+        }
+    };
+
+    updateTimer();
+    functionInterval = setInterval(updateTimer, 1000);
 
     return card;
 };

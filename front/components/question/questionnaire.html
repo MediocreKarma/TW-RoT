@@ -15,14 +15,14 @@
         <p>Răspunsuri greșite:<span id="questionnaire-wrong"></span></p>
     </div>
 </div>
-<form class="intrebare-card__body" action="/" method="get">
+<form class="intrebare-card__body" id="question-form">
     <h3 class="intrebare-card__title" id="question-title">
         <!-- Care dintre indicatoare te avertizează că urmează să intersectezi un
         drum fără prioritate? -->
     </h3>
 
     <div class="intrebare-card__contents">
-        <ul class="intrebare-card__answers-list">
+        <ul class="intrebare-card__answers-list" id="question-answers">
             <!-- <li class="intrebare-card__answer">
                 <input type="checkbox" name="option-a" id="option-a" />
                 <label for="option-a" id="option-a-label">indicatorul 1</label>
@@ -36,13 +36,17 @@
                 <label for="option-c" id="option-c-label">ambele</label>
             </li> -->
         </ul>
-        <div class="intrebare-card__image-wrapper">
+        <div class="intrebare-card__image-wrapper" id="question-image-wrapper">
             <!-- <img src="img/intrebare_image.jpg" alt="" /> -->
         </div>
     </div>
     <div class="intrebare-card__buttons">
-        <button id="question-answer-later">Răspunde mai târziu</button>
-        <button id="question-modify-answers">Modifică răspunsul</button>
+        <button type="button" id="question-answer-later">
+            Răspunde mai târziu
+        </button>
+        <button type="button" id="question-modify-answers">
+            Modifică răspunsul
+        </button>
         <button type="submit" class="button button--secondary">Răspunde</button>
     </div>
 </form>

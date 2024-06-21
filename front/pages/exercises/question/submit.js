@@ -4,6 +4,8 @@ import {
 } from '/components/question/question.js';
 import { getExerciseSolution, submitSolution } from '../requests.js';
 import { cachedUserData } from '/js/auth.js';
+import { renderError } from '/js/errors.js';
+import { showInfoModal } from '/js/modals.js';
 
 const checkAnswers = (userAnswers, correctAnswers) => {
     const userAnswerIds = userAnswers
@@ -65,12 +67,10 @@ export const onFormSubmit = async (questionData, questionCard, event) => {
             answerData = responseData;
         }
     } catch (e) {
-        // TODO: show error!!
-        console.log(e);
+        showInfoModal(renderError(e));
         setDisabled(questionCard, false);
         return;
     }
-    console.log(answerData);
 
     showCorrectAnswers(questionCard, answerData);
 };
