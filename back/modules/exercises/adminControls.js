@@ -71,7 +71,7 @@ export const fetchQuestions = withDatabaseOperation(async function (
     return new ServiceResponse(200, {total: cnt, data: result}, 'Successfully fetched questions');
 })
 
-const validateInfoQuestion = (question) => {
+const validateInfoQuestion = (question, validateText = true) => {
     if (!question) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.QUESTION_BODY_NOT_FOUND}, 'Missing question body');
     }
@@ -84,7 +84,7 @@ const validateInfoQuestion = (question) => {
     if (!question.categoryTitle && !Number.isInteger(question.categoryId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_CATEGORY_ID}, 'Invalid category id');
     }
-    if (!question.text) {
+    if (validateText && !question.text) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.MISSING_TEXT_FROM_QUESTION}, 'Missing text from question');
     }
 }
@@ -101,23 +101,7 @@ const prepImage = async (question) => {
     return {image: image, imageId: imageId};
 }
 
-export const addQuestion = withDatabaseTransaction(async function (
-    client, _req, _res, params
-) {
-    const question = params['body'];
-    const qstInfoValidation = validateInfoQuestion(question);
-    if (qstInfoValidation) {
-        return qstInfoValidation;
-    }
-    const answerInputValidation = validateAnswerSetInput(question.answers, 'correct', true);
-    if (answerInputValidation) {
-        return answerInputValidation;
-    }
-    if (question.answers.length <= 1) {
-        return new ServiceResponse(400, {errorCode: ErrorCodes.TOO_FEW_ANSWER_OPTIONS}, 'Too few answer options');
-    }
-    const {image, imageId} = await prepImage(question);
-    
+const handleCategory = async (client, question, update = false) => {
     if (question.categoryId) {
         const categoryTitles = (await client.query(
             `select title from question_category where id = $1::int`,
@@ -143,6 +127,37 @@ export const addQuestion = withDatabaseTransaction(async function (
             [question.categoryTitle]
         )).rows[0].id;
     }
+}
+
+const validateQuestion = async (client, question, update = false) => {
+    const question = params['body'];
+    const qstInfoValidation = validateInfoQuestion(question);
+    if (qstInfoValidation) {
+        return qstInfoValidation;
+    }
+    const answerInputValidation = validateAnswerSetInput(question.answers, 'correct', !update, !update);
+    if (answerInputValidation) {
+        return answerInputValidation;
+    }
+    if (question.answers.length <= 1) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.TOO_FEW_ANSWER_OPTIONS}, 'Too few answer options');
+    }
+    const categoryValidation = await handleCategory(client, question, update);
+    if (categoryValidation) {
+        return categoryValidation;
+    }
+}
+
+export const addQuestion = withDatabaseTransaction(async function (
+    client, _req, _res, params
+) {
+    const question = params['body'];
+    const validation = validateQuestion(client, question);
+    if (validation instanceof ServiceResponse) {
+        return validation;
+    }
+
+    const {image, imageId} = await prepImage(question);
 
     question.id = (await client.query(
         `insert into question (category_id, text, image_id) values ($1::int, $2::varchar, $3::text) returning id`,
@@ -172,4 +187,64 @@ export const addQuestion = withDatabaseTransaction(async function (
     }
 
     return new ServiceResponse(201, question, 'Successfully created question');
+});
+
+export const updateQuestion = withDatabaseTransaction(async function(
+    client, _req, _res, params
+) {
+    const qId = params['path']?.id;
+    if (!isStringValidInteger(qId)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_ID}, 'Invalid question id');
+    }
+    const originalRows = (await client.query(
+        `${SQL_SELECT_STATEMENT} where q.id = $1::int ${SQL_GROUPING_STATEMENT}`
+    )).rows;
+    if (originalRows.length === 0) {
+        return new ServiceResponse(404, {errorCode: ErrorCodes.QUESTION_NOT_FOUND}, 'No such question');
+    }
+    const original = originalRows[0];
+    const question = params['body'];
+    const validation = validateQuestion(client, question, true);
+    if (validation instanceof ServiceResponse) {
+        return validation;
+    }
+    let {image, imageId} = {image: question.image, imageId: question.imageId};
+    let isNew = false;
+    if (!question.imageId) {
+        ({image, imageId} = await prepImage(question));
+        isNew = true;
+    }
+    await client.query(
+        `update question 
+            set 
+                category_id = $1::int,
+                text = $2::varchar,
+                image_id = $3::varchar
+            where
+                id = $4::int`,
+        [question.categoryId, question.text, imageId, qId]
+    );
+
+    // TODO: DIFFERENT LENGTH ANSWER SETS | MIGHT JUST DO A SIMPLE LOOP
+
+    let answerData = [question.id, question.answers[0].description, question.answers[0].correct];
+    const insertValue = `, ($x::varchar, $y::boolean)`;
+    let insertStatement = '($1::int, $2::varchar, $3::boolean)';
+    for (let i = 1; i < question.answers.length; ++i) {
+        insertStatement = insertStatement + insertValue.replace('x', i * 2 + 2).replace('y', i * 2 + 3);
+        answerData.push(question.answers[i].description, question.answers[i].correct);
+    }
+
+    const answerIds = (await client.query(
+        `insert into answer (question_id, description, correct) values
+            ${insertStatement} returning id`,
+        answerData
+    )).rows;
+
+});
+
+export const deleteQuestion = withDatabaseTransaction(async function (
+    client, _req, _res, params
+) {
+    
 });

@@ -304,6 +304,25 @@ paths:
     get:
       summary: Get exercises
       description: Retrieve exercises with their details
+      parameters:
+      - name: start
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The starting index of the questions, from 0
+      - name: count
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The number of entries to return
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A search query for questions
       tags:
         - Exercises
       servers:
@@ -411,7 +430,7 @@ paths:
                         type: boolean
                         description: Correctitude of answer
       responses:
-        '200':
+        '201':
           description: Successful response
           content:
             application/json:
@@ -1745,7 +1764,7 @@ paths:
           required: false
           schema:
             type: integer
-          description: The starting index of the leaderboard, from 0
+          description: The starting index of the users, from 0
         - name: count
           in: query
           required: false

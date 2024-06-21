@@ -94,7 +94,8 @@ create table question (
     id serial primary key,
     category_id int references question_category (id) on delete cascade,
     text varchar(4096),
-    image_id varchar(256)
+    image_id varchar(256),
+    deleted boolean
 );
 
 create table answer (

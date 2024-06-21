@@ -53,7 +53,7 @@ begin
             extra_questions := extra_questions - 1;
         end if;
         
-        for question_id in select q.id from question q where q.category_id = qc_id order by random() limit category_question_count loop
+        for question_id in select q.id from question q where q.category_id = qc_id and not q.deleted order by random() limit category_question_count loop
             
             insert into generated_question (id, questionnaire_id, question_id, selected_fields, sent, solved)
                 values (genereated_qst_id, u_id, question_id, 0, false, false);

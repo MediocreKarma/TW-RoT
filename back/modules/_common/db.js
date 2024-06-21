@@ -53,7 +53,17 @@ export function withDatabaseTransaction(handler) {
         try {
             await client.query('BEGIN');
             const result = await handler(client, ...arguments);
-            await client.query('COMMIT');
+            if (result instanceof ServiceResponse) {
+                if (200 <= result.status && result.status <= 299) {
+                    await client.query('COMMIT');
+                }
+                else {
+                    await client.query('ROLLBACK');
+                }
+            }
+            else {
+                await client.query('COMMIT');
+            }
             return result;
         } catch (error) {
             await client.query('ROLLBACK');
