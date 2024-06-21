@@ -4,17 +4,28 @@ import dotenv from 'dotenv';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync } from 'fs';
-dotenv.config({path: '../../.env'});
-
-const url = new URL(process.env.AUTH_URL);
 
 const getCWD = () => {
     return dirname(fileURLToPath(import.meta.url));
 };
 
-const ROOT_CA = readFileSync(getCWD() + '/../../common/rootCA.pem');
+dotenv.config({path: getCWD() + '/../.env'});
 
-export async function getAuth(req) {
+const url = new URL(process.env.AUTH_URL);
+const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME;
+
+
+const ROOT_CA = readFileSync(getCWD() + '/rootCA.pem');
+
+export const expireAuthCookie = (res) => {
+    res.setHeader(
+        'Set-Cookie',
+        `${AUTH_COOKIE_NAME}=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=None`
+    );
+    return res;
+};
+
+export async function getAuth(req, res) {
     return new Promise((resolve, _reject) => {
         const options = {
             hostname: url.hostname,
@@ -25,13 +36,16 @@ export async function getAuth(req) {
             ca: ROOT_CA
         };
         const protocol = url.protocol.startsWith('https') ? https : http;
-        const proxyReq = protocol.request(options, (res) => {
+        const proxyReq = protocol.request(options, (proxyRes) => {
             let data = '';
             
-            res.on('data', (chunk) => {
+            proxyRes.on('data', (chunk) => {
                 data += chunk;
             });
-            res.on('end', () => {
+            proxyRes.on('end', () => {
+                if (proxyRes.statusCode >= 400 && proxyRes.statusCode <= 499) {
+                    expireAuthCookie(res);
+                }
                 resolve(JSON.parse(data ?? {}));
             });
         });

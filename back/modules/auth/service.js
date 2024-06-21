@@ -13,6 +13,7 @@ import { createTransport } from 'nodemailer';
 import { readFileSync } from 'fs';
 import { parse } from 'node:url';
 import dotenv from 'dotenv';
+import { expireAuthCookie } from '../../common/authMiddleware.js';
 dotenv.config({ path: '../../.env' });
 
 const CONFIRM_EMAIL_SUBJECT = 'Confirmare de Înregistrare pe ProRutier';
@@ -20,7 +21,7 @@ const CHANGE_CREDENTIAL_SUBJECT =
     'Solicitare de schimbare a credențialelor pe ProRutier';
 const CHANGE_EMAIL_SUBJECT = 'Confirmarea noului email de pe ProRutier';
 const oneHourInMs = 60 * 60 * 1000;
-const AUTH_COOKIE_NAME = 'TW-RoT-Auth-Cookie';
+const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME;
 const AUTH_COOKIE_PROPERTIES =
     `Max-Age=${60 * 60 * 24 * 30}; ` +
     'SameSite=None; HttpOnly; Secure; Path=/' +
@@ -558,14 +559,6 @@ const getAuthCookie = (req) => {
         );
     }
     return token;
-};
-
-const expireAuthCookie = (res) => {
-    res.setHeader(
-        'Set-Cookie',
-        `${AUTH_COOKIE_NAME}=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=None`
-    );
-    return res;
 };
 
 export const isAuthenticated = withDatabaseOperation(async function (

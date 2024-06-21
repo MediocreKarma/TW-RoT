@@ -25,6 +25,9 @@ server.setNotFoundRoute('/not-found', `${FRONT}/pages/not-found/index.html`);
 
 server.addFixedRoute('/favicon.ico', `${FRONT}/static/img/favicon.ico`);
 
+server.addFixedAdminRoute('/dashboard/users', `${FRONT}/pages/dashboard/users.html`);
+server.addFixedAdminRoute('/dashboard/exercises', `${FRONT}/pages/dashboard/exercises.html`);
+
 server.addDynamicRoute(
     '/traffic-code/chapter/:id',
     `${FRONT}/pages/traffic-code/_chapter.html`

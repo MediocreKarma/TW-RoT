@@ -1,3 +1,4 @@
+import { expireAuthCookie } from "../../common/authMiddleware.js";
 import { ErrorCodes, USER_ROLES } from "../../common/constants.js";
 import { isStringValidInteger } from "../../common/utils.js";
 import {withDatabaseOperation, withDatabaseTransaction} from "../_common/db.js";
@@ -35,23 +36,24 @@ const validateStartAndCountParams = (startStr, countStr) => {
 }
 
 export const deleteUser = withDatabaseOperation(async function(
-    client, _req, _res, params
+    client, _req, res, params
 ) {
     const userId = params['path']['id'];
-    if (!isStringValidInteger(userIdString)) {
+    if (!isStringValidInteger(userId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_USER_ID}, 'Invalid user id');
     }
     const authValidation = validateAuth(params['authorization']);
     if (authValidation instanceof ServiceResponse) {
         return authValidation;
     }
-    if (parseInt(userIdString, 10) !== params['authorization'].user.id || !isAdmin(params['authorization'])) {
+    if (parseInt(userId, 10) !== params['authorization'].user.id && !isAdmin(params['authorization'])) {
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
     await client.query(
         `delete from user_account where id = $1::int`,
         [userId]
     );
+    expireAuthCookie(res);
     return new ServiceResponse(200, null, 'Successfully deleted user account');
 });
 
@@ -162,3 +164,43 @@ export const getUsers = withDatabaseOperation(async function(
     return new ServiceResponse(200, {total: userCount, data: result}, 'Successfully retrieved user entries');
 });
 
+export const changeBanStatus = withDatabaseOperation(async function (
+    client, _req, _res, params
+) {
+    const authValidation = validateAuth(params['authorization']);
+    if (authValidation) {
+        return authValidation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+
+    const isBanned = params['body']['banned'];
+    if (isBanned === null || isBanned === undefined) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.BANNED_STATUS_NOT_IN_BODY}, 'Missing banned from body');
+    }
+    if (!(isBanned === false || isBanned === true)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_BANNED_STATUS}, 'Banned status not boolean');
+    }
+    const userId = params['path']['id'];
+    if (!isStringValidInteger(userId)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_USER_ID}, 'Invalid user id');
+    }
+
+    const updated = (await client.query(
+        `update user_account 
+            set flags = (
+                case
+                    when $1::boolean then flags | 4,
+                    else flags & ~4
+                end
+            )
+            where id = $2::int and flags & 1 = 0`,
+        [isBanned, userId]
+    )).rowCount;
+
+    if (updated === 0) {
+        return new ServiceResponse(404, {errorCode: ErrorCodes.NO_BANNABLE_USER_FOUND}, `Couldn't ban given id`);
+    }
+    return new ServiceResponse(200, null, 'Successfully banned user');
+});

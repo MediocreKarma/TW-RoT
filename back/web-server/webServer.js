@@ -6,11 +6,12 @@ import {
     sendJsonResponse,
     sendFileResponse,
 } from '../common/response.js';
-import { ErrorCodes } from '../common/constants.js';
+import { ErrorCodes, USER_ROLES } from '../common/constants.js';
 import fs from 'fs';
 import path from 'path';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'url';
+import { getAuth } from '../common/authMiddleware.js';
 
 const getCWD = () => {
     return dirname(fileURLToPath(import.meta.url));
@@ -29,6 +30,7 @@ export class WebServer extends Server {
         this.fixedRoutes = new Map();
         this.dynamicRoutes = new Map();
         this.wildcardRoutes = new Map();
+        this.fixedAdminRoutes = new Map();
     }
 
     setNotFoundRoute(route, redirect) {
@@ -39,7 +41,7 @@ export class WebServer extends Server {
         };
     }
 
-    addFixedRoute(route, redirect) {
+    validateFixedRoute(route) {
         if (route.includes('*')) {
             throw new Error(
                 'Fixed route cannot contain wildcard character (*)'
@@ -50,6 +52,15 @@ export class WebServer extends Server {
                 'Fixed route cannot contain dynamic route character (:)'
             );
         }
+    }
+
+    addFixedAdminRoute(route, redirect) {        
+        this.validateFixedRoute(route);
+        this.fixedAdminRoutes.set(route, redirect);
+    }
+
+    addFixedRoute(route, redirect) {
+        this.validateFixedRoute(route);
         this.fixedRoutes.set(route, redirect);
     }
 
@@ -85,10 +96,7 @@ export class WebServer extends Server {
                 continue;
             }
 
-            if (this.serveFile(filepath, res)) {
-                return;
-            }
-
+            this.serveFile(filepath, res);
             return;
         }
 
@@ -99,10 +107,24 @@ export class WebServer extends Server {
             }
             console.log(filepath);
 
-            if (this.serveFile(filepath, res)) {
-                return;
-            }
+            this.serveFile(filepath, res);
+            return;
+        }
 
+        for (const [route, filepath] of this.fixedAdminRoutes) {
+            if (!this.matchFixedRoute(route, pathname)) {
+                continue;
+            }
+            const auth = await getAuth(req, res);
+            console.log(auth);
+            const flags = auth?.user?.flags ?? 0;
+
+            if ((flags & USER_ROLES.ADMIN) === 0 || (flags & USER_ROLES.BANNED) === 1) {
+                this.serveFile(this.notFoundRoute.redirect, res, 404);
+                return;
+            } 
+
+            this.serveFile(filepath, res);
             return;
         }
 
@@ -121,7 +143,18 @@ export class WebServer extends Server {
     }
 
     matchFixedRoute(route, url) {
-        return url === route;
+        if (route === url) {
+            return url;
+        }
+        const withHtml = url + '.html';
+        if (route === withHtml) {
+            return withHtml;
+        }
+        const withIndex = url + '/index.html';
+        if (route === withIndex) {
+            return withIndex;
+        }
+        return '';
     }
 
     matchDynamicRoute(route, url) {
@@ -161,14 +194,6 @@ export class WebServer extends Server {
                 return false;
             }
         }
-    }
-
-    getIdFromAuthorization(req) {
-        const authHeader = req.headers['authorization'];
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return null;
-        }
-        return authHeader.split(' ')[1];
     }
 
     getContentType(filename) {

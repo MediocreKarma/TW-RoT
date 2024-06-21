@@ -4,7 +4,7 @@ import {parse} from "node:url";
 import {sendEmptyResponse, sendJsonResponse} from "../../common/response.js";
 import {ErrorCodes} from "../../common/constants.js";
 import { withResponse } from './serviceResponse.js';
-import {getAuth} from './authMiddleware.js';
+import {getAuth} from '../../common/authMiddleware.js';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
@@ -53,6 +53,10 @@ export class AppRouter extends Server {
 
     get(route, handler) {
         return this.registerRoute(Methods.GET, route, handler);
+    }
+
+    patch(route, handler) {
+        return this.registerRoute(Methods.PATCH, route, handler);
     }
 
     post(route, handler) {
@@ -113,12 +117,11 @@ export class AppRouter extends Server {
             if (pathParams === null) {
                 continue;
             }
-
             const params = {
                 query: query,
                 body: body,
                 path: pathParams,
-                authorization: this.auth ? await getAuth(req) : {}
+                authorization: this.auth ? await getAuth(req, res) : {}
             };
             handler(req, res, params);
             return;
