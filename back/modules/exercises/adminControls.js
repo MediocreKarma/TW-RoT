@@ -1,9 +1,12 @@
 import { ErrorCodes } from "../../common/constants.js";
 import { isAdmin, isStringValidInteger } from "../../common/utils.js";
-import { withDatabaseOperation } from "../_common/db.js"
+import { withDatabaseOperation, withDatabaseTransaction } from "../_common/db.js"
 import { ServiceResponse } from "../_common/serviceResponse.js";
 import { validateAuth, validateStartAndCountParams } from "../_common/utils.js";
+import { validateAnswerSetInput } from "./questionnaire.js";
 import { SQL_SELECT_STATEMENT, SQL_GROUPING_STATEMENT, adjustOutputAnswerSet, addImageToQuestion } from "./service.js";
+import Jimp from "jimp";
+import { v4 as uuid4 } from 'uuid';
 
 const SQL_WHERE_FETCH_STATEMENT = 
     `WHERE 
@@ -68,8 +71,105 @@ export const fetchQuestions = withDatabaseOperation(async function (
     return new ServiceResponse(200, {total: cnt, data: result}, 'Successfully fetched questions');
 })
 
-export const addQuestion = withDatabaseOperation(async function (
+const validateInfoQuestion = (question) => {
+    if (!question) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.QUESTION_BODY_NOT_FOUND}, 'Missing question body');
+    }
+    if (!question.categoryId && !question.categoryTitle) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.MISSING_CATEGORY_FROM_QUESTION}, 'Missing Category Id|Title from question');
+    }
+    if (question.categoryId && question.categoryTitle) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.CATEGORY_ID_AND_CATEGORY_TITLE_GIVEN}, `Category id and title supplied, can't choose one`);
+    }
+    if (!question.categoryTitle && !Number.isInteger(question.categoryId)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_CATEGORY_ID}, 'Invalid category id');
+    }
+    if (!question.text) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.MISSING_TEXT_FROM_QUESTION}, 'Missing text from question');
+    }
+}
+
+const prepImage = async (question) => {
+    if (!question.image) {
+        return {image: null, imageId: null};
+    }
+    const buffer = Buffer.from(question.image.replace(/^data:image\/\w+;base64,/, ''), 'base64')
+    const image = await Jimp.read(buffer);
+    const imageId = uuid4();
+    question.imageId = imageId;
+    addImageToQuestion(question);
+    return {image: image, imageId: imageId};
+}
+
+export const addQuestion = withDatabaseTransaction(async function (
     client, _req, _res, params
 ) {
+    const question = params['body'];
+    const qstInfoValidation = validateInfoQuestion(question);
+    if (qstInfoValidation) {
+        return qstInfoValidation;
+    }
+    const answerInputValidation = validateAnswerSetInput(question.answers, 'correct', true);
+    if (answerInputValidation) {
+        return answerInputValidation;
+    }
+    if (question.answers.length <= 1) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.TOO_FEW_ANSWER_OPTIONS}, 'Too few answer options');
+    }
+    const {image, imageId} = await prepImage(question);
+    
+    if (question.categoryId) {
+        const categoryTitles = (await client.query(
+            `select title from question_category where id = $1::int`,
+            [question.categoryId]
+        )).rows;
 
+        if (categoryTitles.length === 0) {
+            return new ServiceResponse(404, {errorCode: ErrorCodes.QUESTION_CATEGORY_NOT_FOUND}, 'Question category not found');
+        }
+        question.categoryTitle = categoryTitles[0].title;
+    }
+    else {
+        const existsCategory = parseInt(await client.query(
+            `select count(' ') from question_category where title = $1::varchar`,
+            [question.categoryTitle]
+        ));
+        if (existsCategory) {
+            return new ServiceResponse(404, {errorCode: ErrorCodes.CATEGORY_ALREADY_EXISTS}, 'Question category already exists');
+        }
+
+        question.categoryId = (await client.query(
+            `insert into question_category (title) values ($1::varchar) returning id`,
+            [question.categoryTitle]
+        )).rows[0].id;
+    }
+
+    question.id = (await client.query(
+        `insert into question (category_id, text, image_id) values ($1::int, $2::varchar, $3::text) returning id`,
+        [question.categoryId, question.text, imageId]
+    )).rows[0].id;
+
+    let answerData = [question.id, question.answers[0].description, question.answers[0].correct];
+    const insertValue = `, ($1::int, $x::varchar, $y::boolean)`;
+    let insertStatement = '($1::int, $2::varchar, $3::boolean)';
+    for (let i = 1; i < question.answers.length; ++i) {
+        insertStatement = insertStatement + insertValue.replace('x', i * 2 + 2).replace('y', i * 2 + 3);
+        answerData.push(question.answers[i].description, question.answers[i].correct);
+    }
+
+    const answerIds = (await client.query(
+        `insert into answer (question_id, description, correct) values
+            ${insertStatement} returning id`,
+        answerData
+    )).rows;
+
+    for (let i = 0; i < question.answers.length; ++i) {
+        question.answers[i].id = answerIds[i].id;
+    }
+
+    if (imageId) {
+        await image.writeAsync(`./images/${imageId}.png`);
+    }
+
+    return new ServiceResponse(201, question, 'Successfully created question');
 });

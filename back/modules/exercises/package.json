@@ -14,6 +14,8 @@
     "private": true,
     "dependencies": {
         "dotenv": "^16.4.5",
-        "pg": "^8.11.5"
+        "jimp": "^0.22.12",
+        "pg": "^8.11.5",
+        "uuid": "^10.0.0"
     }
 }

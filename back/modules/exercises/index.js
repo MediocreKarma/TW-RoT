@@ -17,7 +17,7 @@ import {
     submitQuestionnaireSolution 
 } from './questionnaire.js';
 import {getImage} from '../_common/getLocalImage.js'
-import { fetchQuestions } from './adminControls.js';
+import { addQuestion, fetchQuestions } from './adminControls.js';
 
 const app = new AppRouter(Authentication.REQUIRE);
 
@@ -37,5 +37,6 @@ app.post('/api/v1/users/:id/questionnaire/questions/:qId/solution', submitQuesti
 app.put('/api/v1/users/:id/questionnaire/submitted', finishQuestionnaire);
 
 app.get('/api/v1/exercises', fetchQuestions);
+app.post('/api/v1/exercises', addQuestion);
 
 app.listen(process.env.EXERCISES_PORT);

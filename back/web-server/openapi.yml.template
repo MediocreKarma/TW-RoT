@@ -365,6 +365,102 @@ paths:
         '500':
           description: Internal Server Error
 
+    post:
+      summary: Submit new exercises
+      description: Retrieve exercises with their details
+      tags:
+        - Exercises
+      servers:
+        - url: https://localhost:{EXERCISES_PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryId:
+                  type: integer
+                  description: Optional, exclusive with title
+                  nullable: true
+                  example: 1
+                categoryTitle:
+                  type: string
+                  description: Optional, exclusive with id, used for creating new categories
+                  nullable: true
+                  example: "mutually exclusive with categoryId, include only one"
+                text:
+                  type: string
+                  description: Text of the exercise
+                image:
+                  type: string
+                  nullable: true
+                  format: uri
+                  description: Optional image in base64 encoding
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      description:
+                        type: string
+                        description: Description of the answer
+                      correct:
+                        type: boolean
+                        description: Correctitude of answer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Exercise ID
+                  categoryId:
+                    type: integer
+                    description: Category ID of the exercise
+                  categoryTitle:
+                    type: string
+                    description: Title of the category
+                  text:
+                    type: string
+                    description: Text of the exercise
+                  imageId:
+                    type: string
+                    description: ID of the image associated with the exercise
+                  image:
+                    type: string
+                    format: uri
+                    description: URL of the image associated with the exercise
+                  answers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Answer ID
+                        description:
+                          type: string
+                          description: Description of the answer
+                        correct:
+                          type: boolean
+                          description: Correctitude of answer
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+
+
   /exercises/categories:
     get:
       summary: Get all exercise categories
