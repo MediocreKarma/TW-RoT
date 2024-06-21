@@ -6,6 +6,7 @@ import {AppRouter, Authentication} from "../_common/appRouter.js";
 import {
     getAllExerciseCategories,
     getIncorrectlySolvedQuestion, getSolution,
+    getUnsolvedQuestion,
     getUnsolvedQuestionByCategory
 } from "./service.js";
 import { 
@@ -22,6 +23,7 @@ const app = new AppRouter(Authentication.REQUIRE);
 app.get('/api/v1/images/:name', getImage);
 
 app.get('/api/v1/exercises/categories', getAllExerciseCategories);
+app.get('/api/v1/exercises/unsolved', getUnsolvedQuestion);
 app.get('/api/v1/exercises/unsolved/:id', getUnsolvedQuestionByCategory);
 app.get('/api/v1/exercises/incorrectly-solved', getIncorrectlySolvedQuestion);
 app.get('/api/v1/exercises/:id/solution', getSolution);

@@ -380,6 +380,50 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
+  /exercises/unsolved:
+    get:
+      summary: Get any unsolved question
+      tags:
+        - Exercises
+      servers:
+        - url: https://localhost:12737/api/v1
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  categoryId:
+                    type: integer
+                  categoryTitle:
+                    type: string
+                  text:
+                    type: string
+                  imageId:
+                    type: string
+                  image:
+                    type: string
+                  answers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        description:
+                          type: string
+        '400':
+          description: Bad request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
   /exercises/incorrectly-solved:
     get:
       summary: Get incorrectly solved question

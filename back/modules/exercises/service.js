@@ -82,6 +82,46 @@ export const adjustOutputAnswerSet = (answers) => {
     return answers;
 }
 
+export const getUnsolvedQuestion = withDatabaseOperation(async function (
+    client, _req, _res, params
+) { 
+    const userId = params['authorization']?.user.id ?? 0;
+    const qData = (await client.query(
+        `${SQL_SELECT_STATEMENT}
+            where 
+                q.id = (
+                    select 
+                        q.id
+                    from 
+                        question q
+                        left join answered_question aq on q.id = aq.question_id and aq.user_id = $1::int
+                    where
+                        (aq.id is NULL or not aq.answered_correctly)
+                    order by 
+                        random()
+                    limit 
+                        1
+                )
+            ${SQL_GROUPING_STATEMENT}`,
+        [userId]
+    )).rows;
+
+    if (qData.length === 0) {
+        return new ServiceResponse(
+            404,
+            {errorCode: ErrorCodes.NO_MORE_QUESTIONS_FOR_CATEGORY},
+            'No unsolved question could be retrieved'
+        );
+    }
+    addImageToQuestion(qData[0]);
+    adjustOutputAnswerSet(qData[0].answers);
+    return new ServiceResponse(
+        200,
+        qData[0],
+        'Successfully retrieved random unsolved question'
+    );
+})
+
 export const getUnsolvedQuestionByCategory = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
