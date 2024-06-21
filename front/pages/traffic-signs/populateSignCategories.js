@@ -1,5 +1,5 @@
 import { fetchCategories } from './requests.js';
-import { renderLoading } from '/js/render.js';
+import { showLoading } from '/js/render.js';
 import { renderError } from '/js/errors.js';
 import { showInfoModal } from '/js/modals.js';
 
@@ -33,9 +33,9 @@ const renderCategory = (categoryData) => {
     return anchor;
 };
 
-const renderCategories = async () => {
+const showCategories = async () => {
     const container = document.getElementById('category-container');
-    renderLoading(container);
+    showLoading(container);
     try {
         const categoriesData = await fetchCategories();
         container.innerHTML = '';
@@ -50,4 +50,4 @@ const renderCategories = async () => {
     }
 };
 
-window.addEventListener('load', renderCategories);
+window.addEventListener('load', showCategories);

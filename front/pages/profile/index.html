@@ -31,7 +31,7 @@
                             <p>Nume de utilizator</p>
                         </div>
                         <div class="profile-field__content">
-                            <p id="username">Se încarcă...</p>
+                            <p id="username"></p>
                             <button
                                 type="button"
                                 class="button"
@@ -63,33 +63,37 @@
                     </div>
                     <div class="profile-card__buttons">
                         <a class="button" href="/logout">Delogare</a>
-                        <a class="button" href="/login">Șterge contul</a>
+                        <button class="button" id="delete-account">
+                            Șterge contul
+                        </button>
                     </div>
                 </div>
                 <div id="confirmation-container" class="confirmation-container">
                     <p>Link-ul a fost trimis! Verifică adresa de email.</p>
                 </div>
-                <div class="profile-card">
+                <div class="profile-card" id="progress">
                     <h2 class="profile-card__title">Progres</h2>
                     <div class="profile-card__row">
                         <p>% întrebări corecte</p>
-                        <p><span>25.33</span>%</p>
+                        <p><span id="progress-correct-percentage"></span>%</p>
                     </div>
                     <div class="profile-card__row">
                         <p>Nr. răspunsuri corecte</p>
-                        <p>341</p>
+                        <p id="progress-correct-questions"></p>
                     </div>
                     <div class="profile-card__row">
                         <p>Nr. răspunsuri greșite</p>
-                        <p>25</p>
+                        <p id="progress-wrong-questions"></p>
                     </div>
                     <div class="profile-card__row">
                         <p>Nr. chestionare admise</p>
-                        <p>1</p>
+                        <p id="progress-passed-questionnaires"></p>
                     </div>
 
                     <div class="profile-card__buttons">
-                        <button>Resetează progres</button>
+                        <button id="reset-progress" class="button">
+                            Resetează progres
+                        </button>
                     </div>
                 </div>
             </div>

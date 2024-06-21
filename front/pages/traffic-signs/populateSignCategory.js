@@ -1,6 +1,6 @@
 import { fetchCategory } from './requests.js';
 import { showInfoModal } from '/js/modals.js';
-import { renderLoading } from '/js/render.js';
+import { showLoading } from '/js/render.js';
 import { renderError } from '/js/errors.js';
 
 function renderCard(cardData) {
@@ -37,7 +37,7 @@ function renderCard(cardData) {
     return cardDiv;
 }
 
-const renderCards = (targetNode, cardsData) => {
+const showCards = (targetNode, cardsData) => {
     targetNode.innerHTML = '';
 
     cardsData.forEach((cardData) => {
@@ -45,18 +45,18 @@ const renderCards = (targetNode, cardsData) => {
     });
 };
 
-const renderCategory = async () => {
+const showCategory = async () => {
     const id = document.location.pathname.replace(/\/+$/, '').split('/').pop();
 
     const container = document.getElementById('category-container');
-    renderLoading(container);
+    showLoading(container);
 
     const title = document.getElementById('sign-category-title');
-    renderLoading(title);
+    showLoading(title);
 
     try {
         const categoryData = await fetchCategory(id);
-        renderCards(container, categoryData.signs);
+        showCards(container, categoryData.signs);
         title.innerText = categoryData.category.title;
     } catch (e) {
         showInfoModal(renderError(e), () => {
@@ -65,4 +65,4 @@ const renderCategory = async () => {
     }
 };
 
-window.addEventListener('load', renderCategory);
+window.addEventListener('load', showCategory);

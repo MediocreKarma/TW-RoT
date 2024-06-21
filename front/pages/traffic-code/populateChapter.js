@@ -1,18 +1,17 @@
 import { fetchChapter, fetchChapters } from './requests.js';
-import { renderLoading } from '/js/render.js';
+import { showLoading } from '/js/render.js';
 import { renderError } from '/js/errors.js';
 import { showInfoModal } from '/js/modals.js';
 
-const renderChapter = async (chapterId) => {
+const showChapter = async (chapterId) => {
     const titleContainer = document.getElementById('chapter-title');
     const contentContainer = document.getElementById('chapter-content');
 
-    renderLoading(titleContainer);
-    renderLoading(contentContainer);
+    showLoading(titleContainer);
+    showLoading(contentContainer);
 
     try {
         const data = await fetchChapter(chapterId);
-        console.log(data);
         titleContainer.innerText = `${
             data.isaddendum ? 'Anexa ' : 'Capitolul '
         } ${data.number}: ${data.title}`;
@@ -24,12 +23,12 @@ const renderChapter = async (chapterId) => {
     }
 };
 
-const renderChapterSidebar = async (currentId) => {
+const showChapterSidebar = async (currentId) => {
     const sidebar = document.getElementById('chapter-sidebar');
     if (!sidebar) {
         return;
     }
-    renderLoading(sidebar);
+    showLoading(sidebar);
 
     let data;
     try {
@@ -65,6 +64,6 @@ window.addEventListener('load', async () => {
         .split('/')
         .pop();
 
-    await renderChapter(chapterId);
-    await renderChapterSidebar(parseInt(chapterId));
+    await showChapter(chapterId);
+    await showChapterSidebar(parseInt(chapterId));
 });

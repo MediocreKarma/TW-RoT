@@ -3,12 +3,12 @@ import { changeUsername } from '../requests.js';
 import { getToken, verifyToken } from '../utils.js';
 import { showInfoModal } from '/js/modals.js';
 import { renderMessage } from '/js/render.js';
+import { userData } from '/js/auth.js';
 
 const submitData = async (data) => {
     const token = getToken();
     await changeUsername(token, data.username);
-
-    // if successful, then data.username should reflect in localStorage
+    await userData(); // force-update user data
 
     showInfoModal(
         renderMessage(

@@ -4,7 +4,7 @@ export const removeFormError = (form) => {
     }
 };
 
-export const renderFormError = (form, message) => {
+export const showFormError = (form, message) => {
     if (form.querySelector('.form__error')) {
         let errorDiv = form.querySelector('.form__error');
         errorDiv.innerText = message;

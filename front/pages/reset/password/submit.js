@@ -1,12 +1,15 @@
+import { userData } from '/js/auth.js';
 import { addFormSubmit } from '../forms.js';
 import { changePassword } from '../requests.js';
 import { getToken, verifyToken } from '../utils.js';
 import { showInfoModal } from '/js/modals.js';
 import { renderMessage } from '/js/render.js';
+import { userData } from '/js/auth.js';
 
 const submitData = async (data) => {
     const token = getToken();
     await changePassword(token, data.password);
+    await userData(); // force-update user data
     showInfoModal(
         renderMessage(
             'Schimbarea a avut loc cu succes. Veți fi redirectat la pagina principală.'

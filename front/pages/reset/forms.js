@@ -1,5 +1,5 @@
 import { validateForm } from '/js/form/validate.js';
-import { renderFormError, removeFormError } from '/js/form/errors.js';
+import { showFormError, removeFormError } from '/js/form/errors.js';
 import { renderError } from '/js/errors.js';
 import { showInfoModal } from '/js/modals.js';
 import { enableFormSubmit, disableFormSubmit } from '/js/form/utils.js';
@@ -13,7 +13,7 @@ export const addFormSubmit = async (formId, submitCallback, validators) => {
         const validation = validateForm(form, validators);
 
         if (!validation.valid) {
-            renderFormError(form, validation.message);
+            showFormError(form, validation.message);
             return;
         }
 

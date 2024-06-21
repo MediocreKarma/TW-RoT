@@ -1,4 +1,4 @@
-export const renderLoading = (node) => {
+export const showLoading = (node) => {
     node.innerText = 'Se încarcă...';
 };
 

@@ -1,9 +1,9 @@
-import { userData } from '/js/auth.js';
+import { cachedUserData } from '/js/auth.js';
 
 export default function updateButtons() {
     let header = document.getElementById('header');
 
-    const user = userData();
+    const user = cachedUserData();
     if (!user) {
         return;
     }

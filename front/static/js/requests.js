@@ -30,7 +30,6 @@ export const get = async (url, options = {}) => {
 };
 
 export const post = async (url, data, options = {}) => {
-    console.log(data);
     return await wrappedFetch(url, {
         method: 'POST',
         credentials: 'include',

@@ -2,7 +2,7 @@ import { fetchChapters } from './requests.js';
 import { renderError } from '/js/errors.js';
 import { showInfoModal } from '/js/modals.js';
 
-const renderChapters = (chapterContainer, chapters) => {
+const showChapters = (chapterContainer, chapters) => {
     if (!Array.isArray(chapters)) {
         return;
     }
@@ -44,7 +44,7 @@ window.addEventListener('load', async () => {
 
     try {
         const chapters = await fetchChapters();
-        renderChapters(chapterContainer, chapters);
+        showChapters(chapterContainer, chapters);
     } catch (e) {
         showInfoModal(renderError(e), () => {
             window.location.href = '/';
