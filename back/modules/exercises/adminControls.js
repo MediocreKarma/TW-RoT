@@ -130,7 +130,6 @@ const handleCategory = async (client, question, update = false) => {
 }
 
 const validateQuestion = async (client, question, update = false) => {
-    const question = params['body'];
     const qstInfoValidation = validateInfoQuestion(question);
     if (qstInfoValidation) {
         return qstInfoValidation;
@@ -246,5 +245,5 @@ export const updateQuestion = withDatabaseTransaction(async function(
 export const deleteQuestion = withDatabaseTransaction(async function (
     client, _req, _res, params
 ) {
-    
+
 });

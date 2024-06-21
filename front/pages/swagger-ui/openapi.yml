@@ -422,7 +422,7 @@ paths:
                         type: boolean
                         description: Correctitude of answer
       responses:
-        '200':
+        '201':
           description: Successful response
           content:
             application/json:
