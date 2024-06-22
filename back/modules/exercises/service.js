@@ -73,14 +73,11 @@ export const addImageToQuestion = (question) => {
 }
 
 export const adjustOutputAnswerSet = (answers) => {
-    answers.sort((a, b) => a.id - b.id);
-    let i = 1;
+    let minAnswerId = Number.MAX_SAFE_INTEGER;
     for (const answer of answers) {
-        answer.id = i++;
+        minAnswerId = Math.min(minAnswerId, answer['id']);
     }
-    answers = answers.map(val => ({val, sort: Math.random()}))
-                .sort((a, b) => a.sort - b.sort)
-                .map(({val}) => val);
+    answers.forEach((ans) => ans['id'] -= (minAnswerId - 1));
     return answers;
 }
 

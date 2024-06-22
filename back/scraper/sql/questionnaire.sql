@@ -209,13 +209,16 @@ DECLARE
     correctness bool := false;
     q_id int;
     snt bool;
+    rgstr bool;
 BEGIN
     select sent, question_id
         into snt, q_id
         from generated_question
         where id = gq_id; 
+
+    select registered into rgstr from generated_questionnaire where id = qstr_id;
     
-    if snt THEN
+    if snt or rgstr THEN
         return;
     end if;
 

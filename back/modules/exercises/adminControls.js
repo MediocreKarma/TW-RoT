@@ -224,13 +224,13 @@ export const updateQuestion = withDatabaseTransaction(async function(
         [question.categoryId, question.text, imageId, qId]
     );
 
-    // TODO: DIFFERENT LENGTH ANSWER SETS | MIGHT JUST DO A SIMPLE LOOP
-
-    question.answers.sort((a, b) => a.id - b.id);
-    original.answers.sort((a, b) => a.id - b.id);
-
-    
-
+    await client.query(
+        `delete from answered_question where question_id = $1::int`,
+        [qId]
+    );
+    await client.query(
+        `delete from answer where answers`
+    )
 });
 
 export const deleteQuestion = withDatabaseTransaction(async function (
