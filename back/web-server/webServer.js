@@ -30,7 +30,6 @@ export class WebServer extends Server {
         this.fixedRoutes = new Map();
         this.dynamicRoutes = new Map();
         this.wildcardRoutes = new Map();
-        this.fixedAuthorizedRoutes = new Map();
         this.fixedAdminRoutes = new Map();
     }
 
@@ -58,11 +57,6 @@ export class WebServer extends Server {
     addFixedAdminRoute(route, redirect) {        
         this.validateFixedRoute(route);
         this.fixedAdminRoutes.set(route, redirect);
-    }
-
-    addFixedAuthorizedRoute(route, redirect) {
-        this.validateFixedRoute(route);
-        this.fixedAuthorizedRoutes.set(route, redirect);
     }
 
     addFixedRoute(route, redirect) {
@@ -112,19 +106,6 @@ export class WebServer extends Server {
                 continue;
             }
 
-            this.serveFile(filepath, res);
-            return;
-        }
-
-        for (const [route, filepath] of this.fixedAuthorizedRoutes) {
-            if (!this.matchFixedRoute(route, pathname)) {
-                continue;
-            }
-            const auth = await getAuth(req, res);
-            if (!auth.user) {
-                this.serveFile(this.notFoundRoute.redirect, res, 404);
-                return;
-            }
             this.serveFile(filepath, res);
             return;
         }

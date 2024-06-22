@@ -25,8 +25,6 @@ server.setNotFoundRoute('/not-found', `${FRONT}/pages/not-found/index.html`);
 
 server.addFixedRoute('/favicon.ico', `${FRONT}/static/img/favicon.ico`);
 
-server.addFixedAuthorizedRoute(`/profile/index.html`, `${FRONT}/pages/profile/index.html`);
-
 server.addFixedAdminRoute(
     '/dashboard/users.html',
     `${FRONT}/pages/dashboard/users.html`
@@ -36,12 +34,12 @@ server.addFixedAdminRoute(
     `${FRONT}/pages/dashboard/exercises.html`
 );
 
-server.addDynamicRoute(
+server.addFixedRoute(
     '/exercises/incorrectly-solved',
     `${FRONT}/pages/exercises/question/_incorrectly-solved.html`
 );
 
-server.addDynamicRoute(
+server.addFixedRoute(
     '/exercises/unsolved',
     `${FRONT}/pages/exercises/question/_unsolved.html`
 );
