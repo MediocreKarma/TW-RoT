@@ -1,0 +1,7 @@
+@use 'utils';
+@use 'vars';
+@use 'color-themes';
+
+.question-edit {
+    @include utils.main-page-container();
+}
