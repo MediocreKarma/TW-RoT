@@ -1,13 +1,14 @@
 import {Server} from 'https';
 import {zip} from '../../common/utils.js';
 import {parse} from "node:url";
-import {sendEmptyResponse, sendJsonResponse} from "../../common/response.js";
+import {sendEmptyResponse, sendJsonResponse, serveDocFile} from "../../common/response.js";
 import {ErrorCodes} from "../../common/constants.js";
 import { withResponse } from './serviceResponse.js';
 import {getAuth} from '../../common/authMiddleware.js';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { load, dump } from 'js-yaml';
 
 export const Methods = Object.freeze({
     GET:    'GET',
@@ -34,7 +35,7 @@ export class AppRouter extends Server {
         [Methods.PATCH,  new Map()],
     ]);
 
-    constructor(auth = Authentication.IGNORE) {
+    constructor(name, port, auth = Authentication.IGNORE) {
         super(
             {
                 key: fs.readFileSync(getCWD() + '/../../common/localhost-key.pem'), 
@@ -42,8 +43,31 @@ export class AppRouter extends Server {
             }, 
             (req, res) => this.requestHandler(req, res)
         );
+        this.port = port;
         this.middlewares = [];
         this.auth = auth;
+        this.hasDocs = false;
+        this.name = name;
+
+        if (fs.existsSync('./swagger-ui')) {
+            try {
+                const openapiSpec = load(fs.readFileSync(`./swagger-ui/openapi.yml.template`, 'utf8'));
+                const openapiSpecStr = dump(openapiSpec).replace(/{NAME}/g, name).replace(/{PORT}/g, port);
+                fs.writeFileSync(`./swagger-ui/openapi.yml`, openapiSpecStr);
+                fs.copyFileSync(`../_common/swagger-ui-templates/index.html`, `./swagger-ui/index.html`);
+    
+                const swaggerInitializerString = fs.readFileSync(`../_common/swagger-ui-templates/swagger-initializer.js.template`, 'utf-8')
+                                                .replace(/{PORT}/g, port);
+    
+                fs.writeFileSync(`./swagger-ui/swagger-initializer.js`, swaggerInitializerString);
+    
+                console.log(`Built docs for ${name}`);
+                this.hasDocs = true;
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
     }
 
     registerMiddleware(handler) {
@@ -125,6 +149,10 @@ export class AppRouter extends Server {
             handler(req, res, params);
             return;
         }
+        
+        if (serveDocFile(req, res)) {
+            return;
+        }
 
         sendJsonResponse(res, 404, {
             errorCode: ErrorCodes.ROUTE_NOT_FOUND,
@@ -151,7 +179,7 @@ export class AppRouter extends Server {
         return params;
     }
 
-    getRequestBody(req){
+    getRequestBody(req) {
         return new Promise((resolve, reject) => {
             let body = '';
             req.on('data', (chunk) => {
@@ -172,5 +200,10 @@ export class AppRouter extends Server {
                 reject(err);
             });
         });
+    }
+
+    start() {
+        console.log(`starting ${this.name} on ${this.port}`);
+        super.listen(this.port);
     }
 }

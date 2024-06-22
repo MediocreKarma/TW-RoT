@@ -16,7 +16,7 @@ const serverProcesses = [];
 
 // Function to start a server process
 function startServer(server) {
-    const serverProcess = spawn('supervisor', ['index.js'], {
+    const serverProcess = spawn('supervisor', ['-i', './swagger-ui', 'index.js'], {
         stdio: 'inherit',
         shell: true,
         cwd: server,

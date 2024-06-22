@@ -1,0 +1,246 @@
+openapi: 3.0.0
+info:
+  title: "{NAME} API"
+  description: API for managing chapters, sign categories, and exercise categories
+  version: 1.0.0
+servers:
+  - url: https://localhost:{PORT}/api/v1
+    description: "{NAME} server"
+paths:
+  /sign-categories:
+    get:
+      summary: Get all sign categories
+      operationId: getAllSignCategories
+      tags:
+        - Sign Categories
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      responses:
+        '200':
+          description: A list of sign categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    imageId: 
+                      type: string
+                    image:
+                      type: string
+
+  /sign-categories/{id}:
+    get:
+      summary: Get sign category
+      operationId: getSignCategory
+      tags:
+        - Sign Categories
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Sign category details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      imageId: 
+                          type: string
+                      image:
+                        type: string
+                      design:
+                        type: string
+                      purpose:
+                        type: string
+                      suggestion:
+                        type: string
+                  signs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        description:
+                          type: string
+                        imageId:
+                          type: string
+                        image:
+                          type: string
+
+  /images/{name}:
+    get:
+      summary: Get an image
+      description: Retrieve an image by its name.
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      tags:
+        - Sign Categories
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: The name of the image to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response with the image
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Image not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Image not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /comparison-categories:
+    get:
+      summary: Returns a list of comparison categories
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      tags:
+        - Comparison
+      responses:
+        '200':
+          description: A list of comparison categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+        '500':
+          description: Internal Server Error
+
+  /comparison-categories/{ccId}/comparisons:
+    get:
+      summary: Returns a list of comparisons for a category
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      tags:
+        - Comparison
+      parameters:
+        - name: ccId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the comparison category
+      responses:
+        '200':
+          description: A list of comparisons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+        '400':
+          description: Invalid ccId format
+        '404':
+          description: ccId not found
+        '500':
+          description: Internal Server Error
+
+  /comparison-categories/{ccId}/comparisons/{cId}:
+    get:
+      summary: Returns details of a specific comparison
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      tags:
+        - Comparison
+      parameters:
+        - name: ccId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the comparison category
+        - name: cId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the comparison
+      responses:
+        '200':
+          description: Details of the comparison
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    country:
+                      type: string
+                    imageId:
+                      type: string
+                    image:
+                      type: string
+        '400':
+          description: Invalid cId format
+        '404':
+          description: Comparison not found
+        '500':
+          description: Internal Server Error
+
+components:
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: TW-RoT-Auth-Cookie

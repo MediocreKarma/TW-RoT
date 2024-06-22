@@ -5,7 +5,7 @@ dotenv.config({path: '../../.env'});
 import {AppRouter, Authentication} from "../_common/appRouter.js"
 import { changeBanStatus, deleteUser, getLeaderboard, getUsers, resetProgress, serveRSS } from './service.js';
 
-const app = new AppRouter(Authentication.REQUIRE);
+const app = new AppRouter('RoT Users', process.env.USERS_PORT, Authentication.REQUIRE);
 
 app.get('/api/v1/leaderboard/rss', serveRSS)
 
@@ -16,4 +16,4 @@ app.get('/api/v1/leaderboard', getLeaderboard);
 app.get('/api/v1/users', getUsers);
 app.patch('/api/v1/users/:id/banned', changeBanStatus);
 
-app.listen(process.env.USERS_PORT);
+app.start();

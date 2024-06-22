@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 export function setCorsHeaders(response) {
     response.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
     response.setHeader('Access-Control-Allow-Methods', 'GET, PATCH, POST, PUT, DELETE, OPTIONS'); // Specify allowed methods
@@ -32,4 +34,37 @@ export function sendFileResponse(response, status, file, contentType = '', messa
         response.writeHead(status, message)
     }
     response.end(file);
+}
+
+function getDocFileAndContentType(req, res) {
+    const extension = req.url.split('.').pop();
+    let contentType = 'text/html';
+    switch (extension) {
+        case 'css': contentType = 'text/css'; break;
+        case 'js': contentType = 'application/javascript'; break;
+        case 'json': contentType = 'application/json'; break;
+        case 'yml': contentType = 'application/x-yaml'; break;
+        case 'html': contentType = 'text/html'; break;
+        throw 'Unknown file extension'
+    }
+    
+    return [req.url.substr(1), contentType];
+}
+
+export function serveDocFile(req, res) {
+    try {
+        let [filePath, contentType] = getDocFileAndContentType(req, res);
+        if (filePath.startsWith('_common')) {
+            filePath = './../' + filePath;
+        }
+        if (!filePath.includes('swagger-ui')) {
+            return false;
+        }
+        const file = fs.readFileSync(filePath, 'utf8');
+        sendFileResponse(res, 200, file, contentType);
+        return true;
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
 }

@@ -5,7 +5,7 @@ import fs from 'fs';
 import {AppRouter} from "../_common/appRouter.js";
 import { isAuthenticated, login, logout, register, requestCredentialChange, verify, verifyChangeRequest } from './service.js';
 
-const app = new AppRouter();
+const app = new AppRouter('RoT Auth', process.env.AUTH_PORT);
 
 app.post('/api/v1/auth/register', register);
 app.post('/api/v1/auth/login', login);
@@ -17,4 +17,4 @@ app.post('/api/v1/auth/change-username', verifyChangeRequest);
 app.post('/api/v1/auth/authenticated', isAuthenticated);
 app.post('/api/v1/auth/logout', logout);
 
-app.listen(process.env.AUTH_PORT);
+app.start();

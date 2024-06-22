@@ -1,0 +1,504 @@
+openapi: 3.0.0
+info:
+  title: "{NAME} API"
+  description: API for managing chapters, sign categories, and exercise categories
+  version: 1.0.0
+servers:
+  - url: https://localhost:{PORT}/api/v1
+    description: "{NAME} server"
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      description: Register a new user with a username, password, and email.
+      tags: ['Auth']
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the new user
+                  example: john_doe
+                password:
+                  type: string
+                  description: The password for the new user
+                  example: your_password
+                email:
+                  type: string
+                  format: email
+                  description: The email address of the new user
+                  example: johndoe@example.com
+              required:
+                - username
+                - password
+                - email
+      responses:
+        '204':
+          description: User registered successfully
+        '400':
+          description: Bad Request
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
+
+  /auth/login:
+    post:
+      summary: Login a user
+      tags:
+        - Auth
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                identifier:
+                  type: string
+                  description: The email/username of the user
+                  example: user@example.com
+                password:
+                  type: string
+                  description: The password of the user
+                  example: password123
+      responses:
+        '200':
+          description: Successful login, returns user data and an auth cookie
+          headers: 
+            Set-Cookie:
+              description: Set the authentication cookie
+              schema: 
+                type: string
+                example: TW-RoT-Auth-Cookie=token_value; Max-Age=100000; SameSite=None; HttpsOnly; Secure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the logged-in user
+                    example: 1
+                  username:
+                    type: string
+                    description: The username of the logged-in user
+                    example: example_username
+                  updatedAt:
+                    type: string
+                    description: The last date the account was updated in any way
+                    example: 2012-04-23T18:25:43.511Z
+                  roles:
+                    type: integer
+                    description: The roles of the logged-in user
+                    example: 0
+        '400':
+          description: Invalid input, object invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+        '401':
+          description: Unauthorized, invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+
+  /auth/verify:
+    post:
+      summary: Verify a token
+      description: Verify the provided token to ensure its validity.
+      tags:
+        - Auth
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The token to be verified
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+              required:
+                - token
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                    example: Token is valid
+        '400':
+          description: Invalid input, object invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+        '401':
+          description: Unauthorized, token is invalid or expired
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+
+  /auth/change-credentials:
+    post:
+      summary: Change user credentials
+      description: Request a change to the user's email, password, or username.
+      tags:
+        - Auth
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The email of the user requesting the change
+                  example: user@example.com
+                type:
+                  type: string
+                  enum: ['email', 'password', 'username']
+                  description: The type of credential change being requested
+                  example: password
+              required:
+                - email
+                - type
+      responses:
+        '204':
+          description: Change request accepted, further instructions sent to the user's email
+        '400':
+          description: Invalid input, object invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+
+  /auth/change-password:
+    post:
+      summary: Change user password
+      description: Change the user's password using a token.
+      tags:
+        - Auth
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The token for password change
+                  example: some_token_string
+                value:
+                  type: string
+                  description: The new password
+                  example: new_password123
+              required:
+                - token
+                - value
+      responses:
+        '204':
+          description: Password changed successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+
+  /auth/change-email:
+    post:
+      summary: Change user email
+      description: Change the user's email using a token.
+      tags:
+        - Auth
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The token for email change
+                  example: some_token_string
+                value:
+                  type: string
+                  description: The new email
+                  example: new_email@example.com
+              required:
+                - token
+                - value
+      responses:
+        '204':
+          description: Email changed successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+
+  /auth/change-username:
+    post:
+      summary: Change user username
+      description: Change the user's username using a token.
+      tags:
+        - Auth
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The token for username change
+                  example: some_token_string
+                value:
+                  type: string
+                  description: The new username
+                  example: new_username
+              required:
+                - token
+                - value
+      responses:
+        '204':
+          description: Username changed successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+
+  /auth/logout:
+    post:
+      summary: Logout user
+      description: Logs out the authenticated user.
+      tags:
+        - Auth
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      security:
+        - cookieAuth: []
+      responses:
+        '204':
+          description: User logged out successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+
+  /auth/authenticated:
+    post:
+      summary: Verify user authentication
+      description: Verifies if the user authentication cookie is valid.
+      tags:
+        - Auth
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User is authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the authenticated user
+                    example: 1
+                  username:
+                    type: string
+                    description: The username of the authenticated user
+                    example: john_doe
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The last update timestamp
+                    example: 2023-06-18T12:34:56Z
+                  roles:
+                    type: integer
+                    description: The roles assigned to the authenticated user
+                    example: 2
+                  solvedQuestionnaires:
+                    type: integer
+                  totalQuestionnaires:
+                    type: integer
+                  solvedQuestions:
+                    type: integer
+                  totalQuestions:
+                    type: integer
+        '401':
+          description: Unauthorized, invalid authentication
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    example: 0
+
+components:
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: TW-RoT-Auth-Cookie

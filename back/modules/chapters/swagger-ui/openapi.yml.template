@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  title: "{NAME} API"
+  description: API for managing chapters, sign categories, and exercise categories
+  version: 1.0.0
+servers:
+  - url: https://localhost:{PORT}/api/v1
+    description: "{NAME} server"
+paths:
+  /chapters:
+    get:
+      summary: Get all chapters
+      operationId: getAllChapters
+      tags:
+        - Chapters
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      responses:
+        '200':
+          description: A list of chapters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    number:
+                      type: integer
+                    title:
+                      type: string
+
+  /chapters/{id}:
+    get:
+      summary: Get chapter content
+      operationId: getChapterContent
+      tags:
+        - Chapters
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Chapter content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  number:
+                    type: integer
+                  title:
+                    type: string
+                  content:
+                    type: string
+
+components:
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: TW-RoT-Auth-Cookie

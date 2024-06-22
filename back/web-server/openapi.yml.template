@@ -906,6 +906,330 @@ paths:
                     type: string
                     example: An error occurred while processing the request
 
+  /exercises/{id}/solution:
+    get:
+      summary: Get solution for exercise
+      tags: [Exercises]
+      servers:
+        - url: https://localhost:{EXERCISES_PORT}/api/v1
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the exercise
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    correct:
+                      type: boolean
+                  required:
+                    - id
+                    - correct
+
+  /users/{id}/questionnaire:
+    post:
+      summary: Create questionnaire for a user
+      tags: [Questionnaire]
+      servers:
+        - url: https://localhost:{EXERCISES_PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        text:
+                          type: string
+                        imageId:
+                          type: string
+                        image:
+                          type: string
+                        sent:
+                          type: boolean
+                        solved:
+                          type: boolean
+                        selectedFields:
+                          type: integer
+                        answers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              description:
+                                type: string
+                              selected:
+                                type: boolean
+                  questionnaire:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      generationTime:
+                        type: string
+                      new:
+                        type: boolean
+
+    get:
+      summary: Get questionnaire for a user
+      tags: [Questionnaire]
+      servers:
+        - url: https://localhost:{EXERCISES_PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        text:
+                          type: string
+                        imageId:
+                          type: string
+                        image:
+                          type: string
+                        sent:
+                          type: boolean
+                        solved:
+                          type: boolean
+                        selectedFields:
+                          type: integer
+                        answers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              description:
+                                type: string
+                              selected:
+                                type: boolean
+                  questionnaire:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      generationTime:
+                        type: string
+                      registered:
+                        type: boolean
+
+  /users/{id}/questionnaire/questions/{qId}/solution:
+    post:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The Id of the user
+        - name: qId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The Id of the question
+      tags: [Questionnaire]
+      servers:
+        - url: https://localhost:{EXERCISES_PORT}/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the answer
+                  selected:
+                    type: boolean
+                    description: Whether the answer was selected
+            example:
+              - id: 1
+                selected: true
+              - id: 2
+                selected: false
+              - id: 3
+                selected: true
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Solutions submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isCorrect:
+                    type: boolean
+                    description: indicates solution correctness
+                  correctAnswers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the answer
+                        correct:
+                          type: boolean
+                          description: Whether the answer is actually correct
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: INVALID_INPUT
+                  errorMessage:
+                    type: string
+                    example: Invalid input data
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: UNAUTHORIZED
+                  errorMessage:
+                    type: string
+                    example: Authorization required
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  errorMessage:
+                    type: string
+                    example: An error occurred while processing the request
+
+  /users/{id}/questionnaire/submitted:
+    put:
+      summary: Submit a user's questionnaire
+      tags: [Questionnaire]
+      servers:
+        - url: https://localhost:{EXERCISES_PORT}/api/v1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the user
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Questionnaire submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  solved:
+                    type: integer
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        sent:
+                          type: boolean
+                        solved:
+                          type: boolean
+                        selectedFields:
+                          type: integer
+                        text:
+                          type: string
+                        imageId:
+                          type: string
+                        image:
+                          type: string
+                        answers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              description:
+                                type: string
+                              correct:
+                                type: boolean
+                              selected:
+                                type: boolean
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+
   /auth/register:
     post:
       summary: Register a new user
@@ -1394,330 +1718,6 @@ paths:
                     type: integer
                     example: 0
 
-  /exercises/{id}/solution:
-    get:
-      summary: Get solution for exercise
-      tags: [Exercises]
-      servers:
-        - url: https://localhost:{EXERCISES_PORT}/api/v1
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: ID of the exercise
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    correct:
-                      type: boolean
-                  required:
-                    - id
-                    - correct
-
-  /users/{id}/questionnaire:
-    post:
-      summary: Create questionnaire for a user
-      tags: [Questionnaire]
-      servers:
-        - url: https://localhost:{EXERCISES_PORT}/api/v1
-      security:
-        - cookieAuth: [ ]
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  questions:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        text:
-                          type: string
-                        imageId:
-                          type: string
-                        image:
-                          type: string
-                        sent:
-                          type: boolean
-                        solved:
-                          type: boolean
-                        selectedFields:
-                          type: integer
-                        answers:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              id:
-                                type: integer
-                              description:
-                                type: string
-                              selected:
-                                type: boolean
-                  questionnaire:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      generationTime:
-                        type: string
-                      new:
-                        type: boolean
-
-    get:
-      summary: Get questionnaire for a user
-      tags: [Questionnaire]
-      servers:
-        - url: https://localhost:{EXERCISES_PORT}/api/v1
-      security:
-        - cookieAuth: [ ]
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  questions:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        text:
-                          type: string
-                        imageId:
-                          type: string
-                        image:
-                          type: string
-                        sent:
-                          type: boolean
-                        solved:
-                          type: boolean
-                        selectedFields:
-                          type: integer
-                        answers:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              id:
-                                type: integer
-                              description:
-                                type: string
-                              selected:
-                                type: boolean
-                  questionnaire:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      generationTime:
-                        type: string
-                      registered:
-                        type: boolean
-
-  /users/{id}/questionnaire/questions/{qId}/solution:
-    post:
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: The Id of the user
-        - name: qId
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: The Id of the question
-      tags: [Questionnaire]
-      servers:
-        - url: https://localhost:{EXERCISES_PORT}/api/v1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    description: The ID of the answer
-                  selected:
-                    type: boolean
-                    description: Whether the answer was selected
-            example:
-              - id: 1
-                selected: true
-              - id: 2
-                selected: false
-              - id: 3
-                selected: true
-      security:
-        - cookieAuth: [ ]
-      responses:
-        '200':
-          description: Solutions submitted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  isCorrect:
-                    type: boolean
-                    description: indicates solution correctness
-                  correctAnswers:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                          description: The ID of the answer
-                        correct:
-                          type: boolean
-                          description: Whether the answer is actually correct
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorCode:
-                    type: string
-                    example: INVALID_INPUT
-                  errorMessage:
-                    type: string
-                    example: Invalid input data
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorCode:
-                    type: string
-                    example: UNAUTHORIZED
-                  errorMessage:
-                    type: string
-                    example: Authorization required
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorCode:
-                    type: string
-                    example: INTERNAL_SERVER_ERROR
-                  errorMessage:
-                    type: string
-                    example: An error occurred while processing the request
-
-  /users/{id}/questionnaire/submitted:
-    put:
-      summary: Submit a user's questionnaire
-      tags: [Questionnaire]
-      servers:
-        - url: https://localhost:{EXERCISES_PORT}/api/v1
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: ID of the user
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: Questionnaire submitted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  solved:
-                    type: integer
-                  questions:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        sent:
-                          type: boolean
-                        solved:
-                          type: boolean
-                        selectedFields:
-                          type: integer
-                        text:
-                          type: string
-                        imageId:
-                          type: string
-                        image:
-                          type: string
-                        answers:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              id:
-                                type: integer
-                              description:
-                                type: string
-                              correct:
-                                type: boolean
-                              selected:
-                                type: boolean
-        '400':
-          description: Bad Request
-        '401':
-          description: Unauthorized
-        '404':
-          description: User not found
-        '500':
-          description: Internal Server Error
-
   /users/{id}:
     delete:
       summary: Delete a user by ID      
@@ -1958,29 +1958,3 @@ components:
       in: cookie
       name: TW-RoT-Auth-Cookie
 
-  schemas:
-    Chapter:
-      type: object
-      properties:
-        id:
-          type: integer
-        number:
-          type: integer
-        title:
-          type: string
-
-    SignCategory:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-
-    ExerciseCategory:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string

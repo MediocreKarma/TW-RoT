@@ -3,3 +3,9 @@
 **/.txt
 **/.idea
 **pem
+
+
+**/modules/*/swagger-ui/*
+
+!**/modules/_common/swagger-ui/*
+!**/modules/*/swagger-ui/*.template

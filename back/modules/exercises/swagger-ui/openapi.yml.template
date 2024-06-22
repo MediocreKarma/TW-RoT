@@ -1,0 +1,946 @@
+openapi: 3.0.0
+info:
+  title: "{NAME} API"
+  description: API for managing chapters, sign categories, and exercise categories
+  version: 1.0.0
+servers:
+  - url: https://localhost:{PORT}/api/v1
+    description: "{NAME} server"
+paths:
+  /exercises:
+    get:
+      summary: Get exercises
+      description: Retrieve exercises with their details
+      parameters:
+      - name: start
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The starting index of the questions, from 0
+      - name: count
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: The number of entries to return
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A search query for questions
+      tags:
+        - Exercises
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Total number of exercises
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Exercise ID
+                        categoryId:
+                          type: integer
+                          description: Category ID of the exercise
+                        categoryTitle:
+                          type: string
+                          description: Title of the category
+                        text:
+                          type: string
+                          description: Text of the exercise
+                        imageId:
+                          type: string
+                          description: ID of the image associated with the exercise
+                        answers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                description: Answer ID
+                              description:
+                                type: string
+                                description: Description of the answer
+                        image:
+                          type: string
+                          format: uri
+                          description: URL of the image associated with the exercise
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+
+    post:
+      summary: Submit new exercises
+      description: Create new exercise
+      tags:
+        - Exercises
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryId:
+                  type: integer
+                  description: Optional, exclusive with title
+                  nullable: true
+                  example: 1
+                categoryTitle:
+                  type: string
+                  description: Optional, exclusive with id, used for creating new categories
+                  nullable: true
+                  example: "mutually exclusive with categoryId, include only one"
+                text:
+                  type: string
+                  description: Text of the exercise
+                image:
+                  type: string
+                  nullable: true
+                  format: uri
+                  description: Optional image in base64 encoding
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      description:
+                        type: string
+                        description: Description of the answer
+                      correct:
+                        type: boolean
+                        description: Correctitude of answer
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Exercise ID
+                  categoryId:
+                    type: integer
+                    description: Category ID of the exercise
+                  categoryTitle:
+                    type: string
+                    description: Title of the category
+                  text:
+                    type: string
+                    description: Text of the exercise
+                  imageId:
+                    type: string
+                    description: ID of the image associated with the exercise
+                  image:
+                    type: string
+                    format: uri
+                    description: URL of the image associated with the exercise
+                  answers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Answer ID
+                        description:
+                          type: string
+                          description: Description of the answer
+                        correct:
+                          type: boolean
+                          description: Correctitude of answer
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+
+  /exercises/{id}:
+    put:
+      summary: Update question
+      description: Update question
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the question
+      tags:
+        - Exercises
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryId:
+                  type: integer
+                  description: Optional, exclusive with title
+                  nullable: true
+                  example: 1
+                categoryTitle:
+                  type: string
+                  description: Optional, exclusive with categoryId, used for creating new categories
+                  nullable: true
+                  example: "mutually exclusive with categoryId, include only one"
+                text:
+                  type: string
+                  description: Text of the exercise
+                image:
+                  type: string
+                  nullable: true
+                  format: uri
+                  description: Optional image in base64 encoding
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      description:
+                        type: string
+                        description: Description of the answer
+                      correct:
+                        type: boolean
+                        description: Correctitude of answer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Exercise ID
+                  categoryId:
+                    type: integer
+                    description: Category ID of the exercise
+                  categoryTitle:
+                    type: string
+                    description: Title of the category
+                  text:
+                    type: string
+                    description: Text of the exercise
+                  imageId:
+                    type: string
+                    description: ID of the image associated with the exercise
+                  image:
+                    type: string
+                    format: uri
+                    description: URL of the image associated with the exercise
+                  answers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Answer ID
+                        description:
+                          type: string
+                          description: Description of the answer
+                        correct:
+                          type: boolean
+                          description: Correctitude of answer
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+    
+    delete:
+      summary: Update question
+      description: Update question
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the question
+      tags:
+        - Exercises
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '204':
+          description: successfully deleted question
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+
+
+  /exercises/categories:
+    get:
+      summary: Get all exercise categories
+      operationId: getAllExerciseCategories
+      tags:
+        - Exercises
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: A list of exercise categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  solved:
+                    type: integer
+                  wrong:
+                    type: integer
+                  total:
+                    type: integer
+                  categories:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        solved:
+                          type: integer
+                        wrong:
+                          type: integer
+                        total:
+                          type: integer
+                        id:
+                          type: integer
+                        title:
+                          type: string
+
+  /exercises/unsolved/{id}:
+    get:
+      summary: Get an unsolved question by category
+      tags:
+        - Exercises
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  categoryId:
+                    type: integer
+                  categoryTitle:
+                    type: string
+                  text:
+                    type: string
+                  imageId:
+                    type: string
+                  image:
+                    type: string
+                  answers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        description:
+                          type: string
+        '400':
+          description: Bad request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+
+  /exercises/unsolved:
+    get:
+      summary: Get any unsolved question
+      tags:
+        - Exercises
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  categoryId:
+                    type: integer
+                  categoryTitle:
+                    type: string
+                  text:
+                    type: string
+                  imageId:
+                    type: string
+                  image:
+                    type: string
+                  answers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        description:
+                          type: string
+        '400':
+          description: Bad request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+
+  /exercises/incorrectly-solved:
+    get:
+      summary: Get incorrectly solved question
+      tags:
+        - Exercises
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  categoryId:
+                    type: integer
+                  categoryTitle:
+                    type: string
+                  text:
+                    type: string
+                  imageId:
+                    type: string
+                  image:
+                    type: string
+                  answers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        description:
+                          type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthenticated
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+
+  /users/{id}/submissions:
+    post:
+      summary: Submit solutions for a user
+      description: Submits a set of solutions for a specific user.
+      tags:
+        - Exercises
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: The ID of the question
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the answer
+                      selected:
+                        type: boolean
+                        description: Whether the answer was selected
+              required:
+                - id
+                - answers
+              example:
+                id: 1
+                answers:
+                  - id: 1
+                    selected: true
+                  - id: 2
+                    selected: false
+                  - id: 3
+                    selected: true
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Solutions submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isCorrect:
+                    type: boolean
+                    description: indicates solution correctness
+                  correctAnswers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the answer
+                        correct:
+                          type: boolean
+                          description: Whether the answer is actually correct
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: INVALID_INPUT
+                  errorMessage:
+                    type: string
+                    example: Invalid input data
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: UNAUTHORIZED
+                  errorMessage:
+                    type: string
+                    example: Authorization required
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  errorMessage:
+                    type: string
+                    example: An error occurred while processing the request
+
+  /exercises/{id}/solution:
+    get:
+      summary: Get solution for exercise
+      tags: [Exercises]
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the exercise
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    correct:
+                      type: boolean
+                  required:
+                    - id
+                    - correct
+
+  /users/{id}/questionnaire:
+    post:
+      summary: Create questionnaire for a user
+      tags: [Questionnaire]
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        text:
+                          type: string
+                        imageId:
+                          type: string
+                        image:
+                          type: string
+                        sent:
+                          type: boolean
+                        solved:
+                          type: boolean
+                        selectedFields:
+                          type: integer
+                        answers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              description:
+                                type: string
+                              selected:
+                                type: boolean
+                  questionnaire:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      generationTime:
+                        type: string
+                      new:
+                        type: boolean
+
+    get:
+      summary: Get questionnaire for a user
+      tags: [Questionnaire]
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        text:
+                          type: string
+                        imageId:
+                          type: string
+                        image:
+                          type: string
+                        sent:
+                          type: boolean
+                        solved:
+                          type: boolean
+                        selectedFields:
+                          type: integer
+                        answers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              description:
+                                type: string
+                              selected:
+                                type: boolean
+                  questionnaire:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      generationTime:
+                        type: string
+                      registered:
+                        type: boolean
+
+  /users/{id}/questionnaire/questions/{qId}/solution:
+    post:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The Id of the user
+        - name: qId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The Id of the question
+      tags: [Questionnaire]
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the answer
+                  selected:
+                    type: boolean
+                    description: Whether the answer was selected
+            example:
+              - id: 1
+                selected: true
+              - id: 2
+                selected: false
+              - id: 3
+                selected: true
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Solutions submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isCorrect:
+                    type: boolean
+                    description: indicates solution correctness
+                  correctAnswers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the answer
+                        correct:
+                          type: boolean
+                          description: Whether the answer is actually correct
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: INVALID_INPUT
+                  errorMessage:
+                    type: string
+                    example: Invalid input data
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: UNAUTHORIZED
+                  errorMessage:
+                    type: string
+                    example: Authorization required
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                    example: INTERNAL_SERVER_ERROR
+                  errorMessage:
+                    type: string
+                    example: An error occurred while processing the request
+
+  /users/{id}/questionnaire/submitted:
+    put:
+      summary: Submit a user's questionnaire
+      tags: [Questionnaire]
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the user
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Questionnaire submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  solved:
+                    type: integer
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        sent:
+                          type: boolean
+                        solved:
+                          type: boolean
+                        selectedFields:
+                          type: integer
+                        text:
+                          type: string
+                        imageId:
+                          type: string
+                        image:
+                          type: string
+                        answers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              description:
+                                type: string
+                              correct:
+                                type: boolean
+                              selected:
+                                type: boolean
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+
+components:
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: TW-RoT-Auth-Cookie
