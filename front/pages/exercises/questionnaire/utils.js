@@ -5,10 +5,10 @@ import {
     submitQuestionnaireSolution as apiSubmitQuestionnaireSolution,
     submitQuestionnaire as apiSubmitQuestionnaire,
 } from '../requests.js';
-import { cachedUserData } from '/js/auth.js';
+import { cachedUserData, UserData } from '/js/auth.js';
 
 const saveQuestionnaire = (questionnaire) => {
-    localStorage.setItem('questionnaire', JSON.stringify(questionnaire));
+    localStorage.setItem(UserData.questionnaire, JSON.stringify(questionnaire));
 };
 
 export const createQuestionnaire = async () => {
@@ -53,7 +53,7 @@ export const setQuestionnaireTimeout = async () => {
 // forceInvalidate forces fetching from server
 export const getQuestionnaire = async (forceInvalidate = false) => {
     if (!forceInvalidate) {
-        const data = localStorage.getItem('questionnaire');
+        const data = localStorage.getItem(UserData.questionnaire);
 
         if (data) {
             try {

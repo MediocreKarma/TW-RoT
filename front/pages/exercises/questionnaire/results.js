@@ -6,6 +6,8 @@ import {
 } from './utils.js';
 import { showInfoModal } from '/js/modals.js';
 import { renderError } from '/js/errors.js';
+import { renderMessage } from '/js/render.js';
+import { cachedUserData } from '/js/auth.js';
 
 const getWronglySolvedQuestions = (questionnaireData) => {
     return questionnaireData.questions.filter(

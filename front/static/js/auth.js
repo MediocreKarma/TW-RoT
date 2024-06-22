@@ -1,10 +1,11 @@
 import API from '/js/api.js';
 import { post } from '/js/requests.js';
 
-const UserData = {
+export const UserData = {
     id: 'userId',
     username: 'userUsername',
     flags: 'userFlags',
+    questionnaire: 'userQuestionnaire',
 };
 
 const isAuthenticated = async () => {
@@ -50,6 +51,7 @@ export const clearUserData = () => {
     localStorage.removeItem(UserData.id);
     localStorage.removeItem(UserData.username);
     localStorage.removeItem(UserData.flags);
+    localStorage.removeItem(UserData.questionnaire);
 };
 
 export const setUserData = (user) => {
