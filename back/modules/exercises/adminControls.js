@@ -1,5 +1,5 @@
 import { ErrorCodes } from "../../common/constants.js";
-import { isAdmin, isStringValidInteger } from "../../common/utils.js";
+import { isAdmin, isStringValidInteger, zip } from "../../common/utils.js";
 import { withDatabaseOperation, withDatabaseTransaction } from "../_common/db.js"
 import { ServiceResponse } from "../_common/serviceResponse.js";
 import { validateAuth, validateStartAndCountParams } from "../_common/utils.js";
@@ -56,17 +56,37 @@ export const fetchQuestions = withDatabaseOperation(async function (
         ${SQL_WHERE_FETCH_STATEMENT}`,
         [query]
     )).rows[0]['cnt'], 10);
-
+    
     const result = (await client.query(
-        `${SQL_SELECT_STATEMENT} ${SQL_WHERE_FETCH_STATEMENT} ${SQL_GROUPING_STATEMENT}
+        `SELECT
+            q.id AS "id",
+            q.category_id AS "categoryId",
+            qc.title AS "categoryTitle",
+            q.text AS "text",
+            q.image_id AS "imageId"
+        from
+            question q 
+            JOIN question_category qc ON q.category_id = qc.id 
+            JOIN answer a ON a.question_id = q.id
+        ${SQL_WHERE_FETCH_STATEMENT} ${SQL_GROUPING_STATEMENT}
             offset $2::int limit $3::int`,
         [query, start, count]
     )).rows;
-    result.forEach(q => {
+
+    result.sort((a, b) => a.id - b.id);
+
+    const answerData = (await client.query(
+        `select array_agg(jsonb_build_object('id', a.id, 'description', a.description, 'correct', a.correct) order by a.id) as "answers"
+            from answer a where a.question_id = any($1::int[]) group by a.question_id order by a.question_id`,
+        [result.map(q => q.id)]
+    )).rows;
+
+    for (const [q, answerSet] of zip(result, answerData)) {
+        q.answers = answerSet.answers;
         q.answers.sort((a, b) => a.id - b.id); 
         adjustOutputAnswerSet(q.answers);
         addImageToQuestion(q);
-    });
+    }
 
     return new ServiceResponse(200, {total: cnt, data: result}, 'Successfully fetched questions');
 })

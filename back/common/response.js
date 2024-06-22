@@ -1,5 +1,11 @@
 import fs from 'fs';
 
+/**
+ * Sets all CORS-related headers to adequate values
+ * 
+ * @param {*} response the response entity 
+ * @returns response
+ */
 export function setCorsHeaders(response) {
     response.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
     response.setHeader('Access-Control-Allow-Methods', 'GET, PATCH, POST, PUT, DELETE, OPTIONS'); // Specify allowed methods
@@ -9,6 +15,14 @@ export function setCorsHeaders(response) {
     return response;
 }
 
+/**
+ * Prepares transmission to send a js object in the body as JSON
+ * 
+ * @param {*} response the response entity
+ * @param {*} status the status of the response (100-599)
+ * @param {*} content the object to be put in the response
+ * @param {*} message optional message that will be added to the response
+ */
 export function sendJsonResponse(response, status, content, message = '') {
     setCorsHeaders(response);
     response.writeHead(status, message, {
@@ -17,12 +31,28 @@ export function sendJsonResponse(response, status, content, message = '') {
     response.end(JSON.stringify(content, null, 2));
 }
 
-export function sendEmptyResponse(response, status, message = '') {
+/**
+ * Sends an empty response with CORS headers.
+ * Used for OPTIONS request
+ * 
+ * @param {*} response the response entity
+ * @param {*} status the status of the response (100-599)
+ */
+export function sendEmptyResponse(response, status) {
     setCorsHeaders(response);
     response.writeHead(status);
     response.end();
 }
 
+/**
+ * Send a file response of a given content type
+ * 
+ * @param {*} response the response entity
+ * @param {*} status the status of the response (100-599) 
+ * @param {*} file the file object read in memory as a string
+ * @param {*} contentType optional object content type as defined [here](https://www.iana.org/assignments/media-types/media-types.xhtml)
+ * @param {*} message optional message that will be added to the response 
+ */
 export function sendFileResponse(response, status, file, contentType = '', message = '') {
     setCorsHeaders(response);
     if (contentType !== '') {
@@ -36,31 +66,37 @@ export function sendFileResponse(response, status, file, contentType = '', messa
     response.end(file);
 }
 
-function getDocFileAndContentType(req, res) {
+function getContentType(req) {
     const extension = req.url.split('.').pop();
-    let contentType = 'text/html';
     switch (extension) {
-        case 'css': contentType = 'text/css'; break;
-        case 'js': contentType = 'application/javascript'; break;
-        case 'json': contentType = 'application/json'; break;
-        case 'yml': contentType = 'application/x-yaml'; break;
-        case 'html': contentType = 'text/html'; break;
-        throw 'Unknown file extension'
+        case 'css': return 'text/css';
+        case 'js': return 'application/javascript';
+        case 'json': return 'application/json';
+        case 'yml': return 'application/x-yaml';
+        case 'html': return 'text/html';
+        default: throw 'Unknown file extension'
     }
-    
-    return [req.url.substr(1), contentType];
 }
 
+/**
+ * Send a doc file if the req contains the folder swagger-ui
+ * Used for app router
+ * 
+ * @param {*} req the request entity
+ * @param {*} res the response entity
+ * @returns boolean representing wether the file was served or not
+ */
 export function serveDocFile(req, res) {
     try {
-        let [filePath, contentType] = getDocFileAndContentType(req, res);
-        if (filePath.startsWith('_common')) {
-            filePath = './../' + filePath;
+        const contentType = getContentType(req);
+        let filepath = req.url.substr(1);
+        if (filepath.startsWith('_common')) {
+            filepath = './../' + filepath;
         }
-        if (!filePath.includes('swagger-ui')) {
+        if (!filepath.includes('swagger-ui')) {
             return false;
         }
-        const file = fs.readFileSync(filePath, 'utf8');
+        const file = fs.readFileSync(filepath, 'utf8');
         sendFileResponse(res, 200, file, contentType);
         return true;
     } catch (err) {

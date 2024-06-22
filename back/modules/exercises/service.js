@@ -12,7 +12,7 @@ export const SQL_SELECT_STATEMENT =
         qc.title as "categoryTitle",
         q.text as "text",
         q.image_id as "imageId",
-        array_agg(jsonb_build_object('id', a.id, 'description', a.description) order by random()) as "answers"
+        array_agg(jsonb_build_object('id', a.id, 'description', a.description, 'correct', a.correct) order by random()) as "answers"
     from 
         question q 
         join answer a on q.id = a.question_id 
@@ -115,6 +115,7 @@ export const getUnsolvedQuestion = withDatabaseOperation(async function (
     }
     addImageToQuestion(qData[0]);
     adjustOutputAnswerSet(qData[0].answers);
+    qData[0].answers.forEach(a => delete a.correct); 
     return new ServiceResponse(
         200,
         qData[0],
@@ -161,6 +162,7 @@ export const getUnsolvedQuestionByCategory = withDatabaseOperation(async functio
     }
     addImageToQuestion(qData[0]);
     adjustOutputAnswerSet(qData[0].answers);
+    qData[0].answers.forEach(a => delete a.correct); 
     return new ServiceResponse(
         200,
         qData[0],
@@ -206,6 +208,7 @@ export const getIncorrectlySolvedQuestion = withDatabaseOperation(async function
     }
     addImageToQuestion(qData[0]);
     adjustOutputAnswerSet(qData[0].answers);
+    qData[0].answers.forEach(a => delete a.correct); 
     return new ServiceResponse(
         200,
         qData[0],

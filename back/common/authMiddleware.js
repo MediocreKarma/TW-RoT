@@ -17,6 +17,12 @@ const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME;
 
 const ROOT_CA = readFileSync(getCWD() + '/rootCA.pem');
 
+/**
+ * Expires the auth cookie of the requestr
+ * 
+ * @param {*} res the response entity 
+ * @returns res
+ */
 export const expireAuthCookie = (res) => {
     res.setHeader(
         'Set-Cookie',
@@ -24,7 +30,14 @@ export const expireAuthCookie = (res) => {
     );
     return res;
 };
-
+/**
+ * 
+ * 
+ * @param {*} req the request entity
+ * @param {*} res the response entity
+ * @returns a promise that will resolve the call to the auth api 
+ *  that validates the auth cookie
+ */
 export async function getAuth(req, res) {
     return new Promise((resolve, _reject) => {
         const options = {
