@@ -1,3 +1,4 @@
+-- user information getter
 drop function if exists get_users(int, int, varchar);
 create or replace function get_users(
     start int, count int, search_query varchar = ''
@@ -34,6 +35,7 @@ end;
 $$ language plpgsql;
 
 
+-- validate an existing session passed as varchar
 drop function if exists validate_session(varchar);
 create or replace function validate_session(p_token_value varchar) returns table (
     id int,

@@ -3,12 +3,20 @@ import { getContent, getFinalUrl, silencedDOMParserOptions } from './utils.js';
 import xpath from 'xpath';
 import { pool } from './db.js';
 import { saveImage } from './image.js';
+import { getOpenAIResponse } from './openai.js';
+
 
 const OUTPUT_DIR = process.env.TRAFFIC_SIGNS_IMAGES_DIR;
 
 // each module has its own DOM parser
 const silencedDOMParser = new DOMParser(silencedDOMParserOptions);
 
+/**
+ * retrieve the DOM nodes containing information about sign categories
+ * 
+ * @param {*} content 
+ * @returns the parsed dom nodes
+ */
 const getSignCategoryNodes = (content) => {
     let doc = silencedDOMParser.parseFromString(content);
     const nodes = xpath.select(
@@ -19,6 +27,12 @@ const getSignCategoryNodes = (content) => {
     return nodes;
 };
 
+/**
+ * Process the given DOM nodes, to retrieve the sign data links
+ * 
+ * @param {*} nodes 
+ * @returns an array of links to the signs
+ */
 const processNodes = async (nodes) => {
     let linkData = [];
 
@@ -51,6 +65,12 @@ const processNodes = async (nodes) => {
     return linkData;
 };
 
+/**
+ * Handle processing for every sign link
+ * 
+ * @param {*} link a sign link
+ * @returns the scraped data
+ */
 const processLink = async (link) => {
     console.log('processing link ' + link);
     const data = await getContent(link);
@@ -59,6 +79,13 @@ const processLink = async (link) => {
     return signCategoryData;
 };
 
+/**
+ * Retrieve information about the current sign category
+ * from the given sign category page content
+ * 
+ * @param {*} content 
+ * @returns an object containing the title of the category and all related signs
+ */
 const getSignCategoryData = async (content) => {
     let doc = silencedDOMParser.parseFromString(content);
 
@@ -122,6 +149,11 @@ const getSignCategoryData = async (content) => {
     };
 };
 
+/**
+ * Execute scraping of signs
+ * 
+ * @returns the list of objects of category data
+ */
 export const scrapeSigns = async () => {
     try {
         const url = 'https://www.codrutier.ro/semne-de-circulatie';
@@ -134,7 +166,20 @@ export const scrapeSigns = async () => {
     }
 };
 
+/**
+ * Populate the database with the sign category objects.
+ * Calls to openAi api in order to generate adequate sign category information
+ */
 export const populateSigns = async () => {
+
+    const aiSystemMessage = `Esti responsabil de descriererea unor categorii de semne de circulatie din Romania`;
+    const aiQuery = `Scrie-mi despre semnele de circulatie din romania de tip '{TYPE}'. 
+        Exprima cat detaliu este necesar. Incearca sa nu te repeti. Incearca sa scrii intre 20 si 100 de cuvinte:
+        Descrie urmatoarele aspecte: Aspectul semnului, rolul semnului, si sugestii la intalnirea semnului.
+        Raspunsul trebuie sa fie sub forma de JSON in formatul {"design": "string", "purpose": "string", "suggestion: string"}.
+        Te rog nu marca mesajul cu \`\`\`json, returneaza doar obiectul. Construieste string-urile precum propozit precum propozitii, cu prima litera mare.`
+
+
     const scrapedCategories = await scrapeSigns();
     const client = await pool.connect();
 
@@ -170,9 +215,21 @@ export const populateSigns = async () => {
                 console.log(e);
                 scrapedCategory.image = null;
             }
+            const completion = await getOpenAIResponse(aiSystemMessage, aiQuery.replace(/{TYPE}/g, scrapedCategory.title));
+            console.log(completion);
+
+            let parsedCompletion = {};
+            try {
+                parsedCompletion = JSON.parse(completion);
+            }
+            catch (err) {
+                console.log(err);
+                parsedCompletion = {};
+            }
+            const fullCategoryData = Object.assign(scrapedCategoryWithImageIds, parsedCompletion);
 
             await client.query('call insert_sign_category($1::jsonb)', [
-                JSON.stringify(scrapedCategoryWithImageIds),
+                JSON.stringify(fullCategoryData),
             ]);
         } catch (e) {
             console.error(e);

@@ -9,6 +9,13 @@ import { pool } from './db.js';
 
 const silencedDOMParser = new DOMParser(silencedDOMParserOptions);
 
+/**
+ * Process the chapter page from a chapter index page. Returns
+ * an object with the scraped data
+ * 
+ * @param {*} content the index chapter page content
+ * @returns an object containing the title, content, and whether the content is an addendum
+ */
 const processChapterPage = (content) => {
     let doc = silencedDOMParser.parseFromString(content);
 
@@ -38,6 +45,11 @@ const processChapterPage = (content) => {
     return chapterData;
 };
 
+/**
+ * Scrape the theory to be used in database population
+ * 
+ * @returns the scraped theory objects
+ */
 export const scrapeTheory = async () => {
     try {
         const url =
@@ -51,6 +63,9 @@ export const scrapeTheory = async () => {
     }
 };
 
+/**
+ * Populate the theory database with the scraped contents
+ */
 export const populateTheory = async () => {
     const chapterRegex =
         /CAPITOLUL (M{0,3}(?:CM|CD|D?C{0,3})?(?:XC|XL|L?X{0,3})?(?:IX|IV|V?I{0,3})?): (.*)/;

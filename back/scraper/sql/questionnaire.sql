@@ -1,3 +1,4 @@
+-- create a new questionnaire or return an existing one
 drop function if exists generate_questionnaire(int);
 create or replace function generate_questionnaire(u_id int) 
 returns table(
@@ -77,13 +78,7 @@ begin
     return query select u_id, gen_time, true;
 end; $$ language plpgsql;
 
-drop type if exists answer_t;
-create type answer_t as (
-    id int, 
-    description varchar(4096),
-    correct boolean
-);
-
+-- get the questions of a questionnaire
 drop function if exists get_questionnaire_questions_by_id(int);
 create or replace function get_questionnaire_questions_by_id(qstr_id int) 
 returns table (
@@ -117,6 +112,8 @@ begin
         group by gq.id, q.text, q.image_id;    
 end; $$ language PLPGSQL;
 
+-- utility function to generate a bitset that marks a bit 1 for selected answer
+-- and 0 for unselected, in opposite order of ids
 drop function if exists get_answer_bitset(integer);
 create or replace function get_answer_bitset(q_id integer) returns int
 as $$
@@ -140,6 +137,7 @@ BEGIN
     
 end; $$ language PLPGSQL;
 
+-- register an answer for a given question, unrelated to questionnaires
 drop function if exists register_answer(int, int, int);
 create or replace function register_answer(u_id integer, q_id integer, answer_bitset integer) 
 returns table (
@@ -152,7 +150,11 @@ DECLARE
     correctness bool := false;
     dlt bool;
 BEGIN
-    select deleted into dlt from question 
+    select deleted into dlt from question where id = q_id;
+    if not found or dlt THEN
+        return;
+    end if;
+
     correct_bitset := get_answer_bitset(q_id);
     correctness := (answer_bitset = correct_bitset);
     insert into answered_question (user_id, question_id, answered_correctly) values (u_id, q_id, correctness)
@@ -163,6 +165,7 @@ BEGIN
     return query select a.id, a.correct from answer a join question q on a.question_id = q.id where q.id = q_id;
 end; $$ language PLPGSQL;
 
+-- mark a questionnaire as finished. May be called multiple times without consequence
 drop function if exists finish_questionnaire(int);
 create or replace function finish_questionnaire(qstnr_id int) returns int
 as $$
@@ -199,6 +202,8 @@ begin
     return score;
 end; $$ language plpgsql;
 
+-- submit a solution to a questionnaire question. 
+-- does not work for finished questionnaire or already send questions
 drop function if exists submit_questionnaire_solution(int, int, int);
 create or replace function submit_questionnaire_solution(qstr_id int, gq_id int, answer_bitset int) 
 returns table (
@@ -209,6 +214,7 @@ as $$
 DECLARE
     correct_bitset int;
     correctness bool := false;
+    gen_time TIMESTAMP;
     q_id int;
     snt bool;
     rgstr bool;
@@ -218,9 +224,14 @@ BEGIN
         from generated_question
         where id = gq_id; 
 
-    select registered into rgstr from generated_questionnaire where id = qstr_id;
+    select registered, generated_time into rgstr, gen_time from generated_questionnaire where id = qstr_id;
     
     if snt or rgstr THEN
+        return;
+    end if;
+
+    if gen_time < (now()::timestamp - interval '30 minutes') THEN
+        perform finish_questionnaire(qstr_id);
         return;
     end if;
 

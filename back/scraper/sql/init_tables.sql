@@ -1,4 +1,4 @@
--- Active: 1717142263895@@127.0.0.1@5432@tw_rot@tw_rot
+-- table initialization for TW_RoT
 set schema 'tw_rot';
 
 drop table if exists chapter cascade;

@@ -10,7 +10,10 @@ import utf8 from 'utf8';
 import { sendFileResponse } from "../../common/response.js";
 dotenv.config({path: '../../.env'});
 
-
+/**
+ * Admin handler to completely remove a user.
+ * Restriction is preferable over deletion, as this is permanent.
+ */
 export const deleteUser = withDatabaseOperation(async function(
     client, _req, res, params
 ) {
@@ -35,6 +38,11 @@ export const deleteUser = withDatabaseOperation(async function(
     return new ServiceResponse(204, null, 'Successfully deleted user account');
 });
 
+/**
+ * Handler to reset a users progress, either as admin for any user,
+ * or as user for oneself. Completely erases all registered questions
+ * and all questionnaire progress.
+ */
 export const resetProgress = withDatabaseTransaction(async function (
     client, _req, _res, params
 ) {
@@ -61,12 +69,20 @@ export const resetProgress = withDatabaseTransaction(async function (
         [userId]
     );
     await client.query(
+        `delete from generated_question where questionnaire_id = $1::int`,
+        [userId]
+    );
+    await client.query(
         `delete from answered_question where user_id = $1::int`,
         [userId]
     );
     return new ServiceResponse(204, null, 'Successfully reset progress');
 });
 
+/**
+ * Retrieve the current leaderboard. Query params used to indicate
+ * how many entries and starting from which entry.
+ */
 export const getLeaderboard = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
@@ -104,12 +120,22 @@ const getLeaderboardPageForRank = (rank) => {
     return `${process.env.FRONTEND_URL}/leaderboard?page=${pageNumber}`
 }
 
-let rssFeedXml = null;
-
+/**
+ * Convert special characters to XML-acceptable variants
+ * 
+ * @param {*} str the string to convert
+ * @returns a new string with some special chars replaced
+ */
 const convertString = (str) => {
     return str.replace(/ă/g, '&#259;').replace(/â/g, '&#226;').replace(/ș/g, '&#537;');
 }
 
+let rssFeedXml = null;
+
+/**
+ * RSS leaderboard generator.
+ * Called to recreate the `rssFeedXml` object.
+ */
 const generateRSS = async () => {
     const leaderboard = (await getLeaderboard(null, null, {query: {start: '0', count: '100'}})).body.data;
 
@@ -140,17 +166,30 @@ const generateRSS = async () => {
     rssFeedXml = tmp.xml({indent: true});
 }
 
+/**
+ * Generate the current RSS at start-up
+ * and create an interval to update the rss
+ * every minute. Information is not time-sensitive
+ * so rare updates are reasonable.
+ */
 generateRSS();
 setInterval(() => {
     generateRSS();
-}, 1000 * 60 * 3); // update every 3 minutes
+}, 1000 * 60); // update every minute
 
+/**
+ * Handler for serving the rss.
+ */
 export const serveRSS = async function (
     _req, res, _params
 ) {
     sendFileResponse(res, 200, rssFeedXml, 'application/rss+xml');
 }
 
+/**
+ * Admin handler for retrieving user information in paginated manner.
+ * Accepts query param to select only users matching search criteria.
+ */
 export const getUsers = withDatabaseOperation(async function(
     client, _req, _res, params
 ) {
@@ -191,6 +230,12 @@ export const getUsers = withDatabaseOperation(async function(
     return new ServiceResponse(200, {total: userCount, data: result}, 'Successfully retrieved user entries');
 });
 
+/**
+ * Handler for banning/unbanning an user.
+ * Banning is not an intrusive operation, and can be undone without
+ * consequence. A banned user loses access to all authenticated procedures.
+ * A banned admin does not have any admin privileges.
+ */
 export const changeBanStatus = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {

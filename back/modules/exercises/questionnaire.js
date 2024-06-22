@@ -51,6 +51,15 @@ const adjustQuestionnaireOutputAnswerSets = (questions) => {
     return questions;
 }
 
+/**
+ * Validate an input answer set
+ * 
+ * @param {*} answers the answer set
+ * @param {*} booleanProperty the name of the boolean property associated with the answer
+ * @param {*} verifyDescription verify if the answer contains a description
+ * @param {*} verifyId verify if ids are present and they respect the id rules
+ * @returns ServiceResponse on error, otherwise null
+ */
 export const validateAnswerSetInput = (answers, booleanProperty = 'selected', verifyDescription = false, verifyId = true) => {
     if (!answers) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWERS_NOT_IN_BODY}, 'Answers id not in body');
@@ -84,6 +93,10 @@ export const validateAnswerSetInput = (answers, booleanProperty = 'selected', ve
     return null;
 }
 
+/**
+ * Submit a generic question solution for the associated user, and
+ * store it in the database. Errors for unauthenticated users.
+ */
 export const addQuestionSolution = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
@@ -158,6 +171,9 @@ const addSelectedToQuestionSet = async (questions) => {
     return questions;
 }
 
+/**
+ * Retrieve the users active questionnaire, along with all of its questions
+ */
 export const getQuestionnaire = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
@@ -197,6 +213,11 @@ export const getQuestionnaire = withDatabaseOperation(async function (
     );
 });
 
+/**
+ * Handler to creates a questionnaire if the previous one has expired, otherwise
+ * returns the active questionnaire for the given user. Errors if 
+ * unauthenticated.
+ */
 export const createQuestionnaire = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
@@ -213,12 +234,7 @@ export const createQuestionnaire = withDatabaseOperation(async function (
             'from generate_questionnaire($1::int)',
         [userId]
     )).rows[0];
-    if (questionnaireObj['new']) {
-        setTimeout(
-            withDatabaseOperation((client) => markQuestionnaireFinished(client, userId)),
-            thirtyMinutesInMs
-        );
-    }
+
     const result = await getQuestionnaireQuestions(client, questionnaireObj['id']);
     adjustQuestionnaireOutputAnswerSets(result);
     addImageToQuestions(result);
@@ -232,6 +248,10 @@ export const createQuestionnaire = withDatabaseOperation(async function (
     );
 });
 
+/**
+ * Handler to submit a solution to a question of an active questionnaire.
+ * Errors if unauthenticated or the questionnaire has already expired
+ */
 export const submitQuestionnaireSolution = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
@@ -277,6 +297,10 @@ export const submitQuestionnaireSolution = withDatabaseOperation(async function 
     );
 });
 
+/**
+ * Handler to mark the user's questionnaire as finished. 
+ * Returns all associated information about the questions.
+ */
 export const finishQuestionnaire = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
