@@ -1,3 +1,6 @@
+-- insert procedures used by the scraping mechanism
+
+
 drop procedure if exists insert_question_category(jsonb);
 create or replace procedure insert_question_category(
     category_data jsonb
@@ -57,7 +60,8 @@ begin
     if not found then
         insert into sign_category
         values (
-                   default, category_data ->> 'title', category_data ->> 'image'
+                   default, category_data ->> 'title', category_data ->> 'image', category_data ->> 'design',
+                   category_data ->> 'purpose', category_data ->> 'design'
                )
         returning id into category_id;
     end if;

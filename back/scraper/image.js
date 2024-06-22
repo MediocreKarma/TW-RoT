@@ -6,6 +6,12 @@ import { headers } from './utils.js';
 import { v4 as uuid4 } from 'uuid';
 import { sleep } from '../common/utils.js';
 
+/**
+ * Download the image content from the given url
+ * 
+ * @param {*} url 
+ * @returns the image buffer
+ */
 async function downloadImage(url) {
     return new Promise((resolve, reject) => {
         const protocol = url.startsWith('https') ? https : http;
@@ -22,6 +28,13 @@ async function downloadImage(url) {
     });
 }
 
+/**
+ * Merge multiple images into one single image, vertically
+ * 
+ * @param {*} imageBuffers the merging images
+ * @param {*} transparent wether the background should be treated as transparent or not
+ * @returns the merged image
+ */
 async function mergeImages(imageBuffers, transparent = true) {
     let images = await Promise.all(
         imageBuffers.map((image) => jimp.read(image))
@@ -69,6 +82,13 @@ async function mergeImages(imageBuffers, transparent = true) {
     return pngBuffer;
 }
 
+/**
+ * Save an image to a given directory with a given image filename
+ * 
+ * @param {*} imageBuffer
+ * @param {*} imageId represents the filename of the image, without the extension
+ * @param {*} outputDirectory the directory to save the image to
+ */
 async function saveImageBuffer(imageBuffer, imageId, outputDirectory) {
     try {
         fs.accessSync(outputDirectory);
@@ -79,6 +99,14 @@ async function saveImageBuffer(imageBuffer, imageId, outputDirectory) {
     fs.writeFileSync(outputFilePath, imageBuffer);
 }
 
+/**
+ * Function to merge a list of imageUrls and save them as one image
+ * to the given output directory
+ * 
+ * @param {*} imageUrls 
+ * @param {*} outputDirectory 
+ * @returns the filename of the saved image, without the extension
+ */
 export async function saveWikiImages(imageUrls, outputDirectory) {
     const imageBuffers = await Promise.all(
         imageUrls.map(async (url) => {
@@ -106,6 +134,13 @@ export async function saveWikiImages(imageUrls, outputDirectory) {
     return id;
 }
 
+/**
+ * Save a given image by url to the given output directory
+ * 
+ * @param {*} imageUrl 
+ * @param {*} outputDirectory 
+ * @returns the image filename, without the extension 
+ */
 export async function saveImage(imageUrl, outputDirectory) {
     const imageBuffer = await downloadImage(imageUrl);
 

@@ -13,6 +13,9 @@ const buildImageForObj = (obj) => {
     return obj;
 };
 
+/**
+ * Handler to retrieve information about all sign categories
+ */
 export const getAllSignCategories = withDatabaseOperation(async function (
     client,
     _req,
@@ -32,6 +35,9 @@ export const getAllSignCategories = withDatabaseOperation(async function (
     );
 });
 
+/**
+ * Handler to get information about one sign category by id
+ */
 export const getSignCategory = withDatabaseOperation(async function (
     client,
     _req,
@@ -77,6 +83,9 @@ export const getSignCategory = withDatabaseOperation(async function (
     );
 });
 
+/**
+ * Handler to get all available comparison categories
+ */
 export const getComparisonCategories = withDatabaseOperation(async function (
     client, _req, _res, _params
 ) {
@@ -87,6 +96,9 @@ export const getComparisonCategories = withDatabaseOperation(async function (
     return new ServiceResponse(200, result, 'Successfully retrieved comparison categories');
 });
 
+/**
+ * Handler to get all available comparisons for a category
+ */
 export const getComparisonCategory = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
@@ -110,6 +122,9 @@ export const getComparisonCategory = withDatabaseOperation(async function (
     return new ServiceResponse(200, result, 'Successfully retrieved comparison category');
 });
 
+/**
+ * Handler to retrieve all related information to a category
+ */
 export const getComparison = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {

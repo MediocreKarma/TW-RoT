@@ -9,6 +9,12 @@ const OUTPUT_DIR = process.env.EXERCISES_IMAGES_DIR;
 // each module has its own DOM parser
 const silencedDOMParser = new DOMParser(silencedDOMParserOptions);
 
+/**
+ * Extract question data from the given file content
+ * 
+ * @param {*} content 
+ * @returns 
+ */
 const getQuestionData = (content) => {
     let doc = silencedDOMParser.parseFromString(content);
 
@@ -51,6 +57,12 @@ const getQuestionData = (content) => {
     return questionData;
 };
 
+/**
+ * Retrieve the next question from the current file content
+ * 
+ * @param {*} content 
+ * @returns the next question link
+ */
 const getNextQuestionLink = (content) => {
     try {
         let doc = silencedDOMParser.parseFromString(content);
@@ -74,6 +86,12 @@ const getNextQuestionLink = (content) => {
     }
 };
 
+/**
+ * Retrieve the first question link for each category
+ * 
+ * @param {*} content the category page file content
+ * @returns the first question link
+ */
 const getFirstQuestionLink = (content) => {
     let doc = silencedDOMParser.parseFromString(content);
     return xpath.select(
@@ -82,6 +100,12 @@ const getFirstQuestionLink = (content) => {
     )[0].value;
 };
 
+/**
+ * Extract the links from the category page 
+ * 
+ * @param {*} content the category page file content
+ * @returns the category links
+ */
 const getCategoryLinks = (content) => {
     let doc = silencedDOMParser.parseFromString(content);
     const xCategories = xpath.select(
@@ -92,6 +116,12 @@ const getCategoryLinks = (content) => {
     return xCategories.slice(1).map((category) => category.value);
 };
 
+/**
+ * Process each categories link from the given website link
+ * 
+ * @param {*} link the scraped website link
+ * @returns 
+ */
 const processCategoryLink = async (link) => {
     const splitLink = link.split('/');
     const categoryId = splitLink[splitLink.length - 2];
@@ -123,8 +153,10 @@ const processCategoryLink = async (link) => {
     };
 };
 
-const insertQuestionCategoryToDb = async (categoryData) => {};
-
+/**
+ * Execute scraping for all questions
+ * @returns the scraped content
+ */
 export const scrapeQuestions = async () => {
     try {
         let url =
@@ -140,6 +172,9 @@ export const scrapeQuestions = async () => {
     }
 };
 
+/**
+ * Populate the database of questions, and also create images where adequate
+ */
 export const populateQuestions = async () => {
     console.log('Scraping questions');
     const questionCategories = await scrapeQuestions();
