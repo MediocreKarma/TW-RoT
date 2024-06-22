@@ -31,14 +31,15 @@ export const getAllExerciseCategories = withDatabaseOperation(async function (
         'select ' +
             '   qc.title as title, ' +
             '   qc.id as id, ' +
-            '   count(q.id) filter (where aq.answered_correctly) as "solved", ' +
-            '   count(q.id) filter (where not aq.answered_correctly) as "wrong", ' +
-            '   count(q.id) as "total" \n' +
+            '   count(q.id) filter (where aq.answered_correctly and not q.deleted) as "solved", ' +
+            '   count(q.id) filter (where not aq.answered_correctly and not q.deleted) as "wrong", ' +
+            '   count(q.id) filter (where not q.deleted) as "total" \n' +
             'from question_category qc\n' +
             'left join question q\n' +
             '    on q.category_id = qc.id\n' +
             'left join answered_question aq\n' +
             '    on aq.question_id = q.id and aq.user_id = $1::int\n' +
+            '    where not q.deleted\n' +
             'group by qc.id, qc.title\n' +
             'order by qc.id;',
         [userId]
@@ -95,7 +96,7 @@ export const getUnsolvedQuestion = withDatabaseOperation(async function (
                         question q
                         left join answered_question aq on q.id = aq.question_id and aq.user_id = $1::int
                     where
-                        (aq.id is NULL or not aq.answered_correctly)
+                        (aq.id is NULL or not aq.answered_correctly) and not q.deleted
                     order by 
                         random()
                     limit 
@@ -140,7 +141,7 @@ export const getUnsolvedQuestionByCategory = withDatabaseOperation(async functio
                             question q 
                             left join answered_question aq on q.id = aq.question_id and aq.user_id = $1::int
                         where 
-                            (aq.id is NULL or not aq.answered_correctly) and q.category_id = $2::int
+                            (aq.id is NULL or not aq.answered_correctly) and q.category_id = $2::int and not q.deleted
                         order by 
                             random()
                         limit 
@@ -185,7 +186,7 @@ export const getIncorrectlySolvedQuestion = withDatabaseOperation(async function
                             question q 
                             left join answered_question aq on q.id = aq.question_id and aq.user_id = $1::int
                         where 
-                            not aq.answered_correctly
+                            not aq.answered_correctly and not q.deleted
                         order by 
                             random()
                         limit 
@@ -226,7 +227,7 @@ export const getSolution = withDatabaseOperation(async function (
         '    from answer a \n' +
         '    join question q\n' +
         '        on a.question_id = q.id\n' +
-        '        where q.id = $1::int;',
+        '        where q.id = $1::int and not q.deleted',
         [questionId]
     )).rows;
 

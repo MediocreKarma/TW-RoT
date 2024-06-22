@@ -10,9 +10,9 @@ import { v4 as uuid4 } from 'uuid';
 
 const SQL_WHERE_FETCH_STATEMENT = 
     `WHERE 
-        q.text LIKE '%' || $1::varchar || '%' 
+        (q.text LIKE '%' || $1::varchar || '%' 
         OR qc.title LIKE '%' || $1::varchar || '%' 
-        OR a.description LIKE '%' || $1::varchar || '%'`;
+        OR a.description LIKE '%' || $1::varchar || '%') and not q.deleted `;
 
 export const fetchQuestions = withDatabaseOperation(async function (
     client, _req, _res, params
@@ -93,12 +93,18 @@ const prepImage = async (question) => {
     if (!question.image) {
         return {image: null, imageId: null};
     }
-    const buffer = Buffer.from(question.image.replace(/^data:image\/\w+;base64,/, ''), 'base64')
-    const image = await Jimp.read(buffer);
-    const imageId = uuid4();
-    question.imageId = imageId;
-    addImageToQuestion(question);
-    return {image: image, imageId: imageId};
+    try {
+        const buffer = Buffer.from(question.image.replace(/^data:image\/\w+;base64,/, ''), 'base64')
+        const image = await Jimp.read(buffer);
+        const imageId = uuid4();
+        question.imageId = imageId;
+        addImageToQuestion(question);
+        return {image: image, imageId: imageId};
+    }
+    catch (err) {
+        delete question.image;
+        return {image: null, imageId: null};
+    }
 }
 
 const handleCategory = async (client, question, update = false) => {
@@ -147,22 +153,7 @@ const validateQuestion = async (client, question, update = false) => {
     }
 }
 
-export const addQuestion = withDatabaseTransaction(async function (
-    client, _req, _res, params
-) {
-    const question = params['body'];
-    const validation = validateQuestion(client, question);
-    if (validation instanceof ServiceResponse) {
-        return validation;
-    }
-
-    const {image, imageId} = await prepImage(question);
-
-    question.id = (await client.query(
-        `insert into question (category_id, text, image_id) values ($1::int, $2::varchar, $3::text) returning id`,
-        [question.categoryId, question.text, imageId]
-    )).rows[0].id;
-
+const writeQuestion = async function(client, question, image = null, imageId = null) {
     let answerData = [question.id, question.answers[0].description, question.answers[0].correct];
     const insertValue = `, ($1::int, $x::varchar, $y::boolean)`;
     let insertStatement = '($1::int, $2::varchar, $3::boolean)';
@@ -186,17 +177,51 @@ export const addQuestion = withDatabaseTransaction(async function (
     }
 
     return new ServiceResponse(201, question, 'Successfully created question');
+}
+
+export const addQuestion = withDatabaseTransaction(async function (
+    client, _req, _res, params
+) {
+    const authValidation = validateAuth(params['authorization']);
+    if (authValidation instanceof ServiceResponse) {
+        return authValidation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+    const question = params['body'];
+    const validation = validateQuestion(client, question);
+    if (validation instanceof ServiceResponse) {
+        return validation;
+    }
+
+    const {image, imageId} = await prepImage(question);
+
+    question.id = (await client.query(
+        `insert into question (category_id, text, image_id) values ($1::int, $2::varchar, $3::text) returning id`,
+        [question.categoryId, question.text, imageId]
+    )).rows[0].id;
+
+    return await writeQuestion(client, question, image, imageId);
 });
 
 export const updateQuestion = withDatabaseTransaction(async function(
     client, _req, _res, params
 ) {
+    const authValidation = validateAuth(params['authorization']);
+    if (authValidation instanceof ServiceResponse) {
+        return authValidation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
     const qId = params['path']?.id;
     if (!isStringValidInteger(qId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_ID}, 'Invalid question id');
     }
     const originalRows = (await client.query(
-        `${SQL_SELECT_STATEMENT} where q.id = $1::int ${SQL_GROUPING_STATEMENT}`
+        `${SQL_SELECT_STATEMENT} where q.id = $1::int and not q.deleted ${SQL_GROUPING_STATEMENT}`,
+        [qId]
     )).rows;
     if (originalRows.length === 0) {
         return new ServiceResponse(404, {errorCode: ErrorCodes.QUESTION_NOT_FOUND}, 'No such question');
@@ -223,18 +248,45 @@ export const updateQuestion = withDatabaseTransaction(async function(
                 id = $4::int`,
         [question.categoryId, question.text, imageId, qId]
     );
-
     await client.query(
         `delete from answered_question where question_id = $1::int`,
         [qId]
     );
     await client.query(
-        `delete from answer where answers`
-    )
+        `delete from answer where question_id = $1::int`,
+        [qId]
+    );
+
+    const response = await writeQuestion(client, question, image, imageId);
+    response.status = 200;
+    response.message = 'Successfully updated question';
+    return response;
 });
 
 export const deleteQuestion = withDatabaseTransaction(async function (
     client, _req, _res, params
 ) {
-
+    const authValidation = validateAuth(params['authorization']);
+    if (authValidation instanceof ServiceResponse) {
+        return authValidation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+    const qId = params['path'].id;
+    if (!isStringValidInteger(qId)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_ID}, 'Invalid question id');
+    }
+    const affected = (await client.query(
+        `update question set deleted = true where id = $1::int`,
+        [qId]
+    )).rowCount;
+    if (affected === 0) {
+        return new ServiceResponse(404, {errorCode: ErrorCodes.QUESTION_NOT_FOUND}, 'Question not found');
+    }
+    await client.query(
+        `delete from answered_question where question_id = $1::int`,
+        [qId]
+    );
+    return new ServiceResponse(204, null, 'Successfully deleted question');
 });
