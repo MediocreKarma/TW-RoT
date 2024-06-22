@@ -34,8 +34,9 @@ export const onFormSubmit = async (questionData, questionCard, event) => {
         await submitSolution(questionData.id, submitData);
         window.location.reload(); // aka get the next question, or results if ended... etc
     } catch (e) {
-        showInfoModal(renderError(e));
-        setDisabled(questionCard, false);
+        showInfoModal(renderError(e), () => {
+            window.location.reload();
+        });
         return;
     }
 };
@@ -82,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        const question = await getFirstUnansweredQuestion(); // TODO: ERROR CHECK!!
+        const question = await getFirstUnansweredQuestion();
         const stats = await getQuestionnaireStats();
 
         const questionCard = await renderQuestionnaireQuestion(question, stats);

@@ -1,3 +1,4 @@
+import { ErrorCodes } from '/js/constants.js';
 import {
     getQuestionnaire as apiGetQuestionnaire,
     createQuestionnaire as apiCreateQuestionnaire,
@@ -49,23 +50,31 @@ export const setQuestionnaireTimeout = async () => {
 };
 
 // gets user's questionnaire without creating a new one
-export const getQuestionnaire = async () => {
-    const data = localStorage.getItem('questionnaire');
+// forceInvalidate forces fetching from server
+export const getQuestionnaire = async (forceInvalidate = false) => {
+    if (!forceInvalidate) {
+        const data = localStorage.getItem('questionnaire');
 
-    if (data) {
-        const jsonData = JSON.parse(data);
+        if (data) {
+            try {
+                const jsonData = JSON.parse(data);
+                let countDownDate = new Date(
+                    jsonData.questionnaire.generatedTime
+                ).getTime();
+                countDownDate = new Date(
+                    countDownDate + QUESTIONNAIRE_INTERVAL_MS
+                );
 
-        let countDownDate = new Date(
-            jsonData.questionnaire.generatedTime
-        ).getTime();
-        countDownDate = new Date(countDownDate + QUESTIONNAIRE_INTERVAL_MS);
+                var now = new Date().getTime();
 
-        var now = new Date().getTime();
+                var distance = countDownDate - now;
 
-        var distance = countDownDate - now;
-
-        if (distance > 0 && !jsonData.questionnaire.registered) {
-            return jsonData;
+                if (distance > 0 && !jsonData.questionnaire.registered) {
+                    return jsonData;
+                }
+            } catch (e) {
+                // continue
+            }
         }
     }
 
@@ -107,12 +116,7 @@ export const setQuestionSolved = async (questionId, solvedStatus) => {
     }
 };
 
-export const getQuestionnaireStats = async () => {
-    const questionnaire = await getQuestionnaire();
-    if (!questionnaire) {
-        return null;
-    }
-
+export const getQuestionnaireStatsFromExisting = (questionnaire) => {
     const totalQuestions = questionnaire.questions.length;
     const wrongQuestions = questionnaire.questions.filter(
         (q) => q.sent && !q.solved
@@ -127,6 +131,17 @@ export const getQuestionnaireStats = async () => {
         unsolvedQuestions: wrongQuestions,
         unsentQuestions,
     };
+};
+
+export const getQuestionnaireStats = async (questionnaireData = undefined) => {
+    const questionnaire = questionnaireData
+        ? questionnaireData
+        : await getQuestionnaire();
+    if (!questionnaire) {
+        return null;
+    }
+
+    return getQuestionnaireStatsFromExisting(questionnaire);
 };
 
 export const getUnsolvedQuestionsCount = () => {
@@ -189,18 +204,31 @@ export const submitSolution = async (questionId, answerData) => {
         return;
     }
 
-    const response = await apiSubmitQuestionnaireSolution(
-        user.id,
-        questionId,
-        answerData
-    );
+    try {
+        const response = await apiSubmitQuestionnaireSolution(
+            user.id,
+            questionId,
+            answerData
+        );
 
-    // save to questionnaire
-    const question = questionnaire.questions.find((q) => q.id === questionId);
-    if (question) {
-        question.sent = true;
-        question.solved = response.isCorrect;
-        saveQuestionnaire(questionnaire);
+        // save to questionnaire
+        const question = questionnaire.questions.find(
+            (q) => q.id === questionId
+        );
+        if (question) {
+            question.sent = true;
+            question.solved = response.isCorrect;
+            saveQuestionnaire(questionnaire);
+        }
+    } catch (e) {
+        if (
+            e?.body?.errorCode !==
+            ErrorCodes.QUESTION_SOLUTION_ALREADY_SUBMITTED
+        ) {
+            throw e;
+        }
+        getQuestionnaire(true); // force reload of questionnaire
+        throw e;
     }
     await trySubmittingQuestionnaireAutomatically();
 };

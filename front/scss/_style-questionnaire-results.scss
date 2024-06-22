@@ -1,0 +1,107 @@
+@use 'utils';
+@use 'vars';
+@use 'color-themes';
+
+.questionnaire-results {
+    @include utils.main-page-container;
+
+    &__stats {
+        background-color: rgba(212, 212, 212, 0.25);
+        border-color: rgb(122, 122, 122);
+        border: 1px solid;
+        border-radius: vars.$border-radius;
+        padding: vars.$padding-small;
+        display: flex;
+        flex-direction: column;
+        gap: vars.$padding-small;
+
+        text-align: center;
+
+        h3 {
+            margin: 0;
+        }
+    }
+
+    &__questions {
+        display: flex;
+        flex-direction: column;
+        gap: vars.$padding-small;
+    }
+
+    &__buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: vars.$padding-small;
+    }
+
+    &__question {
+        border: 1px solid;
+        border-radius: vars.$border-radius;
+        padding: vars.$padding-small;
+        display: flex;
+        flex-direction: column;
+        gap: vars.$padding-small;
+
+        h3,
+        ul {
+            margin: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        &--solved {
+            background-color: rgba(44, 255, 44, 0.25);
+            border-color: rgb(44, 255, 44);
+        }
+
+        &--unsolved {
+            background-color: rgba(255, 44, 44, 0.25);
+            border-color: rgb(255, 44, 44);
+        }
+
+        &--unsent {
+            background-color: rgba(212, 212, 212, 0.25);
+            border-color: rgb(122, 122, 122);
+        }
+
+        &__image {
+            flex: 0 0 30%;
+            padding: 0;
+
+            img {
+                border-radius: vars.$border-radius;
+                box-shadow: vars.$box-shadow;
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        &__contents {
+            display: flex;
+            justify-content: space-between;
+            gap: vars.$padding-small;
+            @media only screen and (max-width: calc(vars.$media-query-size-big + 100px)) {
+                flex-direction: column-reverse;
+            }
+        }
+    }
+
+    &__answer {
+        &__status {
+            display: inline-block;
+            margin: 4px;
+            padding: 4px;
+            border-radius: 4px;
+            &--wrong {
+                background-color: rgb(245, 82, 82);
+            }
+            &--correct {
+                background-color: rgb(80, 212, 80);
+            }
+        }
+    }
+}
