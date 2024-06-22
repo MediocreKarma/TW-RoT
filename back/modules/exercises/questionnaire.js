@@ -51,7 +51,7 @@ const adjustQuestionnaireOutputAnswerSets = (questions) => {
     return questions;
 }
 
-export const validateAnswerSetInput = (answers, booleanProperty = 'selected', validateDescription = true, validateId = true) => {
+export const validateAnswerSetInput = (answers, booleanProperty = 'selected', validateDescription = false, validateId = true) => {
     if (!answers) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWERS_NOT_IN_BODY}, 'Answers id not in body');
     }
@@ -182,6 +182,9 @@ export const getQuestionnaire = withDatabaseOperation(async function (
     }
 
     const result = await getQuestionnaireQuestions(client, questionnaire['id']);
+    if (!questionnaire.registered) {
+        result.forEach(q => q.answers.forEach(ans => delete ans.correct));
+    }
 
     adjustQuestionnaireOutputAnswerSets(result);
     addImageToQuestions(result);
@@ -220,6 +223,7 @@ export const createQuestionnaire = withDatabaseOperation(async function (
     adjustQuestionnaireOutputAnswerSets(result);
     addImageToQuestions(result);
     addSelectedToQuestionSet(result);
+    result.forEach(q => q.answers.forEach(ans => delete ans.correct));
 
     return new ServiceResponse(
         200,

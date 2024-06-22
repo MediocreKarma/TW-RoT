@@ -95,7 +95,7 @@ create table question (
     category_id int references question_category (id) on delete cascade,
     text varchar(4096),
     image_id varchar(256),
-    deleted boolean
+    deleted boolean default false
 );
 
 create table answer (

@@ -134,7 +134,7 @@ const validateQuestion = async (client, question, update = false) => {
     if (qstInfoValidation) {
         return qstInfoValidation;
     }
-    const answerInputValidation = validateAnswerSetInput(question.answers, 'correct', !update, !update);
+    const answerInputValidation = validateAnswerSetInput(question.answers, 'correct', true, false);
     if (answerInputValidation) {
         return answerInputValidation;
     }
@@ -226,19 +226,10 @@ export const updateQuestion = withDatabaseTransaction(async function(
 
     // TODO: DIFFERENT LENGTH ANSWER SETS | MIGHT JUST DO A SIMPLE LOOP
 
-    let answerData = [question.id, question.answers[0].description, question.answers[0].correct];
-    const insertValue = `, ($x::varchar, $y::boolean)`;
-    let insertStatement = '($1::int, $2::varchar, $3::boolean)';
-    for (let i = 1; i < question.answers.length; ++i) {
-        insertStatement = insertStatement + insertValue.replace('x', i * 2 + 2).replace('y', i * 2 + 3);
-        answerData.push(question.answers[i].description, question.answers[i].correct);
-    }
+    question.answers.sort((a, b) => a.id - b.id);
+    original.answers.sort((a, b) => a.id - b.id);
 
-    const answerIds = (await client.query(
-        `insert into answer (question_id, description, correct) values
-            ${insertStatement} returning id`,
-        answerData
-    )).rows;
+    
 
 });
 

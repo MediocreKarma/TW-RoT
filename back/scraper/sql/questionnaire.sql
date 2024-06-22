@@ -80,7 +80,8 @@ end; $$ language plpgsql;
 drop type if exists answer_t;
 create type answer_t as (
     id int, 
-    description varchar(4096)
+    description varchar(4096),
+    correct boolean
 );
 
 drop function if exists get_questionnaire_questions_by_id(int);
@@ -103,7 +104,7 @@ begin
             gq.selected_fields,
             q.text as question_text, 
             q.image_id as question_image,
-            array_agg(jsonb_build_object('id', a.id, 'description', a.description) order by random()) as answers
+            array_agg(jsonb_build_object('id', a.id, 'description', a.description, 'correct', a.correct) order by random()) as answers
         FROM
             generated_question gq
         join 
