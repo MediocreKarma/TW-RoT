@@ -51,7 +51,7 @@ const adjustQuestionnaireOutputAnswerSets = (questions) => {
     return questions;
 }
 
-export const validateAnswerSetInput = (answers, booleanProperty = 'selected', validateDescription = false, validateId = true) => {
+export const validateAnswerSetInput = (answers, booleanProperty = 'selected', verifyDescription = false, verifyId = true) => {
     if (!answers) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWERS_NOT_IN_BODY}, 'Answers id not in body');
     }
@@ -59,14 +59,14 @@ export const validateAnswerSetInput = (answers, booleanProperty = 'selected', va
     answerIds[0] = true;
     let i = 1;
     for (const answer of answers) {
-        const answerIdValidation = validateId(validateId ? i : answer['id'], 'answer_id');
+        const answerIdValidation = validateId(verifyId ? i : answer['id'], 'answer_id');
         if (answerIdValidation) {
             return answerIdValidation;
         }
         if (!isBoolean(answer[booleanProperty])) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_MISSING_BOOLEAN_PROPERTY}, `Missing ${booleanProperty} property`);
         }
-        if (validateDescription && !answer.description) {
+        if (verifyDescription && !answer.description) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_MISSING_DESCRIPTION}, `Missing description in answer`);
         }
         if (answer['id'] < 1) {
@@ -75,7 +75,7 @@ export const validateAnswerSetInput = (answers, booleanProperty = 'selected', va
         if (answer['id'] >= answerIds.length) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_ID_TOO_HIGH}, 'Answer id too high');
         }
-        answerIds[validateId ? i : answer['id']] = true;
+        answerIds[verifyId ? i : answer['id']] = true;
         i++;
     }
     if (!answerIds.every((b) => b)) {
