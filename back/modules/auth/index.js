@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 dotenv.config({path: '../../.env'});
-import fs from 'fs';
 
 import {AppRouter} from "../_common/appRouter.js";
 import { isAuthenticated, login, logout, register, requestCredentialChange, verify, verifyChangeRequest } from './service.js';

@@ -8,12 +8,21 @@ import { SQL_SELECT_STATEMENT, SQL_GROUPING_STATEMENT, adjustOutputAnswerSet, ad
 import Jimp from "jimp";
 import { v4 as uuid4 } from 'uuid';
 
+/**
+ * Default sql fetch statement for questions
+ */
 const SQL_WHERE_FETCH_STATEMENT = 
     `WHERE 
         (q.text LIKE '%' || $1::varchar || '%' 
         OR qc.title LIKE '%' || $1::varchar || '%' 
         OR a.description LIKE '%' || $1::varchar || '%') and not q.deleted `;
 
+/**
+ * Admin handler, fetches question in paginated manner.
+ * Accepts a query parameter. If integer, the fetcher will
+ * return only the question matching the id. Otherwise, will
+ * attempt to match the query string to all related questions
+ */
 export const fetchQuestions = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
@@ -38,12 +47,7 @@ export const fetchQuestions = withDatabaseOperation(async function (
             `${SQL_SELECT_STATEMENT} where q.id = $1::int ${SQL_GROUPING_STATEMENT}`,
             [query]
         )).rows;
-
-        if (qst.length === 0) {
-            return new ServiceResponse(404, {errorCode: ErrorCodes.QUESTION_ID_NOT_FOUND}, 'No such question id');
-        }
-        
-        return new ServiceResponse(200, {total: 1, data: qst[0]}, 'Successfully retrieved question');
+        return new ServiceResponse(200, {total: qst.length, data: qst}, 'Successfully retrieved question');
     }
 
     const cnt = parseInt((await client.query(
@@ -199,6 +203,10 @@ const writeQuestion = async function(client, question, image = null, imageId = n
     return new ServiceResponse(201, question, 'Successfully created question');
 }
 
+/**
+ * Admin handler for creating a new question.
+ * Uploads images if one is provided in the body as a base64 encoding
+ */
 export const addQuestion = withDatabaseTransaction(async function (
     client, _req, _res, params
 ) {
@@ -225,6 +233,12 @@ export const addQuestion = withDatabaseTransaction(async function (
     return await writeQuestion(client, question, image, imageId);
 });
 
+/**
+ * Admin handler for modifying an existing question.
+ * Invalidates all related answers to the given question and adds new ones.
+ * Removes all related user submissions.
+ * Intrusive, prefer POST & DELETE over update
+ */
 export const updateQuestion = withDatabaseTransaction(async function(
     client, _req, _res, params
 ) {
@@ -283,6 +297,11 @@ export const updateQuestion = withDatabaseTransaction(async function(
     return response;
 });
 
+/**
+ * Mark a question for deletion that will be removed later.
+ * Should not cause issues with existing questionnaires.
+ * The question will be removed from the pool of creating new questionnaires
+ */
 export const deleteQuestion = withDatabaseTransaction(async function (
     client, _req, _res, params
 ) {

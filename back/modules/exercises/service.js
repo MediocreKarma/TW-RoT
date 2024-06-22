@@ -5,6 +5,9 @@ import { ServiceResponse } from '../_common/serviceResponse.js';
 
 const API_IMAGE_URL = `${process.env.EXERCISES_URL}/api/v1/images/{id}.png`;
 
+/**
+ * Default selection statement for a question and all related information
+ */
 export const SQL_SELECT_STATEMENT =
     `select
         q.id as "id",
@@ -18,11 +21,18 @@ export const SQL_SELECT_STATEMENT =
         join answer a on q.id = a.question_id 
         join question_category qc on qc.id = q.category_id`;
 
+/**
+ * Default grouping statement for a question and all related information
+ */
 export const SQL_GROUPING_STATEMENT =
     `group by
         q.id, q.category_id, qc.title, q.text, q.image_id`;
 
 
+/**
+ * Handler function to get all exercise categories. If logged, also returns
+ * the user's statistics for every category
+ */
 export const getAllExerciseCategories = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
@@ -66,6 +76,12 @@ export const getAllExerciseCategories = withDatabaseOperation(async function (
     );
 });
 
+/**
+ * Adds an `image` attribute to a `question` object
+ * 
+ * @param {*} question question entity
+ * @returns the updated question entity
+ */
 export const addImageToQuestion = (question) => {
     question?.imageId
     ? question['image'] = API_IMAGE_URL.replace(/{id}/g, question.imageId)
@@ -73,6 +89,12 @@ export const addImageToQuestion = (question) => {
     return question;
 }
 
+/**
+ * Normalize answer set to have `id`s starting from 1
+ * 
+ * @param {*} answers the answer set
+ * @returns the adjusted answer set
+ */
 export const adjustOutputAnswerSet = (answers) => {
     let minAnswerId = Number.MAX_SAFE_INTEGER;
     for (const answer of answers) {
@@ -82,6 +104,10 @@ export const adjustOutputAnswerSet = (answers) => {
     return answers;
 }
 
+/**
+ * Handler function to get an unsolved question for the given user, if logged,
+ * otherwise any valid question
+ */
 export const getUnsolvedQuestion = withDatabaseOperation(async function (
     client, _req, _res, params
 ) { 
@@ -123,6 +149,10 @@ export const getUnsolvedQuestion = withDatabaseOperation(async function (
     );
 })
 
+/**
+ * Handler function to return an unsolved question for the user by category,
+ * otherwise any question by category if user is not logged
+ */
 export const getUnsolvedQuestionByCategory = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
@@ -170,6 +200,10 @@ export const getUnsolvedQuestionByCategory = withDatabaseOperation(async functio
     );
 });
 
+/**
+ * Handler function to retrieve any incorrectly solved question for a given user.
+ * Errors if not logged. 
+ */
 export const getIncorrectlySolvedQuestion = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {
@@ -216,6 +250,9 @@ export const getIncorrectlySolvedQuestion = withDatabaseOperation(async function
     );
 });
 
+/**
+ * Handler to retrieve the solution of a given question, by id
+ */
 export const getSolution = withDatabaseOperation(async function (
     client, _req, _res, params
 ) {

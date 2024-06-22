@@ -16,7 +16,7 @@ declare
     has_generated_questionnaire int;
     gen_time timestamp;
     already_registered bool;
-    genereated_qst_id int;
+    generated_qst_id int;
 begin
     select 
         gq.generated_time, gq.registered 
@@ -43,7 +43,7 @@ begin
     
     questions_per_category := 26 / category_count;
     extra_questions := 26 % category_count;
-    genereated_qst_id := 26 * (u_id - 1) + 1;
+    generated_qst_id := 26 * (u_id - 1) + 1;
     
     for qc_id in select qc.id from question_category qc order by random() loop
         
@@ -56,9 +56,9 @@ begin
         for question_id in select q.id from question q where q.category_id = qc_id and not q.deleted order by random() limit category_question_count loop
             
             insert into generated_question (id, questionnaire_id, question_id, selected_fields, sent, solved)
-                values (genereated_qst_id, u_id, question_id, 0, false, false);
+                values (generated_qst_id, u_id, question_id, 0, false, false);
 
-            genereated_qst_id := genereated_qst_id + 1;
+            generated_qst_id := generated_qst_id + 1;
         end loop;
     end loop;
 
@@ -150,7 +150,9 @@ as $$
 DECLARE
     correct_bitset int;
     correctness bool := false;
+    dlt bool;
 BEGIN
+    select deleted into dlt from question 
     correct_bitset := get_answer_bitset(q_id);
     correctness := (answer_bitset = correct_bitset);
     insert into answered_question (user_id, question_id, answered_correctly) values (u_id, q_id, correctness)

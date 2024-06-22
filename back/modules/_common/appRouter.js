@@ -10,6 +10,9 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { load, dump } from 'js-yaml';
 
+/**
+ * All implemented HTTP Methods
+ */
 export const Methods = Object.freeze({
     GET:    'GET',
     POST:   'POST',
@@ -18,6 +21,10 @@ export const Methods = Object.freeze({
     PATCH:  'PATCH',
 });
 
+/**
+ * Used as router setting. Signifies wether the server
+ * should validate authentication cookie
+ */
 export const Authentication = Object.freeze({
     REQUIRE: true, IGNORE: false
 })
@@ -26,6 +33,20 @@ const getCWD = () => {
     return dirname(fileURLToPath(import.meta.url));
 };
 
+
+/**
+ * The AppRouter serves the user the api content from the
+ * url request. It allows registering new routes, that are composed of 
+ * a route and a handler function, that must take as parameters a 
+ * request entity, a response entity, and a params object, and must
+ * return a Response entity. 
+ * 
+ * It is capable of parsing dynamic routes, specified using <:pathname>
+ * structures in given routes.
+ * 
+ * Aditionally, generates the appropiate swagger-ui for the server on launch,
+ * if a template is defined, and is capable of serving it.
+ */
 export class AppRouter extends Server {
     routes = new Map([
         [Methods.GET,    new Map()],
@@ -44,7 +65,6 @@ export class AppRouter extends Server {
             (req, res) => this.requestHandler(req, res)
         );
         this.port = port;
-        this.middlewares = [];
         this.auth = auth;
         this.hasDocs = false;
         this.name = name;
@@ -68,11 +88,6 @@ export class AppRouter extends Server {
                 console.log(err);
             }
         }
-    }
-
-    registerMiddleware(handler) {
-        this.middlewares.push(handler);
-        return this;
     }
 
     get(route, handler) {
@@ -150,7 +165,7 @@ export class AppRouter extends Server {
             return;
         }
         
-        if (serveDocFile(req, res)) {
+        if (this.hasDocs && serveDocFile(req, res)) {
             return;
         }
 

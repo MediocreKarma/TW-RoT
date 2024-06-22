@@ -147,6 +147,9 @@ const registerAccount = withDatabaseTransaction(
     }
 );
 
+/**
+ * Handler for account registration
+ */
 export const register = withDatabaseOperation(async function (
     client,
     _req,
@@ -201,6 +204,9 @@ export const register = withDatabaseOperation(async function (
     return new ServiceResponse(204, null, 'Account successfully registered');
 });
 
+/**
+ * Handler for account login
+ */
 export const login = withDatabaseOperation(async function (
     client,
     _req,
@@ -265,6 +271,9 @@ export const login = withDatabaseOperation(async function (
     );
 });
 
+/**
+ * Handler for account email verification
+ */
 export const verify = withDatabaseOperation(async function (
     client,
     _req,
@@ -315,6 +324,10 @@ export const verify = withDatabaseOperation(async function (
     return new ServiceResponse(204, null, 'Sucessfully created account');
 });
 
+/**
+ * Async task for handling account credential change requests without
+ * being susceptible to timing attacks
+ */
 const handleRequestChange = withDatabaseOperation(async function (
     client,
     email,
@@ -373,6 +386,10 @@ const handleRequestChange = withDatabaseOperation(async function (
     } // mute error
 });
 
+/**
+ * Handler for account requesting a credential change. Sends a confirmation email
+ * via an async task
+ */
 export const requestCredentialChange = withDatabaseOperation(async function (
     client,
     req,
@@ -423,6 +440,9 @@ export const requestCredentialChange = withDatabaseOperation(async function (
     );
 });
 
+/**
+ * Perform an email update if possible
+ */
 const updateEmail = withDatabaseTransaction(async (client, userId, newEmail, username = '\b') => {
     if (await isEmailUsed(client, email)) {
         return;
@@ -455,6 +475,9 @@ const updateEmail = withDatabaseTransaction(async (client, userId, newEmail, use
     });
 });
 
+/**
+ * Perform an username update
+ */
 const updateUsername = withDatabaseOperation(async (client, userId, newUsername) => {
     await client.query(
         `update user_account
@@ -464,6 +487,9 @@ const updateUsername = withDatabaseOperation(async (client, userId, newUsername)
     );
 });
 
+/**
+ * Perform a password update
+ */
 const updatePassword = withDatabaseOperation(async (client, userId, newPassword) => {
     const hashedPass = await hashWithBcrypt(newPassword);
     await client.query(
@@ -474,6 +500,9 @@ const updatePassword = withDatabaseOperation(async (client, userId, newPassword)
     );
 });
 
+/**
+ * Verifies the validity of a credential change request
+ */
 export const verifyChangeRequest = withDatabaseTransaction(async function (
     client,
     req,
@@ -539,9 +568,21 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
         }
     }
 
-    await client.query(`delete from user_token where user_id = $1::int`, [
-        userId,
-    ]);
+    if (type === 'username') {
+        const exists = parseInt((await client.query(
+            `select count(' ') as exists from user_account where username = $1::varchar`,
+            [changeValue]
+        )).rows[0].exists, 10);
+
+        if (exists) {
+            return new ServiceResponse(400, {errorCode: ErrorCodes.USERNAME_ALREADY_EXISTS}, 'Username is already taken');
+        }
+    }
+
+    await client.query(
+        `delete from user_token where user_id = $1::int`, 
+        [userId,]
+    );
 
     switch (type) {
         case 'username':
@@ -554,9 +595,15 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
             updateEmail(info['userId'], changeValue, info['username']);
             break;
     }
-    return new ServiceResponse(204, null, 'Succesfully changed credential');
+    return new ServiceResponse(204, null, 'Successfully changed credential');
 });
 
+/**
+ * Utility function to extract the auth cookie
+ * 
+ * @param {*} req the request entity
+ * @returns ServiceResponse on error, the token value on success
+ */
 const getAuthCookie = (req) => {
     const cookieHeader = req.headers?.cookie;
     if (!cookieHeader) {
@@ -587,6 +634,10 @@ const getAuthCookie = (req) => {
     return token;
 };
 
+/**
+ * Handler to validate the authenticated status of a given requester,
+ * by verifying the authentication cookie
+ */
 export const isAuthenticated = withDatabaseOperation(async function (
     client,
     req,
@@ -620,6 +671,10 @@ export const isAuthenticated = withDatabaseOperation(async function (
     return new ServiceResponse(200, { user: result[0] }, 'Token is valid');
 });
 
+/**
+ * Function to remove the current authentication cookie
+ * and destroy the active session
+ */
 export const logout = withDatabaseOperation(async function (
     client,
     req,

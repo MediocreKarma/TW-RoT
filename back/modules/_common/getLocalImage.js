@@ -1,6 +1,15 @@
 import fs from 'fs';
 import { ServiceResponse, ImageResponse } from './serviceResponse.js';
 
+/**
+ * utility function that gets an image from the local ./images folder
+ * for a given pathname delivered in the params object
+ * 
+ * @param {*} _req not required
+ * @param {*} _res not required
+ * @param {*} params the params object of a given request
+ * @returns on error a ServiceResponse and on succes the ImageResponse 
+ */
 export const getImage = async function (_req, _res, params) {
     const filename = params['path']['name'];
     if (!filename) {

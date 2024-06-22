@@ -3,6 +3,9 @@ import { ServiceResponse } from '../_common/serviceResponse.js';
 import { ErrorCodes } from '../../common/constants.js';
 import { isStringValidInteger } from '../../common/utils.js';
 
+/**
+ * Handler function to get all Traffic Code Chapters
+ */
 export const getAllChapters = withDatabaseOperation(async function (
     client,
     _req,
@@ -19,6 +22,9 @@ export const getAllChapters = withDatabaseOperation(async function (
     );
 });
 
+/**
+ * Handler function to retrieve the content of one chapter, by id
+ */
 export const getChapterContent = withDatabaseOperation(async function (
     client,
     _req,

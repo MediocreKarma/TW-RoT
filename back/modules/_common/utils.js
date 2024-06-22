@@ -1,6 +1,14 @@
 import { ServiceResponse } from "./serviceResponse.js";
 import { isStringValidInteger } from "../../common/utils.js";
 
+/**
+ * Utility function to validate the 
+ * authorization of a given user
+ * by checking whether or not it contains an errorCode
+ * 
+ * @param {*} authorization the authorization object
+ * @returns ServiceResponse on error, else null
+ */
 export const validateAuth = (authorization) => {
     if (Number.isInteger(authorization?.errorCode)) {
         return new ServiceResponse(401, {errorCode: authorization?.errorCode}, 'Unauthenticated');
@@ -8,6 +16,13 @@ export const validateAuth = (authorization) => {
     return null;
 }
 
+/**
+ * Validate field is nonnegative integer
+ * 
+ * @param {*} field field to check
+ * @param {*} fieldName the name of the field, for the adequate ErrorCode
+ * @returns ServiceResponse on error, else null
+ */
 const validateNonnegativeIntegerField = (field, fieldName) => {
     const capitalizedFieldName = fieldName.toUpperCase();
     if (!isStringValidInteger(field)) {
@@ -20,6 +35,13 @@ const validateNonnegativeIntegerField = (field, fieldName) => {
     return null;
 }
 
+/**
+ * Validate the start and count query param strings
+ * 
+ * @param {*} startStr 
+ * @param {*} countStr 
+ * @returns ServiceResponse on error, else null
+ */
 export const validateStartAndCountParams = (startStr, countStr) => {
     const startValidation = validateNonnegativeIntegerField(startStr, 'start');
     if (startValidation) {
