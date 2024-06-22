@@ -54,32 +54,23 @@ $$
 declare
     category_id int;
     sign_record jsonb;
-    sign_id int;
 begin
     select sc.id into category_id from sign_category sc where category_data ->> 'title' = sc.title;
     if not found then
-        insert into sign_category
+        insert into sign_category (id, title, image_id, design, purpose, suggestion)
         values (
                    default, category_data ->> 'title', category_data ->> 'image', category_data ->> 'design',
-                   category_data ->> 'purpose', category_data ->> 'design'
+                   category_data ->> 'purpose', category_data ->> 'suggestion'
                )
         returning id into category_id;
     end if;
 
-    for sign_record in select * from jsonb_array_elements(category_data -> 'signs') loop
-
-        select s.id into sign_id from sign s where s.title = sign_record ->> 'title';
-        if not found then
-            insert into sign (id, title, description, image_id)
-            values (
-                default, sign_record ->> 'title',
-                sign_record ->> 'description', sign_record ->> 'image'
-            )
-            returning id into sign_id;
-        end if;
-
-        insert into sign_to_category_relation values (
-            default, category_id, sign_id
+    for sign_record in select * from jsonb_array_elements(category_data -> 'signs') LOOP
+    
+        insert into sign (id, category_id, title, description, image_id)
+        values (
+            default, category_id, sign_record ->> 'title',
+            sign_record ->> 'description', sign_record ->> 'image'
         );
 
     end loop;

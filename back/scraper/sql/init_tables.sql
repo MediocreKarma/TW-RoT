@@ -7,8 +7,6 @@ drop table if exists sign_category cascade;
 
 drop table if exists sign cascade;
 
-drop table if exists sign_to_category_relation cascade;
-
 drop table if exists user_account cascade;
 
 drop table if exists user_token cascade;
@@ -50,15 +48,10 @@ create table sign_category (
 
 create table sign(
     id serial primary key,
-    title varchar(256) unique,
+    category_id int references sign_category (id) on delete cascade,
+    title varchar(256) not null,
     description varchar(2048),
     image_id varchar(256)
-);
-
-create table sign_to_category_relation (
-    id serial primary key,
-    category_id int references sign_category (id) on delete cascade,
-    sign_id int references sign(id) on delete cascade 
 );
 
 create table user_account (

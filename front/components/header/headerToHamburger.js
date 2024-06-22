@@ -7,7 +7,6 @@ export default function headerToHamburger() {
         const elem = elements.item(i);
         desktop_media_size += elem.getBoundingClientRect().width;
     }
-    console.log(desktop_media_size);
     let media_query = window.matchMedia(
         '(max-width: ' + desktop_media_size + 'px)'
     );

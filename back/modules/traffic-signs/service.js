@@ -54,7 +54,7 @@ export const getSignCategory = withDatabaseOperation(async function (
     }
     const results = (
         await client.query(
-            'select id, title, design, purpose, suggestion, image_id as "imageId" from sign_category where id=$1::int',
+            'select id, title, design, purpose, suggestion, image_id as "imageId" from sign_category where id = $1::int',
             [id]
         )
     ).rows;
@@ -70,11 +70,14 @@ export const getSignCategory = withDatabaseOperation(async function (
     const categoryInfo = buildImageForObj(results[0]);
     const signCategory = (
         await client.query(
-            'select s.id, s.title, s.description, s.image_id as "imageId"' +
-                'from sign s join sign_to_category_relation stcr on stcr.sign_id = s.id where stcr.category_id = $1::int',
+            'select id, title, description, image_id as "imageId"' +
+                'from sign s where category_id = $1::int',
             [id]
         )
     ).rows;
+
+    console.log({ category: categoryInfo, signs: signCategory });
+
     signCategory.forEach((sign) => buildImageForObj(sign));
     return new ServiceResponse(
         200,

@@ -45,6 +45,28 @@ const showCards = (targetNode, cardsData) => {
     });
 };
 
+const showInfo = (targetNode, categoryInfo) => {
+    const attributeMapping = new Map([
+        ["Aspect", "design"],
+        ["Rol", "purpose"],
+        ["Sugestii", "suggestion"]
+    ]);
+    console.log(categoryInfo);
+    targetNode.querySelectorAll('.category-info__row').forEach(row => {
+        const keyElement = row.querySelector('.category-info__key');
+        const valueElement = row.querySelector('.category-info__value');
+        if (keyElement && valueElement) {
+            try {
+                const key = keyElement.textContent.trim();
+                valueElement.innerText = categoryInfo[attributeMapping.get(key)];
+            }
+            catch (err) {
+                valueElement.innerText = "Nu s-a putut încărca informația"
+            }
+        }
+    });
+}
+
 const showCategory = async () => {
     const id = document.location.pathname.replace(/\/+$/, '').split('/').pop();
 
@@ -54,10 +76,17 @@ const showCategory = async () => {
     const title = document.getElementById('sign-category-title');
     showLoading(title);
 
+    const info = document.getElementById('category-info');
+    
+    info.querySelectorAll('.category-info__value').forEach(value => {
+        showLoading(value);
+    });
+
     try {
         const categoryData = await fetchCategory(id);
-        showCards(container, categoryData.signs);
         title.innerText = categoryData.category.title;
+        showInfo(info, categoryData.category);
+        showCards(container, categoryData.signs);
     } catch (e) {
         showInfoModal(renderError(e), () => {
             window.location.href = '/traffic-signs';

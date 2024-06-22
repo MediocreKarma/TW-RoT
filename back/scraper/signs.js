@@ -173,11 +173,11 @@ export const scrapeSigns = async () => {
 export const populateSigns = async () => {
 
     const aiSystemMessage = `Esti responsabil de descriererea unor categorii de semne de circulatie din Romania`;
-    const aiQuery = `Scrie-mi despre semnele de circulatie din romania de tip '{TYPE}'. 
-        Exprima cat detaliu este necesar. Incearca sa nu te repeti. Incearca sa scrii intre 20 si 100 de cuvinte:
-        Descrie urmatoarele aspecte: Aspectul semnului, rolul semnului, si sugestii la intalnirea semnului.
-        Raspunsul trebuie sa fie sub forma de JSON in formatul {"design": "string", "purpose": "string", "suggestion: string"}.
-        Te rog nu marca mesajul cu \`\`\`json, returneaza doar obiectul. Construieste string-urile precum propozit precum propozitii, cu prima litera mare.`
+    const aiQuery = `Scrie-mi despre categoria de semne de circulatie de tip '{TYPE}'. 
+        Da-mi cat mai mult detaliu. Incearca sa nu te repeti.
+        Descrie urmatoarele aspecte: Aspectul categoriei de semne, rolul categoriei de semne, si sugestii la intalnirea unui semn din categorie.
+        Raspunsul trebuie sa fie sub forma de JSON in formatul {"design": "string", "purpose": "string", "suggestion": "string"}.
+        Construieste string-urile precum propozit precum propozitii, cu prima litera mare, si macar 20 de cuvinte.`
 
 
     const scrapedCategories = await scrapeSigns();
@@ -217,14 +217,14 @@ export const populateSigns = async () => {
             }
             const completion = await getOpenAIResponse(aiSystemMessage, aiQuery.replace(/{TYPE}/g, scrapedCategory.title));
             console.log(completion);
-
-            let parsedCompletion = {};
+            let parsedCompletion;
             try {
-                parsedCompletion = JSON.parse(completion);
+                const completionJson = completion.match(/({(?:.|\n)*?})/)[1];
+                parsedCompletion = JSON.parse(completionJson);
             }
             catch (err) {
                 console.log(err);
-                parsedCompletion = {};
+                parsedCompletion = {design: "", purpose: "", suggestion: ""};
             }
             const fullCategoryData = Object.assign(scrapedCategoryWithImageIds, parsedCompletion);
 

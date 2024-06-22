@@ -33,7 +33,6 @@ export default function updateButtons() {
     loginLinkLi.parentNode.insertBefore(profileLinkLi, loginLinkLi);
 
     if (!isAdmin()) {
-        console.log('yeah');
         return;
     }
 
