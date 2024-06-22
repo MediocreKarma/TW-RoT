@@ -49,7 +49,6 @@ export const onFormSubmit = async (questionData, questionCard, event) => {
 
     const user = cachedUserData();
 
-    // TODO: set disabled to true
     setDisabled(questionCard, true);
 
     let answerData;

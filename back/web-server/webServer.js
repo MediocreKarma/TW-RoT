@@ -31,6 +31,7 @@ export class WebServer extends Server {
         this.dynamicRoutes = new Map();
         this.wildcardRoutes = new Map();
         this.fixedAdminRoutes = new Map();
+        this.dynamicAdminRoutes = new Map();
         this.wildcardAdminRoutes = new Map();
     }
 
@@ -58,6 +59,10 @@ export class WebServer extends Server {
     addFixedAdminRoute(route, redirect) {
         this.validateFixedRoute(route);
         this.fixedAdminRoutes.set(route, redirect);
+    }
+
+    addDynamicAdminRoute(route, redirect) {
+        this.dynamicAdminRoutes.set(route, redirect);
     }
 
     addWildcardAdminRoute(route, redirect) {
@@ -100,6 +105,22 @@ export class WebServer extends Server {
             if (!this.matchFixedRoute(route, pathname)) {
                 continue;
             }
+            const auth = await getAuth(req, res);
+            if (!isAdmin(auth)) {
+                this.serveFile(this.notFoundRoute.redirect, res, 404);
+                return;
+            }
+
+            this.serveFile(filepath, res);
+            return;
+        }
+
+        for (const [route, filepath] of this.dynamicAdminRoutes) {
+            const pathParams = this.matchDynamicRoute(route, pathname);
+            if (pathParams === null) {
+                continue;
+            }
+
             const auth = await getAuth(req, res);
             if (!isAdmin(auth)) {
                 this.serveFile(this.notFoundRoute.redirect, res, 404);
@@ -251,7 +272,6 @@ export class WebServer extends Server {
 
         try {
             // if filePath has no extension, add HTML extension
-            // TODO: figure out whether this introduces a vulnerability
             const sanitizedFilepath = filepath.replace(/\/+$/, '');
 
             if (isBlacklisted(sanitizedFilepath)) {

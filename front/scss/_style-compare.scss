@@ -36,11 +36,10 @@
         }
 
         select {
+            width: 100%;
             appearance: none;
             border-radius: vars.$border-radius;
             display: block;
-            width: 100%;
-            max-width: 600px;
             height: 3rem;
             float: right;
             margin: 5px 0px;

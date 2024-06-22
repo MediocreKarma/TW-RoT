@@ -236,10 +236,7 @@ export const submitSolution = async (questionId, answerData) => {
 export const trySubmittingQuestionnaireAutomatically = async () => {
     const questionnaireStats = await getQuestionnaireStats();
 
-    const timedOut = false; // TODO: CHECK WITH GENERATED TIME....
-
-    // either you timed out or you're cooked
-    if (!timedOut && questionnaireStats.unsolvedQuestions < 4) {
+    if (questionnaireStats.unsolvedQuestions < 4) {
         return;
     }
 

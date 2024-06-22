@@ -91,7 +91,7 @@ const renderCard = (question) => {
             showInfoModal(
                 renderMessage('Întrebarea a fost ștearsă cu succes.')
             );
-            showData();
+            updatePageContent();
         } catch (e) {
             showInfoModal(renderError(e));
         }
@@ -109,7 +109,7 @@ const renderCard = (question) => {
     return card;
 };
 
-function showCards(questions) {
+function showData(questions) {
     const container = document.getElementById('dashboard-cards');
     container.innerHTML = '';
     questions.forEach((question) => {
@@ -120,6 +120,14 @@ function showCards(questions) {
 
 const getPaginationRange = (total, count, currentPage) => {
     const totalPages = Math.ceil(total / count);
+    if (totalPages === 0) {
+        return [
+            {
+                value: 0,
+                selected: true,
+            },
+        ];
+    }
 
     let range = [];
     let rangeStart = Math.max(0, currentPage - 2);
@@ -149,7 +157,7 @@ function scrollToTop() {
 const setPage = async (page) => {
     currentPage = page;
     updateUrlParameter('page', currentPage);
-    await showData();
+    await updatePageContent();
 
     // scrollToTop seems to glitch because the content isn't loaded on the screen yet
     // so we wait a little bit
@@ -194,12 +202,14 @@ const updatePagination = (page, total, count) => {
         paginationContainer.appendChild(renderPaginationNode(value, selected));
     });
 
-    const lastPage = Math.ceil(total / count) - 1;
+    console.log(total + ' ' + count);
+    const lastPage = total < count ? 0 : Math.ceil(total / count) - 1;
+    console.log(lastPage);
 
     paginationContainer.appendChild(
         renderPaginationNode(
-            Math.min(page + 1, lastPage),
-            page === Math.min(page + 1, lastPage),
+            Math.max(Math.min(page + 1, lastPage), 0),
+            page === Math.max(Math.min(page + 1, lastPage), 0),
             '>'
         )
     );
@@ -216,8 +226,10 @@ const setInitialParams = () => {
     updateUrlParameter('page', currentPage);
 
     currentQuery = queryParam ? queryParam : undefined;
-    const searchInput = document.getElementById('search');
-    searchInput.value = currentQuery;
+    if (currentQuery) {
+        const searchInput = document.getElementById('search');
+        searchInput.value = currentQuery;
+    }
 };
 
 const currentStart = () => {
@@ -251,10 +263,10 @@ const search = async (query) => {
     currentQuery = query;
     updateUrlParameter('query', currentQuery);
     setPage(defaultPage);
-    await showData();
+    await updatePageContent();
 };
 
-async function showData() {
+async function updatePageContent() {
     let data;
     try {
         disablePagination();
@@ -263,10 +275,14 @@ async function showData() {
             COUNT,
             currentQuery
         );
+
         data = responseData.data;
+        if (!Array.isArray(data)) {
+            data = [data];
+        }
         total = responseData.total;
 
-        showCards(data);
+        showData(data);
         updatePagination(currentPage, total, COUNT, currentQuery);
     } catch (e) {
         showInfoModal(renderError(e), () => {
@@ -308,5 +324,5 @@ const addListenerToSearch = () => {
 document.addEventListener('DOMContentLoaded', async () => {
     setInitialParams();
     addListenerToSearch();
-    await showData();
+    await updatePageContent();
 });

@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (questionnaireData?.questionnaire?.registered === true) {
-        window.location.href = '/exercises/questionnaire/results'; // TODO
+        window.location.href = '/exercises/questionnaire/results';
     }
 
     if (!questionnaireData) {
