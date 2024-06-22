@@ -6,8 +6,8 @@ import API from '/js/api.js';
 import { post } from '/js/requests.js';
 
 const apiVerifyToken = async (token) => {
-    const response = await post(`${API.AUTH}/auth/verify`, { token });
-    return await response.json();
+    await post(`${API.AUTH}/auth/verify`, { token });
+    // return await response.json();
 };
 
 const verifyToken = async () => {

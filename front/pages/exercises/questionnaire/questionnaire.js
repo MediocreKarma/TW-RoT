@@ -5,7 +5,7 @@ import {
     getQuestionnaireStats,
     submitSolution,
     skipQuestion,
-} from './utils.js';
+} from './common.js';
 import { cachedUserData } from '/js/auth.js';
 import { renderMessage } from '/js/render.js';
 import { ErrorCodes } from '/js/constants.js';

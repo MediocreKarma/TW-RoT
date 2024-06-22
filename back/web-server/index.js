@@ -25,14 +25,7 @@ server.setNotFoundRoute('/not-found', `${FRONT}/pages/not-found/index.html`);
 
 server.addFixedRoute('/favicon.ico', `${FRONT}/static/img/favicon.ico`);
 
-server.addFixedAdminRoute(
-    '/dashboard/users.html',
-    `${FRONT}/pages/dashboard/users.html`
-);
-server.addFixedAdminRoute(
-    '/dashboard/exercises.html',
-    `${FRONT}/pages/dashboard/exercises.html`
-);
+server.addWildcardAdminRoute('/dashboard/*', `${FRONT}/pages/dashboard`);
 
 server.addFixedRoute(
     '/exercises/incorrectly-solved',

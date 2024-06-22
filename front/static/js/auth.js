@@ -47,6 +47,14 @@ export const isLoggedIn = () => {
     return cachedUserData() ? true : false;
 };
 
+export const isAdmin = () => {
+    return parseInt(cachedUserData().flags, 10) === 1 ? true : false;
+};
+
+export const isBanned = () => {
+    return parseInt(cachedUserData().flags, 10) > 1 ? true : false;
+};
+
 export const clearUserData = () => {
     localStorage.removeItem(UserData.id);
     localStorage.removeItem(UserData.username);

@@ -1,11 +1,11 @@
-@use "vars";
-@use "color-themes";
-@use "utils";
+@use 'vars';
+@use 'color-themes';
+@use 'utils';
 
 $smaller-padding: calc(vars.$padding-small / 2);
 $grid-cols-desktop: 2fr 1fr 2fr 2fr;
 
-// TODO: 
+// TODO:
 // DASHBOARD-ADMIN WIDTH 1000px BUG
 
 .admin-dashboard {
@@ -21,7 +21,7 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
         justify-content: center;
         //height: 100%;
 
-        input[type=text] {
+        input[type='text'] {
             padding: vars.$padding-small;
             float: left;
             font-size: 1rem;
@@ -52,17 +52,26 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
             }
         }
 
+        &__cards {
+            display: flex;
+            flex-direction: column;
+            gap: vars.$padding-small;
+        }
+
         &__pagination {
             @include utils.card;
 
-            background-color: color-themes.$primary-color;
+            border-radius: vars.$border-radius;
+            overflow: hidden;
             width: max-content;
             align-self: center;
             display: flex;
 
-            a {
+            .button {
                 flex: 1;
                 padding: vars.$padding-small;
+                border-radius: 0;
+
                 line-height: 100%;
                 display: block;
                 color: color-themes.$text-color--dark;
@@ -70,12 +79,14 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
                     background-color: color-themes.$primary-color--hover;
                 }
 
-                &.selected {
+                &[disabled],
+                &:disabled {
                     background-color: color-themes.$secondary-color;
+                }
 
-                    &:hover {
-                        background-color: color-themes.$secondary-color--hover;
-                    }
+                @media only screen and (max-width: vars.$media-query-size-small) {
+                    font-size: 0.8rem;
+                    padding: 8px;
                 }
             }
         }
@@ -90,6 +101,14 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
 
         display: grid;
         grid-template-columns: $grid-cols-desktop;
+
+        &__content {
+            img {
+                border-radius: vars.$border-radius;
+                width: 100%;
+                height: auto;
+            }
+        }
 
         &__action {
             width: 100%;
@@ -126,7 +145,6 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
             &__label {
                 display: unset;
                 font-weight: bold;
-
             }
         }
 

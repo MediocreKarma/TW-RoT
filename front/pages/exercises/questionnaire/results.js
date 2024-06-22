@@ -3,7 +3,7 @@ import {
     getQuestionnaire,
     getQuestionnaireStats,
     getQuestionnaireStatsFromExisting,
-} from './utils.js';
+} from './common.js';
 import { showInfoModal } from '/js/modals.js';
 import { renderError } from '/js/errors.js';
 import { renderMessage } from '/js/render.js';
