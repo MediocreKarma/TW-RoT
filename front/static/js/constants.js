@@ -1,3 +1,6 @@
+/**
+ * The Error Codes that can be returned by any of the APIs
+ */
 export const ErrorCodes = Object.freeze({
     SERVER_ERROR: 0,
     INVALID_METHOD: 1,
@@ -75,6 +78,9 @@ export const ErrorCodes = Object.freeze({
     TOO_FEW_ANSWER_OPTIONS: 73,
 });
 
+/**
+ * Valid available user roles 
+ */
 export const USER_ROLES = Object.freeze({
     USER:   0b00,
     ADMIN:  0b01,

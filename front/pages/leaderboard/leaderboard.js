@@ -5,6 +5,7 @@ import { renderMessage } from '/js/render.js';
 
 const defaultPage = 0;
 const defaultCount = 5;
+const defaultQuery = '';
 let total = 0;
 let currentPage = 0;
 const initialCount = defaultCount;
@@ -34,7 +35,7 @@ async function showLeaderboardUsers(start, count) {
             ).toFixed(2) + '%'
         );
         appendCell(row, user.solvedQuestions);
-        appendCell(row, user.totalQuestionnaires);
+        appendCell(row, user.solvedQuestionnaires);
 
         leaderboardTable.appendChild(row);
     });

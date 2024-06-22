@@ -21,8 +21,8 @@ export class WebServer extends Server {
     constructor() {
         super(
             {
-                key: fs.readFileSync(getCWD() + '/../common/localhost-key.pem'), 
-                cert: fs.readFileSync(getCWD() + '/../common/localhost.pem'), 
+                key: fs.readFileSync(getCWD() + '/../common/localhost-key.pem'),
+                cert: fs.readFileSync(getCWD() + '/../common/localhost.pem'),
             },
             (req, res) => this.requestHandler(req, res)
         );
@@ -31,6 +31,7 @@ export class WebServer extends Server {
         this.dynamicRoutes = new Map();
         this.wildcardRoutes = new Map();
         this.fixedAdminRoutes = new Map();
+        this.wildcardAdminRoutes = new Map();
     }
 
     setNotFoundRoute(route, redirect) {
@@ -54,9 +55,13 @@ export class WebServer extends Server {
         }
     }
 
-    addFixedAdminRoute(route, redirect) {        
+    addFixedAdminRoute(route, redirect) {
         this.validateFixedRoute(route);
         this.fixedAdminRoutes.set(route, redirect);
+    }
+
+    addWildcardAdminRoute(route, redirect) {
+        this.wildcardAdminRoutes.set(route, redirect);
     }
 
     addFixedRoute(route, redirect) {
@@ -91,6 +96,36 @@ export class WebServer extends Server {
             return;
         }
 
+        for (const [route, filepath] of this.fixedAdminRoutes) {
+            if (!this.matchFixedRoute(route, pathname)) {
+                continue;
+            }
+            const auth = await getAuth(req, res);
+            if (!isAdmin(auth)) {
+                this.serveFile(this.notFoundRoute.redirect, res, 404);
+                return;
+            }
+
+            this.serveFile(filepath, res);
+            return;
+        }
+
+        for (const [route, prefix] of this.wildcardAdminRoutes) {
+            if (!this.matchWildcardRoute(route, pathname)) {
+                continue;
+            }
+            const auth = await getAuth(req, res);
+            if (!isAdmin(auth)) {
+                this.serveFile(this.notFoundRoute.redirect, res, 404);
+                return;
+            }
+            const replacedString = route.substring(0, route.lastIndexOf('/*'));
+            const filepath = pathname.replace(replacedString, prefix);
+            if (this.serveWildcardFile(filepath, res)) {
+                return;
+            }
+        }
+
         for (const [route, filepath] of this.fixedRoutes) {
             if (!this.matchFixedRoute(route, pathname)) {
                 continue;
@@ -105,20 +140,6 @@ export class WebServer extends Server {
             if (pathParams === null) {
                 continue;
             }
-
-            this.serveFile(filepath, res);
-            return;
-        }
-
-        for (const [route, filepath] of this.fixedAdminRoutes) {
-            if (!this.matchFixedRoute(route, pathname)) {
-                continue;
-            }
-            const auth = await getAuth(req, res);
-            if (!isAdmin(auth)) {
-                this.serveFile(this.notFoundRoute.redirect, res, 404);
-                return;
-            } 
 
             this.serveFile(filepath, res);
             return;

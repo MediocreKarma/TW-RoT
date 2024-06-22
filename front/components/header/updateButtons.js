@@ -1,4 +1,4 @@
-import { cachedUserData } from '/js/auth.js';
+import { cachedUserData, isAdmin } from '/js/auth.js';
 
 export default function updateButtons() {
     let header = document.getElementById('header');
@@ -10,7 +10,7 @@ export default function updateButtons() {
 
     let loginLinkLi = header.querySelector('#header-login');
     let loginLink = loginLinkLi.querySelector('a');
-    loginLink.href = '/logout'; // TODO: Logout page
+    loginLink.href = '/logout';
     loginLink.innerText = 'Delogare';
 
     let profileLinkLi = loginLinkLi.cloneNode(true);
@@ -31,4 +31,22 @@ export default function updateButtons() {
     profileLink.appendChild(profileText);
 
     loginLinkLi.parentNode.insertBefore(profileLinkLi, loginLinkLi);
+
+    if (!isAdmin()) {
+        console.log('yeah');
+        return;
+    }
+
+    let usersLinkLi = loginLinkLi.cloneNode(true);
+    let usersLink = usersLinkLi.querySelector('a');
+    usersLink.href = '/dashboard/users';
+    usersLink.innerText = 'Utilizatori';
+
+    let exercisesLinkLi = loginLinkLi.cloneNode(true);
+    let exercisesLink = exercisesLinkLi.querySelector('a');
+    exercisesLink.href = '/dashboard/exercises';
+    exercisesLink.innerText = 'Întrebări';
+
+    loginLinkLi.parentNode.insertBefore(usersLinkLi, loginLinkLi);
+    loginLinkLi.parentNode.insertBefore(exercisesLinkLi, loginLinkLi);
 }
