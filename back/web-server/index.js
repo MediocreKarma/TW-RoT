@@ -25,12 +25,14 @@ server.setNotFoundRoute('/not-found', `${FRONT}/pages/not-found/index.html`);
 
 server.addFixedRoute('/favicon.ico', `${FRONT}/static/img/favicon.ico`);
 
+server.addFixedAuthorizedRoute(`/profile/index.html`, `${FRONT}/pages/profile/index.html`);
+
 server.addFixedAdminRoute(
-    '/dashboard/users',
+    '/dashboard/users.html',
     `${FRONT}/pages/dashboard/users.html`
 );
 server.addFixedAdminRoute(
-    '/dashboard/exercises',
+    '/dashboard/exercises.html',
     `${FRONT}/pages/dashboard/exercises.html`
 );
 

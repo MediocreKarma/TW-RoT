@@ -83,7 +83,7 @@ export class AppRouter extends Server {
      async requestHandler(req, res) {
         const method = req.method.toUpperCase();
         const {pathname, query} = parse(req.url, true);
-        let body;
+        let body = null;
         console.log(`Received request ${method} ${pathname}`);
         try {
             body = await this.getRequestBody(req);
@@ -91,9 +91,8 @@ export class AppRouter extends Server {
             sendJsonResponse(res, 400, {errorCode: ErrorCodes.INVALID_JSON_INPUT}, 'Could not parse body to json');
             return;
         }
-        
-        query || console.log(`\t- query: ${JSON.stringify(query)}`);
-        body  || console.log(`\t- body: ${JSON.stringify(body)}`);
+        query && Object.keys(query).length !== 0 && console.log(`\t- query: ${JSON.stringify(query)}`);
+        body  && Object.keys(body).length !== 0 && console.log(`\t- body: ${JSON.stringify(body)}`);
 
         if (method === 'OPTIONS') {
             sendEmptyResponse(res, 204);
