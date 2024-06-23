@@ -182,21 +182,6 @@
             }
         }
     }
-
-    input[type='checkbox'] {
-        // appearance: none;
-        // -webkit-appearance:none;
-        width:40px;
-        background:white;
-        border-radius:5px;
-        border-left:2px;
-        border-right: 2px;
-        margin: 0;
-    }
-    input[type='checkbox']:checked {
-        background-image: url('/img/favicon.ico');
-    }
-    
 }
 
 // #password, #password-confirm {

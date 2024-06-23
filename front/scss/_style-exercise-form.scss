@@ -10,4 +10,15 @@
     @media only screen and (max-width: vars.$media-query-size-big) {
         width: 90%;
     }
+
+    input[type='checkbox'] {
+        // appearance: none;
+        // -webkit-appearance:none;
+        width:40px;
+        background:white;
+        border-radius:5px;
+        border-left:2px;
+        border-right: 2px;
+        margin: 0;
+    }
 }

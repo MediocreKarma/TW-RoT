@@ -203,10 +203,7 @@ const updatePagination = (page, total, count) => {
     numbers.forEach(({ value, selected }) => {
         paginationContainer.appendChild(renderPaginationNode(value, selected));
     });
-
-    console.log(total + ' ' + count);
     const lastPage = total < count ? 0 : Math.ceil(total / count) - 1;
-    console.log(lastPage);
 
     paginationContainer.appendChild(
         renderPaginationNode(

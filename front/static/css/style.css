@@ -913,17 +913,6 @@ body[data-theme=dark] {
     right: 22px;
   }
 }
-.form input[type=checkbox] {
-  width: 40px;
-  background: white;
-  border-radius: 5px;
-  border-left: 2px;
-  border-right: 2px;
-  margin: 0;
-}
-.form input[type=checkbox]:checked {
-  background-image: url("/img/favicon.ico");
-}
 
 .admin-dashboard {
   width: 100%;
@@ -2376,6 +2365,14 @@ body[data-theme=dark] {
   #exercise-form {
     width: 90%;
   }
+}
+#exercise-form input[type=checkbox] {
+  width: 40px;
+  background: white;
+  border-radius: 5px;
+  border-left: 2px;
+  border-right: 2px;
+  margin: 0;
 }
 
 a {

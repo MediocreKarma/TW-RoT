@@ -52,11 +52,17 @@ export const fetchQuestions = withDatabaseOperation(async function (
     const query = params['query']?.query ?? '';
 
     if (isStringValidInteger(query)) {
-        const qst = (await client.query(
+        const question = (await client.query(
             `${SQL_SELECT_STATEMENT} where q.id = $1::int ${SQL_GROUPING_STATEMENT}`,
             [query]
         )).rows;
-        return new ServiceResponse(200, {total: qst.length, data: qst}, 'Successfully retrieved question');
+        
+        question.forEach(q => {
+            q.answers.sort((a, b) => a.id - b.id); 
+            adjustOutputAnswerSet(q.answers);
+            addImageToQuestion(q);
+        });
+        return new ServiceResponse(200, {total: question.length, data: question}, 'Successfully retrieved question');
     }
 
     const data = (await client.query(
@@ -100,9 +106,6 @@ const validateInfoQuestion = (question, validateText = true) => {
     }
     if (!question.categoryId && !question.categoryTitle) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.MISSING_CATEGORY_FROM_QUESTION}, 'Missing Category Id|Title from question');
-    }
-    if (question.categoryId && question.categoryTitle) {
-        return new ServiceResponse(400, {errorCode: ErrorCodes.CATEGORY_ID_AND_CATEGORY_TITLE_GIVEN}, `Category id and title supplied, can't choose one`);
     }
     if (!question.categoryTitle && !Number.isInteger(question.categoryId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_CATEGORY_ID}, 'Invalid category id');
