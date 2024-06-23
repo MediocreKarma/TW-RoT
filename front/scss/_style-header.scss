@@ -2,34 +2,32 @@
 @use 'color-themes';
 
 @mixin header-mobile-view {
-    .header {
-        &__dark-switch {
-            position: relative;
-            padding-right: 1rem;
-            float: right;
-        }
+    .header__dark-switch {
+        position: relative;
+        padding-right: 1rem;
+        float: right;
+    }
 
-        ul {
-            width: 100%;
-        }
+    ul {
+        width: 100%;
+    }
 
-        li {
-            display: block;
-            //position: relative;
-            width: 100%;
-            float: left;
-        }
+    li {
+        display: block;
+        //position: relative;
+        width: 100%;
+        float: left;
+    }
 
-        &__list {
-            clear: both;
-            max-height: 0;
-            transition: max-height 0.3s ease-out;
-            position: relative;
-        }
+    .header__list {
+        clear: both;
+        max-height: 0;
+        transition: max-height 0.3s ease-out;
+        position: relative;
+    }
 
-        &__icon {
-            display: block;
-        }
+    .header__icon {
+        display: block;
     }
 }
 
@@ -169,5 +167,7 @@
 }
 
 @media only screen and (max-width: vars.$media-query-size-big) {
-    @include header-mobile-view;
+    .header {
+        @include header-mobile-view;
+    }
 }
