@@ -667,6 +667,15 @@ export const isAuthenticated = withDatabaseOperation(async function (
             'Auth cookie is invalid'
         );
     }
+    if ((result[0].flags & USER_ROLES.BANNED) !== 0) {
+        console.log('here');
+        await client.query(
+            `delete from user_token where user_id = $1::int`,
+            [result[0].id]
+        );
+        return new ServiceResponse(403, { errorCode: ErrorCodes.BANNED }, 'User is banned');
+    }
+
     return new ServiceResponse(200, { user: result[0] }, 'Token is valid');
 });
 

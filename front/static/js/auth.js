@@ -9,8 +9,20 @@ export const UserData = {
 };
 
 const isAuthenticated = async () => {
-    const response = await post(`${API.AUTH}/auth/authenticated`, null);
-    return await response.json();
+    try {
+        const response = await post(`${API.AUTH}/auth/authenticated`, null);
+        console.log(response);
+        return await response.json();
+    } catch (e) {
+        if (e?.status === 401 || e?.status === 403) {
+            clearUserData();
+        }
+        if (e?.status === 403) {
+            window.location.href = '/banned';
+            return {};
+        }
+        throw e;
+    }
 };
 
 export const cachedUserData = () => {
@@ -35,9 +47,8 @@ export const userData = async () => {
         setUserData(userData.user);
         return userData.user;
     } catch (e) {
-        if (e?.status === 401) {
-            // clear user data from localStorage too
-            clearUserData();
+        if (e?.status === 403) {
+            window.location.href = '/banned';
         }
         return null;
     }
