@@ -8,7 +8,6 @@ returns table(
 )
 as $$
 declare
-    category_count int;
     category_question_count int;
     question_id int;
     questions_per_category int;
@@ -39,28 +38,14 @@ begin
     end if;
 
     insert into generated_questionnaire (id) values (u_id);
-    
-    select count(' ') into category_count from question_category;
-    
-    questions_per_category := 26 / category_count;
-    extra_questions := 26 % category_count;
     generated_qst_id := 26 * (u_id - 1) + 1;
-    
-    for qc_id in select qc.id from question_category qc order by random() loop
-        
-        category_question_count := questions_per_category;
-        if extra_questions > 0 then
-            category_question_count := questions_per_category + 1;
-            extra_questions := extra_questions - 1;
-        end if;
-        
-        for question_id in select q.id from question q where q.category_id = qc_id and not q.deleted order by random() limit category_question_count loop
-            
-            insert into generated_question (id, questionnaire_id, question_id, selected_fields, sent, solved)
-                values (generated_qst_id, u_id, question_id, 0, false, false);
 
-            generated_qst_id := generated_qst_id + 1;
-        end loop;
+    for question_id in select q.id from question q where not q.deleted order by random() limit 26 loop
+        
+        insert into generated_question (id, questionnaire_id, question_id, selected_fields, sent, solved)
+            values (generated_qst_id, u_id, question_id, 0, false, false);
+
+        generated_qst_id := generated_qst_id + 1;
     end loop;
 
     update user_account
