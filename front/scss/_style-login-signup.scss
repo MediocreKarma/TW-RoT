@@ -139,6 +139,7 @@
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: vars.$border-radius;
+        position: relative;
 
         &[type='file'] {
             transition: background-color 0.2s ease-in-out;
@@ -156,4 +157,50 @@
         justify-content: center;
         gap: vars.$padding-small;
     }
+
+    &__password-toggle-icon {
+        position: absolute;
+        right: 50px;
+        transform: translateY(+20%);
+        width: 64px;
+        height: 64px;
+        //background-color: red;
+        cursor: pointer;
+
+        @media only screen and (max-width: vars.$media-query-size-big) {
+            right: 5px;
+        }
+
+        &--on { 
+            transform: translateY(calc(+90% + 3px)) scaleY(103%) scaleX(95%);
+            right: 67px;
+            width: 30px;
+            height: 30px;
+
+            @media only screen and (max-width: vars.$media-query-size-big) {
+                right: 22px;
+            }
+        }
+    }
 }
+
+// #password, #password-confirm {
+
+//     background: white url('/img/favicon.ico') right no-repeat;
+
+//     &:after {
+//         display: block;
+//         z-index: 1000000;
+//         content: ''; /* Required for pseudo-elements */
+//         position: relative;
+//         top: 50%; /* Position it vertically centered */
+//         right: 10px; /* Adjust as needed */
+//         transform: translateY(-50%);
+//         width: 500px; /* Adjust width as needed */
+//         height: 500px; /* Adjust height as needed */
+//         //background-image: url('/img/favicon.ico'); /* Replace with your image path */
+//         background-color: red;
+//         background-size: cover; /* Ensure the image covers the button */
+//         cursor: pointer; /* Change cursor on hover */
+//     }
+// }

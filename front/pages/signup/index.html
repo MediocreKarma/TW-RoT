@@ -10,6 +10,7 @@
 
         <script src="/signup/signup.js" type="module"></script>
         <script src="/js/loggedInGuard.js" type="module"></script>
+        <script src="/js/showPassword.js" type="module"></script>
     </head>
     <body>
         <header class="header header--no-js" id="header"></header>
@@ -26,10 +27,12 @@
                             name="email"
                             class="form__input"
                             required
+                            autocomplete="email"
+                            placeholder="Scrie email-ul aici"
                         />
                     </div>
                     <div class="form__group">
-                        <label for="name" class="form__label"
+                        <label for="username" class="form__label"
                             >Nume de utilizator (username)</label
                         >
                         <input
@@ -38,21 +41,21 @@
                             name="username"
                             class="form__input"
                             required
+                            autocomplete="username"
+                            placeholder="Scrie numele de utilizator aici"
                         />
                     </div>
                     <div class="form__group">
                         <label for="password" class="form__label">Parolă</label>
-                        <div class="form__row">
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                class="form__input"
-                                placeholder="Scrie parola aici"
-                                required
-                            />
-                            <button>x</button>
-                        </div>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form__input"
+                            placeholder="Scrie parola aici"
+                            required
+                        />
+                        <!-- <img class ="form__password-toggle-icon" src="img/pngwing.com.png"/> -->
                     </div>
                     <div class="form__group">
                         <label for="password-confirm" class="form__label"
@@ -64,7 +67,9 @@
                             name="password-confirm"
                             class="form__input"
                             required
+                            placeholder="Rescrie parola"
                         />
+                        <!-- <img class ="form__password-toggle-icon" src="img/pngwing.com.png"/> -->
                     </div>
                     <button type="submit" class="form__button">
                         Înregistrare

@@ -6,6 +6,7 @@ import { showFormError, removeFormError } from '/js/form/errors.js';
 import { renderError } from '/js/errors.js';
 import { showInfoModal } from '/js/modals.js';
 import { enableFormSubmit, disableFormSubmit } from '/js/form/utils.js';
+import { fixPasswordInputs } from '/js/showPassword.js';
 
 const fetchLogin = async (data) => {
     const response = await post(`${API.AUTH}/auth/login`, data);
@@ -15,6 +16,8 @@ const fetchLogin = async (data) => {
 const onFormSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
+
+    fixPasswordInputs(form);
 
     const validation = validateForm(form, {
         identifier: {
