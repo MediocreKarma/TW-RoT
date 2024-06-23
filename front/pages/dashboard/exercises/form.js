@@ -181,15 +181,15 @@ export const addListenerToImageResetInput = (defaultSrc) => {
     });
 };
 
-export const convertObjectToFormData = (objectFormData) => {
-    let dataWithoutImage = objectFormData;
+export const convertObjectToFormData = (objectData) => {
+    let dataWithoutImage = { ...objectData };
     delete dataWithoutImage.image;
 
     const questionData = JSON.stringify(dataWithoutImage);
     let data = new FormData();
     data.append('question', questionData);
-    if (objectFormData.image) {
-        data.append('image', objectFormData.image);
+    if (objectData.image !== undefined) {
+        data.append('image', objectData.image);
     }
 
     return data;
@@ -198,7 +198,6 @@ export const convertObjectToFormData = (objectFormData) => {
 export const collectFormData = async (form) => {
     const data = new FormData(form);
     const dataObject = Object.fromEntries(data.entries());
-    console.log(dataObject);
 
     let finalDataObj = {};
 
@@ -228,8 +227,6 @@ export const collectFormData = async (form) => {
     finalDataObj.answers = answers.filter(
         (answer) => answer.correct !== false || answer.description.length !== 0
     );
-    console.log('what the fuck');
-    console.log(finalDataObj);
 
     return finalDataObj;
 };

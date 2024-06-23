@@ -34,10 +34,10 @@ const onFormSubmit = async (event) => {
         showInfoModal(
             renderMessage(
                 `Întrebarea a fost înregistrată cu succes. Veți fi redirectat la pagina de dashboard.`
-            ),
-            () => {
-                window.location.href = `/dashboard/exercises?query=${questionData?.id}`;
-            }
+            )
+            // () => {
+            //     window.location.href = `/dashboard/exercises?query=${questionData?.id}`;
+            // }
         );
     } catch (e) {
         console.log(e);
