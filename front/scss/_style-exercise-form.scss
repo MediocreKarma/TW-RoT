@@ -1,0 +1,13 @@
+@use 'vars';
+@use 'color-themes';
+@use 'utils';
+
+
+#exercise-form {
+    width: 60%;
+    align-self: center;
+
+    @media only screen and (max-width: vars.$media-query-size-big) {
+        width: 90%;
+    }
+}

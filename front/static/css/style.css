@@ -195,8 +195,10 @@ body[data-theme=dark] {
 }
 .header--mobile-view .header__dark-switch {
   position: relative;
-  padding-right: 1rem;
   float: right;
+  margin-top: 1rem;
+  margin-right: 0.2rem;
+  margin-left: 0.2rem;
 }
 .header--mobile-view ul {
   width: 100%;
@@ -217,26 +219,28 @@ body[data-theme=dark] {
 }
 
 @media only screen and (max-width: 820px) {
-  .header .header__dark-switch {
+  .header--no-js .header__dark-switch {
     position: relative;
-    padding-right: 1rem;
     float: right;
+    margin-top: 1rem;
+    margin-right: 0.2rem;
+    margin-left: 0.2rem;
   }
-  .header ul {
+  .header--no-js ul {
     width: 100%;
   }
-  .header li {
+  .header--no-js li {
     display: block;
     width: 100%;
     float: left;
   }
-  .header .header__list {
+  .header--no-js .header__list {
     clear: both;
     max-height: 0;
     transition: max-height 0.3s ease-out;
     position: relative;
   }
-  .header .header__icon {
+  .header--no-js .header__icon {
     display: block;
   }
 }
@@ -908,6 +912,17 @@ body[data-theme=dark] {
   .form__password-toggle-icon--on {
     right: 22px;
   }
+}
+.form input[type=checkbox] {
+  width: 40px;
+  background: white;
+  border-radius: 5px;
+  border-left: 2px;
+  border-right: 2px;
+  margin: 0;
+}
+.form input[type=checkbox]:checked {
+  background-image: url("/img/favicon.ico");
 }
 
 .admin-dashboard {
@@ -2351,6 +2366,16 @@ body[data-theme=dark] {
 }
 .questionnaire-results__answer__status--correct {
   background-color: rgb(80, 212, 80);
+}
+
+#exercise-form {
+  width: 60%;
+  align-self: center;
+}
+@media only screen and (max-width: 820px) {
+  #exercise-form {
+    width: 90%;
+  }
 }
 
 a {

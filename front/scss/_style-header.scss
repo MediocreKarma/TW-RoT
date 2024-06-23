@@ -4,8 +4,10 @@
 @mixin header-mobile-view {
     .header__dark-switch {
         position: relative;
-        padding-right: 1rem;
         float: right;
+        margin-top: 1rem;
+        margin-right: 0.2rem;
+        margin-left: 0.2rem;
     }
 
     ul {
@@ -167,7 +169,7 @@
 }
 
 @media only screen and (max-width: vars.$media-query-size-big) {
-    .header {
+    .header--no-js {
         @include header-mobile-view;
     }
 }
