@@ -235,8 +235,9 @@ export const addQuestion = withDatabaseTransaction(async function (
     if (!isAdmin(params['authorization'])) {
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
+    console.log(params);
     let question = params['body'];
-    if (req.headers['content-type'] === 'multipart/form-data') {
+    if (req.headers['content-type'].includes('multipart/form-data')) {
         try {
             question = JSON.parse(params['body']?.fields?.question);
         } catch (err) {

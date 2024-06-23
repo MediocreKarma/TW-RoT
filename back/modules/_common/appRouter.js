@@ -123,14 +123,15 @@ export class AppRouter extends Server {
     async requestHandler(req, res) {
         const method = req.method.toUpperCase();
         const {pathname, query} = parse(req.url, true);
-        let body = null;
+        let body = {};
         console.log(`Received request ${method} ${pathname}`);
         try {
             const requestType = req.headers['content-type'];
-            if (requestType === 'multipart/form-data') {
+            console.log(requestType);
+            if (requestType?.includes('multipart/form-data')) {
                 body = await this.getMultipartFormData(req);
             }
-            else if (requestType === 'application/json') {
+            else if (requestType?.includes('application/json')) {
                 body = await this.getJSONRequestBody(req);
             }
         } catch (err) {
@@ -257,7 +258,7 @@ export class AppRouter extends Server {
     }
 
     start() {
-        console.log(`starting ${this.name} on ${this.port}`);
+        console.log(`Starting ${this.name} on ${this.port}`);
         super.listen(this.port);
     }
 }
