@@ -9,6 +9,7 @@
         <script src="/components/footer/footer.js" type="module"></script>
 
         <script src="/signup/signup.js" type="module"></script>
+        <script src="/js/loggedInGuard.js" type="module"></script>
     </head>
     <body>
         <header class="header header--no-js" id="header"></header>
@@ -41,10 +42,26 @@
                     </div>
                     <div class="form__group">
                         <label for="password" class="form__label">Parolă</label>
+                        <div class="form__row">
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form__input"
+                                placeholder="Scrie parola aici"
+                                required
+                            />
+                            <button>x</button>
+                        </div>
+                    </div>
+                    <div class="form__group">
+                        <label for="password-confirm" class="form__label"
+                            >Confirmă parola</label
+                        >
                         <input
                             type="password"
-                            id="password"
-                            name="password"
+                            id="password-confirm"
+                            name="password-confirm"
                             class="form__input"
                             required
                         />

@@ -35,6 +35,10 @@ const onFormSubmit = async (event) => {
             predicate: (password) =>
                 password.length >= 8 && password.length <= 64,
             errorMessage: 'Parola trebuie să aibă minim 8 caractere',
+            confirm: {
+                field: 'password-confirm',
+                errorMessage: 'Parolele nu sunt la fel',
+            },
         },
     });
 

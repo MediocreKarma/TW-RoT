@@ -8,6 +8,80 @@ export const NEW_CATEGORY_SELECT_OPTION = {
     text: 'Categorie nouă',
 };
 
+// export const EMPTY_BASE64_BUFFER = 'data:application/octet-stream;base64,';
+
+export const validateFormData = (formData) => {
+    console.log(formData);
+    const validatorResponse = (isValid, errorMessage) => {
+        return {
+            valid: isValid,
+            message: errorMessage,
+        };
+    };
+
+    try {
+        console.log(formData.categoryId);
+        if (formData.categoryId === DEFAULT_SELECT_OPTION.value) {
+            return validatorResponse(false, 'Nu a fost selectată o categorie');
+        }
+        if (
+            formData.categoryId === NEW_CATEGORY_SELECT_OPTION.value &&
+            !formData.categoryId
+        ) {
+            return validatorResponse(false, 'Categoria nouă nu poate fi goală');
+        }
+
+        if (formData.text.length === 0) {
+            return validatorResponse(
+                false,
+                'Textul întrebării nu poate fi gol'
+            );
+        }
+
+        if (formData.text.length > 4096) {
+            return validatorResponse(false, 'Textul întrebării este prea lung');
+        }
+
+        const emptyCorrectAnswers = formData.answers.filter(
+            (answer) =>
+                answer.description.length === 0 && answer.correct === true
+        );
+
+        if (emptyCorrectAnswers.length > 0) {
+            return validatorResponse(
+                false,
+                'Nu pot exista răspunsuri corecte cu descrierea goală'
+            );
+        }
+
+        const answers = formData.answers.filter(
+            (answer) => answer.description.length > 0
+        );
+
+        if (answers.length < 2) {
+            return validatorResponse(
+                false,
+                'Trebuie ca întrebarea să aibă măcar 2 răspunsuri'
+            );
+        }
+
+        const correctAnswers = answers.filter(
+            (answer) => answer.correct === true
+        );
+        if (correctAnswers.length < 1) {
+            return validatorResponse(
+                false,
+                'Trebuie ca întrebarea să aibă măcar 1 răspuns corect'
+            );
+        }
+    } catch (e) {
+        console.log(e);
+        return validatorResponse(false, 'Date invalide');
+    }
+
+    return validatorResponse(true, '');
+};
+
 export const getBase64Buffer = (file) => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -24,7 +98,6 @@ export const getBase64Buffer = (file) => {
 
 export const setImagePreview = (data) => {
     const preview = document.getElementById('image-preview');
-    console.log('in data...');
     console.log(data?.slice(0, 100));
     if (data) {
         preview.src = data;
@@ -63,6 +136,11 @@ export const showCategories = (categories = []) => {
     };
 
     showOption(DEFAULT_SELECT_OPTION.value, DEFAULT_SELECT_OPTION.text, true);
+
+    categories.forEach((category) => {
+        showOption(category.id, category.title);
+    });
+
     showOption(
         NEW_CATEGORY_SELECT_OPTION.value,
         NEW_CATEGORY_SELECT_OPTION.text
@@ -103,6 +181,20 @@ export const addListenerToImageResetInput = (defaultSrc) => {
     });
 };
 
+export const convertObjectToFormData = (objectFormData) => {
+    let dataWithoutImage = objectFormData;
+    delete dataWithoutImage.image;
+
+    const questionData = JSON.stringify(dataWithoutImage);
+    let data = new FormData();
+    data.append('question', questionData);
+    if (objectFormData.image) {
+        data.append('image', objectFormData.image);
+    }
+
+    return data;
+};
+
 export const collectFormData = async (form) => {
     const data = new FormData(form);
     const dataObject = Object.fromEntries(data.entries());
@@ -110,24 +202,34 @@ export const collectFormData = async (form) => {
 
     let finalDataObj = {};
 
-    // TODO: this check does not work. what needs to be done: get image input, get .files.length to see if there are no file
-    if (dataObject['image-upload']) {
-        finalDataObj.image = await getBase64Buffer(dataObject['image-upload']);
+    if (dataObject['image-upload'] && dataObject['image-upload'] != '') {
+        finalDataObj.image = dataObject['image-upload'];
     }
     if (dataObject['category-id'] === NEW_CATEGORY_SELECT_OPTION.value) {
         finalDataObj.categoryTitle = dataObject['category-title'];
+    } else if (dataObject['category-id'] === DEFAULT_SELECT_OPTION.value) {
+        finalDataObj.categoryId = DEFAULT_SELECT_OPTION.value;
     } else {
-        finalDataObj.categoryId = dataObject['category-id'];
+        finalDataObj.categoryId = parseInt(dataObject['category-id'], 10);
     }
 
-    finalDataObj.answers = [];
+    finalDataObj.text = dataObject.description;
+    finalDataObj.description = dataObject.description;
+
+    let answers = [];
 
     for (let i = 1; i <= 3; ++i) {
         let answer = {};
         answer.description = dataObject[`answer${i}`];
         answer.correct = dataObject[`correct${i}`] !== undefined ? true : false;
-        finalDataObj.answers.push(answer);
+        answers.push(answer);
     }
+
+    finalDataObj.answers = answers.filter(
+        (answer) => answer.correct !== false || answer.description.length !== 0
+    );
+    console.log('what the fuck');
+    console.log(finalDataObj);
 
     return finalDataObj;
 };

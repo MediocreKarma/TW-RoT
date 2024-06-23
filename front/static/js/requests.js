@@ -42,6 +42,19 @@ export const post = async (url, data, options = {}) => {
     });
 };
 
+export const postFormData = async (url, data, options = {}) => {
+    return await wrappedFetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            ...options.headers,
+        },
+        body: data,
+        ...options,
+    });
+};
+
 export const put = async (url, data, options = {}) => {
     return await wrappedFetch(url, {
         method: 'PUT',

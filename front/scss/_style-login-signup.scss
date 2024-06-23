@@ -72,6 +72,9 @@
 }
 
 .form {
+    textarea {
+        resize: none;
+    }
     .comparison__select {
         width: 100%;
     }
@@ -81,14 +84,20 @@
         gap: vars.$padding-small;
 
         &--equal {
-            // TODO: keep flex, if possible... :(
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
             gap: vars.$padding-small;
-
-            @media only screen and (max-width: vars.$media-query-size-small) {
-                grid-template-columns: 1fr;
+            flex-direction: row;
+            > * {
+                flex: 1;
             }
+            // // TODO: keep flex, if possible... :(
+            // display: grid;
+            // grid-template-columns: 1fr 1fr;
+            // gap: vars.$padding-small;
+
+            // @media only screen and (max-width: vars.$media-query-size-small) {
+            //     grid-template-columns: 1fr;
+            // }
         }
     }
 
@@ -99,6 +108,7 @@
     }
 
     &__image {
+        @include color-themes.secondary();
         display: flex;
         flex-direction: column;
         .button {
@@ -138,5 +148,12 @@
                 background-color: #cccccc25;
             }
         }
+    }
+
+    &__buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: vars.$padding-small;
     }
 }

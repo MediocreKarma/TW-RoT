@@ -15,3 +15,10 @@ export const showFormError = (form, message) => {
     errorDiv.innerText = message;
     form.prepend(errorDiv);
 };
+
+export const clearFormError = (form) => {
+    const error = form.querySelector('.form__error');
+    if (error) {
+        form.removeChild(error);
+    }
+};

@@ -34,21 +34,48 @@ export const validateForm = (form, validators) => {
     let predicateResults;
 
     form.querySelectorAll('input').forEach((input) => {
+        console.log('in input...');
+        const inputName = input?.getAttribute('name');
+        console.log(inputName);
+        if (!inputName) {
+            return;
+        }
+        if (inputName.endsWith('-confirm')) {
+            return;
+        }
         if (predicateResults) {
             return;
         }
-        if (!validators[input?.getAttribute('name')]) {
+        if (!validators[inputName]) {
             return;
         }
-        const validator = validators[input?.getAttribute('name')];
+        const validator = validators[inputName];
         const isValid = validator.predicate(input.value);
+        console.log(inputName + ' ' + input.value);
         if (!isValid) {
             predicateResults = {
                 valid: false,
                 message: validator.errorMessage
                     ? validator.errorMessage
-                    : `Câmpul "${input?.getAttribute('name')}" nu este valid`,
+                    : `Câmpul "${inputName}" nu este valid`,
             };
+        }
+
+        if (validator.confirm && validator.confirm.field) {
+            const confirmInput = form.querySelector(
+                `input[name=${validator.confirm.field}]`
+            );
+            if (!confirmInput) {
+                return;
+            }
+            if (confirmInput.value !== input.value) {
+                predicateResults = {
+                    valid: false,
+                    message: validator.confirm.errorMessage
+                        ? validator.confirm.errorMessage
+                        : `Câmpurile "${inputName}" și "${validator.confirm.field}" trebuie să fie egale`,
+                };
+            }
         }
     });
 

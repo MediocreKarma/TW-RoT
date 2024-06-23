@@ -24,15 +24,15 @@
                 <h1 class="question-edit__title">Editează întrebare</h1>
                 <form id="exercise-form" class="form">
                     <div class="form__group">
-                        <label for="category">Categorie:</label>
                         <div class="form__row--equal">
-                            <!-- trebuie un select SI UN INPUT OPTIONAL
-                             pe care l vom lua in considerare DOAR daca valoarea selectului e "new-category" -->
-                            <div class="comparison__select">
-                                <select
-                                    id="question-category"
-                                    name="category-id"
-                                ></select>
+                            <div class="form__group">
+                                <label for="category">Categorie:</label>
+                                <div class="comparison__select">
+                                    <select
+                                        id="question-category"
+                                        name="category-id"
+                                    ></select>
+                                </div>
                             </div>
                             <div
                                 class="form__group"
@@ -54,6 +54,7 @@
                     <div class="form__group">
                         <label for="description">Descriere:</label>
                         <textarea
+                            class="form__input"
                             id="description"
                             name="description"
                             rows="4"
@@ -68,7 +69,6 @@
                                 id="answer1"
                                 name="answer1"
                                 class="form__input"
-                                required
                             />
                             <input
                                 type="checkbox"
@@ -87,7 +87,6 @@
                                 id="answer2"
                                 name="answer2"
                                 class="form__input"
-                                required
                             />
                             <input
                                 type="checkbox"
@@ -105,7 +104,6 @@
                                 id="answer3"
                                 name="answer3"
                                 class="form__input"
-                                required
                             />
                             <input
                                 type="checkbox"
@@ -131,17 +129,28 @@
                                 alt="Image Preview"
                                 style="display: none"
                             />
-                            <button
-                                type="button"
-                                class="button"
-                                id="image-reset"
-                            >
-                                Resetează imaginea
-                            </button>
+                            <div class="form__row">
+                                <button
+                                    type="button"
+                                    class="button"
+                                    id="image-reset"
+                                >
+                                    Resetează imaginea
+                                </button>
+                                <!-- <button
+                                    type="button"
+                                    class="button"
+                                    id="image-reset"
+                                >
+                                    Șterge imaginea
+                                </button> -->
+                            </div>
                         </div>
                     </div>
 
-                    <button type="submit">Submit</button>
+                    <div class="form__buttons">
+                        <button type="submit">Submit</button>
+                    </div>
                 </form>
             </div>
         </div>

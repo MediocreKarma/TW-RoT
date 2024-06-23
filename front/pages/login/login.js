@@ -28,6 +28,7 @@ const onFormSubmit = async (event) => {
         },
     });
 
+    console.log(validation);
     if (!validation.valid) {
         showFormError(form, validation.message);
         return;
