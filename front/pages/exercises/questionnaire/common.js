@@ -236,7 +236,7 @@ export const submitSolution = async (questionId, answerData) => {
 export const trySubmittingQuestionnaireAutomatically = async () => {
     const questionnaireStats = await getQuestionnaireStats();
 
-    if (questionnaireStats.unsolvedQuestions < 4) {
+    if (questionnaireStats.unsolvedQuestions < 5) {
         return;
     }
 
