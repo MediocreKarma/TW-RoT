@@ -1,5 +1,5 @@
 import API from '/js/api.js';
-import { get, post, put } from '/js/requests.js';
+import { get, post, put } from '/js/authRequests.js';
 
 export const getExerciseCategories = async () => {
     const response = await get(`${API.EXERCISES}/exercises/categories`);
@@ -19,7 +19,9 @@ export const getUnsolvedExerciseByCategory = async (categoryId) => {
 };
 
 export const getIncorrectlySolvedExercise = async () => {
-    const response = await get(`${API.EXERCISES}/exercises/incorrectly-solved/random`);
+    const response = await get(
+        `${API.EXERCISES}/exercises/incorrectly-solved/random`
+    );
     return await response.json();
 };
 

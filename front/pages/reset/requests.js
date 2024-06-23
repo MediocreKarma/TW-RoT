@@ -1,5 +1,5 @@
 import API from '/js/api.js';
-import { post } from '/js/requests.js';
+import { post } from '/js/authRequests.js';
 
 export const changePassword = async (token, value) => {
     await post(`${API.AUTH}/auth/change-password`, { token, value });

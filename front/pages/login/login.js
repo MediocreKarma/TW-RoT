@@ -1,6 +1,6 @@
 import { setUserData } from '/js/auth.js';
 import API from '/js/api.js';
-import { post } from '/js/requests.js';
+import { post } from '/js/authRequests.js';
 import { validateForm } from '/js/form/validate.js';
 import { showFormError, removeFormError } from '/js/form/errors.js';
 import { renderError } from '/js/errors.js';

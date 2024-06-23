@@ -1,5 +1,5 @@
 import API from '/js/api.js';
-import { get } from '/js/requests.js';
+import { get } from '/js/authRequests.js';
 
 export const fetchComparisonCategories = async () => {
     const response = await get(`${API.TRAFFIC_SIGNS}/comparison-categories`);

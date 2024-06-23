@@ -1,5 +1,5 @@
 import API from '/js/api.js';
-import { get } from '/js/requests.js';
+import { get } from '/js/authRequests.js';
 
 export const getRSSLink = () => {
     return `${API.USERS}/leaderboard?output=rss`;

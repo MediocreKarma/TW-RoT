@@ -1,5 +1,5 @@
 import API from '/js/api.js';
-import { get, patch, del } from '/js/requests.js';
+import { get, patch, del } from '/js/authRequests.js';
 
 export const getExercises = async (start, count, query) => {
     const response = await get(

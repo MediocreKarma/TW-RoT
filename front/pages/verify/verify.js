@@ -3,7 +3,7 @@ import { showInfoModal } from '/js/modals.js';
 import { renderMessage } from '/js/render.js';
 
 import API from '/js/api.js';
-import { post } from '/js/requests.js';
+import { post } from '/js/authRequests.js';
 
 const apiVerifyToken = async (token) => {
     await post(`${API.AUTH}/auth/verify`, { token });

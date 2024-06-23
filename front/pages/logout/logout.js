@@ -1,5 +1,5 @@
 import API from '/js/api.js';
-import { post } from '/js/requests.js';
+import { post } from '/js/authRequests.js';
 import { clearUserData } from '/js/auth.js';
 import { getErrorCode } from '/js/errors.js';
 import { ErrorCodes } from '/js/constants.js';

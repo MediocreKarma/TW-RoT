@@ -1,5 +1,5 @@
 import API from '/js/api.js';
-import { post, del } from '/js/requests.js';
+import { post, del } from '/js/authRequests.js';
 
 export const requestChange = async (type) => {
     await post(`${API.AUTH}/auth/change-credentials`, {

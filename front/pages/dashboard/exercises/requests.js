@@ -1,5 +1,5 @@
 import API from '/js/api.js';
-import { get, postFormData, put } from '/js/requests.js';
+import { get, postFormData } from '/js/authRequests.js';
 
 export const getExerciseCategories = async () => {
     const response = await get(`${API.EXERCISES}/exercises/categories`);
