@@ -130,7 +130,7 @@ const prepImage = async (question) => {
     }
 }
 
-const handleCategory = async (client, question, update = false) => {
+const handleCategory = async (client, question) => {
     if (question.categoryId) {
         const categoryTitles = (await client.query(
             `select title from question_category where id = $1::int`,
@@ -143,10 +143,10 @@ const handleCategory = async (client, question, update = false) => {
         question.categoryTitle = categoryTitles[0].title;
     }
     else {
-        const existsCategory = parseInt(await client.query(
-            `select count(' ') from question_category where title = $1::varchar`,
+        const existsCategory = (await client.query(
+            `select count(' ')::int as cnt from question_category where title = $1::varchar`,
             [question.categoryTitle]
-        ));
+        )).rows[0]['cnt'];
         if (existsCategory) {
             return new ServiceResponse(404, {errorCode: ErrorCodes.CATEGORY_ALREADY_EXISTS}, 'Question category already exists');
         }
@@ -158,7 +158,7 @@ const handleCategory = async (client, question, update = false) => {
     }
 }
 
-const validateQuestion = async (client, question, update = false) => {
+const validateQuestion = async (client, question) => {
     const qstInfoValidation = validateInfoQuestion(question);
     if (qstInfoValidation) {
         return qstInfoValidation;
@@ -170,7 +170,7 @@ const validateQuestion = async (client, question, update = false) => {
     if (question.answers.length <= 1) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.TOO_FEW_ANSWER_OPTIONS}, 'Too few answer options');
     }
-    const categoryValidation = await handleCategory(client, question, update);
+    const categoryValidation = await handleCategory(client, question);
     if (categoryValidation) {
         return categoryValidation;
     }
@@ -217,7 +217,7 @@ export const addQuestion = withDatabaseTransaction(async function (
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
     const question = params['body'];
-    const validation = validateQuestion(client, question);
+    const validation = await validateQuestion(client, question);
     if (validation instanceof ServiceResponse) {
         return validation;
     }

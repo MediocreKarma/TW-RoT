@@ -80,6 +80,7 @@ sub {
 }
 img {
     border: 0;
+    width: 100%;
 }
 svg:not(:root) {
     overflow: hidden;
@@ -121,6 +122,7 @@ button,
 html input[type='button'],
 input[type='reset'],
 input[type='submit'] {
+    appearance: button;
     -webkit-appearance: button;
     cursor: pointer;
 }
@@ -146,6 +148,7 @@ input[type='number']::-webkit-outer-spin-button {
     height: auto;
 }
 input[type='search'] {
+    appearance: textfield;
     -webkit-appearance: textfield;
     box-sizing: content-box;
 }

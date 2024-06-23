@@ -68,7 +68,7 @@ export const validateAnswerSetInput = (answers, booleanProperty = 'selected', ve
     answerIds[0] = true;
     let i = 1;
     for (const answer of answers) {
-        const answerIdValidation = validateId(verifyId ? i : answer['id'], 'answer_id');
+        const answerIdValidation = validateId(verifyId ? answer['id'] : i, 'answer_id');
         if (answerIdValidation) {
             return answerIdValidation;
         }
@@ -84,7 +84,7 @@ export const validateAnswerSetInput = (answers, booleanProperty = 'selected', ve
         if (answer['id'] >= answerIds.length) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_ID_TOO_HIGH}, 'Answer id too high');
         }
-        answerIds[verifyId ? i : answer['id']] = true;
+        answerIds[verifyId ? answer['id'] : i] = true;
         i++;
     }
     if (!answerIds.every((b) => b)) {
