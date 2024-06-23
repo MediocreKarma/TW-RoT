@@ -61,21 +61,22 @@ function renderCard(user) {
     const statsLabel = document.createElement('div');
     statsLabel.classList.add('dashboard-card__label');
     statsLabel.textContent = 'Statistici';
-    const correctPercentage = document.createElement('div');
+    const statList = document.createElement('ul');
+    const correctPercentage = document.createElement('li');
     correctPercentage.classList.add('dashboard-card__stats__row');
     correctPercentage.innerHTML = `% întrebări corecte: <span>${correctQuestionsPercentage}%</span>`;
-    const correctAnswers = document.createElement('div');
+    const correctAnswers = document.createElement('li');
     correctAnswers.classList.add('dashboard-card__stats__row');
     correctAnswers.innerHTML = `Nr. răspunsuri corecte: <span>${user.solvedQuestions}</span>`;
-    const completedQuestionnaires = document.createElement('div');
+    const completedQuestionnaires = document.createElement('li');
     completedQuestionnaires.classList.add('dashboard-card__stats__row');
     completedQuestionnaires.innerHTML = `Nr. chestionare admise: <span>${user.solvedQuestionnaires}</span>`;
-    statsSection.append(
-        statsLabel,
+    statList.append(
         correctPercentage,
         correctAnswers,
         completedQuestionnaires
     );
+    statsSection.append(statsLabel, statList);
 
     const actionsSection = document.createElement('div');
     actionsSection.classList.add('dashboard-card__actions');
@@ -268,7 +269,7 @@ const updatePagination = (page, total, count) => {
             btn.disabled = true;
             await setPage(pageNo);
         };
-        btn.innerText = innerText ? innerText : pageNo;
+        btn.innerText = innerText ? innerText : pageNo + 1;
         btn.classList.add('button');
         if (selected) {
             btn.classList.add('selected');

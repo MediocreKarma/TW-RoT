@@ -53,12 +53,14 @@ const renderCard = (question) => {
     statsLabel.className = 'dashboard-card__label';
     statsLabel.textContent = 'Opțiuni';
     stats.appendChild(statsLabel);
+    const optionList = document.createElement('ul');
+    stats.appendChild(optionList);
 
     question.answers.forEach((answer) => {
-        const statRow = document.createElement('div');
+        const statRow = document.createElement('li');
         statRow.className = 'dashboard-card__stats__row';
-        statRow.textContent = `${answer.description}`;
-        stats.appendChild(statRow);
+        statRow.textContent = `${answer.description} ${answer.correct ? '\u2705' : '\u274C'}`;
+        optionList.appendChild(statRow);
     });
 
     const actions = document.createElement('div');
@@ -179,7 +181,7 @@ const updatePagination = (page, total, count) => {
             btn.disabled = true;
             await setPage(pageNo);
         };
-        btn.innerText = innerText ? innerText : pageNo;
+        btn.innerText = innerText ? innerText : pageNo + 1;
         btn.classList.add('button');
         if (selected) {
             btn.classList.add('selected');

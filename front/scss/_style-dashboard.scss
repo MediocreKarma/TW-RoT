@@ -46,6 +46,7 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
             color: color-themes.$text-color--dark;
             background-color: color-themes.$primary-color;
             padding: vars.$padding-small;
+            text-align: center;
 
             @media only screen and (max-width: vars.$media-query-size-big) {
                 display: none;
@@ -89,6 +90,11 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
                     padding: 8px;
                 }
             }
+        }
+
+        &__button {
+            width: 200px;
+            align-self: center;
         }
     }
 
