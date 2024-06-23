@@ -119,13 +119,13 @@ const validateInfoQuestion = (question, validateText = true) => {
 }
 
 const prepImage = async (question) => {
-    if (question.binaryImage) {
+    if (question.imageInfo) {
         try {
-            const image = await Jimp.read(question.binaryImage.data);
+            const image = await Jimp.read(question.imageInfo.filepath);
             const imageId = uuid4();
             question.imageId = imageId;
             addImageToQuestion(question);
-            delete question.binaryImage;
+            delete question.imageInfo;
             return {image: image, imageId: imageId};
         } catch (err) {
             delete question.image;
@@ -242,7 +242,7 @@ export const addQuestion = withDatabaseTransaction(async function (
         } catch (err) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_FORMAT}, 'Invalid form data submission');
         }
-        question.binaryImage = params['body']?.files?.image;
+        question.imageInfo = params['body']?.files?.image;
     }
 
 

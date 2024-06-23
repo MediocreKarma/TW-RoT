@@ -239,16 +239,13 @@ export class AppRouter extends Server {
                 };
 
                 for (const fileKey in files) {
-                    if (files.hasOwnProperty(fileKey)) {
-                        const file = files[fileKey];
-
-                        formDataObject.files[fileKey] = {
-                            name: file.name,
-                            type: file.type,
-                            size: file.size, 
-                            data: file._readStream
-                        };
-                    }
+                    const file = files[fileKey][0];
+                    formDataObject.files[fileKey] = {
+                        name: file.originalFilename,
+                        type: file.mimetype,
+                        size: file.size, 
+                        filepath: file.filepath
+                    };
                 }
 
                 resolve(formDataObject);

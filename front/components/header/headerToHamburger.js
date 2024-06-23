@@ -10,18 +10,18 @@ export default function headerToHamburger() {
     let media_query = window.matchMedia(
         '(max-width: ' + desktop_media_size + 'px)'
     );
-    const desktop_class = 'header--mobile-view';
+    const mobile_view = 'header--mobile-view';
     if (media_query.matches) {
-        header.classList.add(desktop_class);
+        header.classList.add(mobile_view);
     }
 
     media_query.addEventListener(
         'change',
         function () {
             if (media_query.matches) {
-                header.classList.add(desktop_class);
+                header.classList.add(mobile_view);
             } else {
-                header.classList.remove(desktop_class);
+                header.classList.remove(mobile_view);
             }
         },
         false
