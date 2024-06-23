@@ -241,10 +241,9 @@ export const login = withDatabaseOperation(async function (
         );
     }
 
-    if ((userAccount[0]['flags'] & USER_ROLES.BANNED) === 1) {
-        await sleep(timerBegin + msTimeout - new Date().getTime());
+    if ((userAccount[0].flags & USER_ROLES.BANNED) !== 0) {
         return new ServiceResponse(
-            400, {errorCode: ErrorCodes.BANNED}, 'Banned'
+            403, {errorCode: ErrorCodes.BANNED}, 'Banned'
         );
     }
 
@@ -586,13 +585,13 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
 
     switch (type) {
         case 'username':
-            updateUsername(info['userId'], changeValue);
+            updateUsername(userId, changeValue);
             break;
         case 'password':
-            updatePassword(info['userId'], changeValue);
+            updatePassword(userId, changeValue);
             break;
         case 'email':
-            updateEmail(info['userId'], changeValue, info['username']);
+            updateEmail(userId, changeValue, info['username']);
             break;
     }
     return new ServiceResponse(204, null, 'Successfully changed credential');

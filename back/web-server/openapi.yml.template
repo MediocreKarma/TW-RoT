@@ -152,50 +152,6 @@ paths:
                         image:
                           type: string
 
-  /images/{name}:
-    get:
-      summary: Get an image
-      description: Retrieve an image by its name.
-      servers:
-        - url: https://localhost:{TRAFFIC_SIGNS_PORT}/api/v1
-      tags:
-        - Sign Categories
-      parameters:
-        - name: name
-          in: path
-          required: true
-          description: The name of the image to retrieve
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful response with the image
-          content:
-            image/png:
-              schema:
-                type: string
-                format: binary
-        '404':
-          description: Image not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Image not found
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Internal server error
-
   /comparison-categories:
     get:
       summary: Returns a list of comparison categories
@@ -651,7 +607,7 @@ paths:
                         title:
                           type: string
 
-  /exercises/unsolved/{id}:
+  /exercises/categories/{id}/unsolved/random:
     get:
       summary: Get an unsolved question by category
       tags:
@@ -702,7 +658,7 @@ paths:
         '500':
           description: Internal Server Error
 
-  /exercises/unsolved:
+  /exercises/unsolved/random:
     get:
       summary: Get any unsolved question
       tags:
@@ -747,7 +703,7 @@ paths:
         '500':
           description: Internal Server Error
 
-  /exercises/incorrectly-solved:
+  /exercises/incorrectly-solved/random:
     get:
       summary: Get incorrectly solved question
       tags:

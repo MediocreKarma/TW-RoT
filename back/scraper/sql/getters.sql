@@ -55,6 +55,6 @@ begin
             ua.solved_questionnaires, ua.total_questionnaires, ua.solved_questions, ua.total_questions
         from user_token ut join user_account ua
             on ut.user_id = ua.id
-		where ut.token_type = 'session' and ut.token_value = p_token_value;
+		where ut.token_type = 'session' and ut.token_value = p_token_value and (ua.flags & 2) = 0;
 end;
 $$ language plpgsql;

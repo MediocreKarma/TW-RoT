@@ -96,7 +96,7 @@ paths:
       servers:
         - url: https://localhost:{PORT}/api/v1
       tags:
-        - Sign Categories
+        - Images
       parameters:
         - name: name
           in: path

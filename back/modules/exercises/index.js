@@ -24,9 +24,9 @@ const app = new AppRouter('RoT Exercises', process.env.EXERCISES_PORT, Authentic
 app.get('/api/v1/images/:name', getImage);
 
 app.get('/api/v1/exercises/categories', getAllExerciseCategories);
-app.get('/api/v1/exercises/unsolved', getUnsolvedQuestion);
-app.get('/api/v1/exercises/unsolved/:id', getUnsolvedQuestionByCategory);
-app.get('/api/v1/exercises/incorrectly-solved', getIncorrectlySolvedQuestion);
+app.get('/api/v1/exercises/unsolved/random', getUnsolvedQuestion);
+app.get('/api/v1/exercises/categories/:id/unsolved/random', getUnsolvedQuestionByCategory);
+app.get('/api/v1/exercises/incorrectly-solved/random', getIncorrectlySolvedQuestion);
 app.get('/api/v1/exercises/:id/solution', getSolution);
 
 app.post('/api/v1/users/:id/submissions', addQuestionSolution);

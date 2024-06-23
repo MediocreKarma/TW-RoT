@@ -7,19 +7,19 @@ export const getExerciseCategories = async () => {
 };
 
 export const getUnsolvedExercise = async () => {
-    const response = await get(`${API.EXERCISES}/exercises/unsolved`);
+    const response = await get(`${API.EXERCISES}/exercises/unsolved/random`);
     return await response.json();
 };
 
 export const getUnsolvedExerciseByCategory = async (categoryId) => {
     const response = await get(
-        `${API.EXERCISES}/exercises/unsolved/${categoryId}`
+        `${API.EXERCISES}/exercises/categories/${categoryId}/unsolved/random`
     );
     return await response.json();
 };
 
 export const getIncorrectlySolvedExercise = async () => {
-    const response = await get(`${API.EXERCISES}/exercises/incorrectly-solved`);
+    const response = await get(`${API.EXERCISES}/exercises/incorrectly-solved/random`);
     return await response.json();
 };
 
