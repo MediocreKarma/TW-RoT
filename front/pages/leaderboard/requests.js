@@ -2,7 +2,7 @@ import API from '/js/api.js';
 import { get } from '/js/requests.js';
 
 export const getRSSLink = () => {
-    return `${API.USERS}/leaderboard/rss`;
+    return `${API.USERS}/leaderboard?output=rss`;
 };
 
 export const getLeaderboardUsers = async (start, count) => {

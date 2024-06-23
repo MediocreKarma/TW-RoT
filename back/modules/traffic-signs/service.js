@@ -1,9 +1,10 @@
 import { ErrorCodes } from '../../common/constants.js';
 import { isStringValidInteger } from '../../common/utils.js';
 import { withDatabaseOperation } from '../_common/db.js';
-import { ImageResponse, ServiceResponse } from '../_common/serviceResponse.js';
+import { CSVResponse, ImageResponse, ServiceResponse } from '../_common/serviceResponse.js';
 import dotenv from 'dotenv';
 import fs from 'fs';
+import { buildCSVFromPGResult } from '../_common/utils.js';
 dotenv.config({ path: '../../.env' });
 
 const API_IMAGE_URL = `${process.env.TRAFFIC_SIGNS_URL}/api/v1/images/{id}.png`;
@@ -20,8 +21,17 @@ export const getAllSignCategories = withDatabaseOperation(async function (
     client,
     _req,
     _res,
-    _params
+    params
 ) {
+    if (params['query'].output === 'csv') {
+        const csvData = buildCSVFromPGResult(await client.query(
+            `select s.id, s.title, s.description, s.image_id as "sign_image", s.category_id, sc.title as "category_title",
+                sc.design, sc.purpose, sc.suggestion, sc.image_id as "category_image"
+                from sign_category sc join sign s on sc.id = s.category_id`
+        ));
+        return new CSVResponse(csvData, 'Successfully retrieved sign category csv');
+    }
+
     const signCategories = (
         await client.query(
             'select id, title, image_id as "imageId" from sign_category'
@@ -90,8 +100,19 @@ export const getSignCategory = withDatabaseOperation(async function (
  * Handler to get all available comparison categories
  */
 export const getComparisonCategories = withDatabaseOperation(async function (
-    client, _req, _res, _params
+    client, _req, _res, params
 ) {
+    if (params['query'].output === 'csv') {
+        const csvData = buildCSVFromPGResult(await client.query(
+            `select cc.id as comparison_category_id, cc.title as comparison_category_title,
+                c.id as comparison_id, c.title, cs.image_id, cs.country, cs.id
+            from
+                comparison_category cc join comparison c on cc.id = c.category_id
+                    join comparison_sign cs on c.id = cs.comparison_id`
+        ));
+        return new CSVResponse(csvData, 'Successfully retrieved comparisons csv');
+    }
+
     const result = (await client.query(
         'select id, title from comparison_category'
     )).rows;

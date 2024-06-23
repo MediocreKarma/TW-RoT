@@ -53,3 +53,26 @@ export const validateStartAndCountParams = (startStr, countStr) => {
     }
     return null;
 }
+
+const escapeCSVField = (field) => {
+    if (field == null) return '""';
+
+    if (typeof field === 'object') {
+        field = JSON.stringify(field);
+    }
+
+    const escapedField = String(field).replace(/"/g, '""');
+    return `"${escapedField}"`;
+};
+
+export const buildCSVFromPGResult = (result) => {
+    const columns = result.fields.map(field => field.name).join(',');
+    let csvContent = `${columns}\n`;
+
+    result.rows.forEach(row => {
+        const values = Object.values(row).map(escapeCSVField).join(',');
+        csvContent += `${values}\n`;
+    });
+
+    return csvContent;
+}

@@ -3,10 +3,10 @@ import { expireAuthCookie } from "../../common/authMiddleware.js";
 import { ErrorCodes, USER_ROLES } from "../../common/constants.js";
 import { isAdmin, isStringValidInteger } from "../../common/utils.js";
 import {withDatabaseOperation, withDatabaseTransaction} from "../_common/db.js";
-import {ServiceResponse} from "../_common/serviceResponse.js";
+import {CSVResponse, ServiceResponse} from "../_common/serviceResponse.js";
 import { validateAuth, validateStartAndCountParams } from "../_common/utils.js";
 import dotenv from 'dotenv';
-import utf8 from 'utf8';
+import { buildCSVFromPGResult } from "../_common/utils.js";
 import { sendFileResponse } from "../../common/response.js";
 dotenv.config({path: '../../.env'});
 
@@ -79,15 +79,50 @@ export const resetProgress = withDatabaseTransaction(async function (
     return new ServiceResponse(204, null, 'Successfully reset progress');
 });
 
+
+const getLeaderboardPageForRank = (rank) => {
+    const usersPerPage = 5;
+    const pageNumber = Math.floor(rank / usersPerPage);
+    return `${process.env.FRONTEND_URL}/leaderboard?page=${pageNumber}`
+}
+
+/**
+ * RSS Feed cached as XML
+ */
+let rssFeedXml = null;
+
 /**
  * Retrieve the current leaderboard. Query params used to indicate
  * how many entries and starting from which entry.
  */
 export const getLeaderboard = withDatabaseOperation(async function (
-    client, _req, _res, params
+    client, _req, res, params
 ) {
-    const start = params['query']?.start ?? '0';
-    const count = params['query']?.count ?? '5';
+    const SQL_USERS_QUERY = 
+        `select ua.id,
+            ua.username,
+            ua.solved_questionnaires as "solvedQuestionnaires",
+            ua.total_questionnaires as "totalQuestionnaires",
+            ua.solved_questions as "solvedQuestions",
+            ua.total_questions as "totalQuestions"
+        from user_account ua
+        where ua.total_questions != 0
+        order by ua.solved_questions desc`;
+
+    if (params['query'].output === 'csv') {
+        const csvData = await client.query(
+            SQL_USERS_QUERY
+        );
+        return new CSVResponse(csvData, 'Successfully retrieved leaderboard csv');
+    }
+
+    if (params['query'].output === 'rss') {
+        sendFileResponse(res, 200, rssFeedXml, 'application/rss+xml');
+        return;
+    }
+    
+    const start = params['query'].start ?? '0';
+    const count = params['query'].count ?? '5';
     const validation = validateStartAndCountParams(start, count);
     if (validation instanceof ServiceResponse) {
         return validation;
@@ -98,15 +133,7 @@ export const getLeaderboard = withDatabaseOperation(async function (
     )).rows[0]['cnt'], 10);
 
     const result = (await client.query(
-        `select ua.id,
-                ua.username,
-                ua.solved_questionnaires as "solvedQuestionnaires",
-                ua.total_questionnaires as "totalQuestionnaires",
-                ua.solved_questions as "solvedQuestions",
-                ua.total_questions as "totalQuestions"
-            from user_account ua
-            where ua.total_questions != 0
-            order by ua.solved_questions
+        `${SQL_USERS_QUERY}
             offset $1::int limit $2::int`,
         [start, count]
     )).rows;
@@ -114,11 +141,6 @@ export const getLeaderboard = withDatabaseOperation(async function (
     return new ServiceResponse(200, {total: entries, data: result}, 'Successfully retrieved leaderboard entries');
 });
 
-const getLeaderboardPageForRank = (rank) => {
-    const usersPerPage = 5;
-    const pageNumber = Math.floor(rank / usersPerPage);
-    return `${process.env.FRONTEND_URL}/leaderboard?page=${pageNumber}`
-}
 
 /**
  * Convert special characters to XML-acceptable variants
@@ -130,8 +152,6 @@ const convertString = (str) => {
     return str.replace(/ă/g, '&#259;').replace(/â/g, '&#226;').replace(/ș/g, '&#537;');
 }
 
-let rssFeedXml = null;
-
 /**
  * RSS leaderboard generator.
  * Called to recreate the `rssFeedXml` object.
@@ -142,9 +162,9 @@ const generateRSS = async () => {
     const tmp = new RSS({
         title: 'Cele mai mari scoruri',
         description: 'Top 100 pe ProRutier',
-        site_url: `${process.env.FRONTEND_URL}/leaderboard/rss`,
-        feed_url: `${process.env.USERS_URL}/api/v1/leaderboard/rss`,
-        ttl: 3,
+        site_url: `${process.env.FRONTEND_URL}/leaderboard?output=rss`,
+        feed_url: `${process.env.USERS_URL}/api/v1/leaderboard?output=rss`,
+        ttl: 1,
         site_url: `${process.env.FRONTEND_URL}/leaderboard`,
         language: 'ro',
         pubDate: new Date()
@@ -178,27 +198,32 @@ setInterval(() => {
 }, 1000 * 60); // update every minute
 
 /**
- * Handler for serving the rss.
- */
-export const serveRSS = async function (
-    _req, res, _params
-) {
-    sendFileResponse(res, 200, rssFeedXml, 'application/rss+xml');
-}
-
-/**
  * Admin handler for retrieving user information in paginated manner.
  * Accepts query param to select only users matching search criteria.
  */
 export const getUsers = withDatabaseOperation(async function(
     client, _req, _res, params
 ) {
+    const SQL_USERS_QUERY = 
+        `select id, username, email, updated_at as "updatedAt", flags, 
+                solved_questionnaires as "solvedQuestionnaires",
+                total_questionnaires as "totalQuestionnaires",
+                solved_questions as "solvedQuestions",
+                total_questions as "totalQuestions"`;
+            
     const authValidation = validateAuth(params['authorization']);
     if (authValidation) {
         return authValidation;
     }
     if (!isAdmin(params['authorization'])) {
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+
+    if (params['query'].output === 'csv') {
+        const csvData = await client.query(
+            `${SQL_USERS_QUERY} from user_account`
+        );
+        return new CSVResponse(buildCSVFromPGResult(csvData), 'Successfully retrieved leaderboard csv');
     }
 
     const start = params['query']?.start ??  '0';
@@ -218,11 +243,7 @@ export const getUsers = withDatabaseOperation(async function(
     )).rows[0]['cnt'], 10);
 
     const result = (await client.query(
-        `select id, username, email, updated_at as "updatedAt", flags, 
-                solved_questionnaires as "solvedQuestionnaires",
-                total_questionnaires as "totalQuestionnaires",
-                solved_questions as "solvedQuestions",
-                total_questions as "totalQuestions" 
+        `${SQL_USERS_QUERY}
             from get_users($1::int, $2::int, $3::varchar)`,
         [start, count, query]
     )).rows;

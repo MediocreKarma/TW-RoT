@@ -1,7 +1,8 @@
 import { withDatabaseOperation } from '../_common/db.js';
-import { ServiceResponse } from '../_common/serviceResponse.js';
+import { CSVResponse, ServiceResponse } from '../_common/serviceResponse.js';
 import { ErrorCodes } from '../../common/constants.js';
 import { isStringValidInteger } from '../../common/utils.js';
+import { buildCSVFromPGResult } from '../_common/utils.js';
 
 /**
  * Handler function to get all Traffic Code Chapters
@@ -10,8 +11,15 @@ export const getAllChapters = withDatabaseOperation(async function (
     client,
     _req,
     _res,
-    _params
+    params
 ) {
+    if (params['query'].output === 'csv') {
+        return new CSVResponse(
+            buildCSVFromPGResult(await client.query(`select * from chapter`)), 
+            'Successfully retrieved chapters csv'
+        );
+    }
+
     const chapters = (
         await client.query('select id, number, title, isAddendum from chapter')
     ).rows;

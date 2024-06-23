@@ -3,11 +3,9 @@ import dotenv from 'dotenv';
 dotenv.config({path: '../../.env'});
 
 import {AppRouter, Authentication} from "../_common/appRouter.js"
-import { changeBanStatus, deleteUser, getLeaderboard, getUsers, resetProgress, serveRSS } from './service.js';
+import { changeBanStatus, deleteUser, getLeaderboard, getUsers, resetProgress } from './service.js';
 
 const app = new AppRouter('RoT Users', process.env.USERS_PORT, Authentication.REQUIRE);
-
-app.get('/api/v1/leaderboard/rss', serveRSS)
 
 app.delete('/api/v1/users/:id', deleteUser);
 // might also be POST

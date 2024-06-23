@@ -2,7 +2,7 @@ import { sendFileResponse, sendJsonResponse } from "../../common/response.js";
 import { ErrorCodes } from "../../common/constants.js";
 import fs from 'fs';
 
-export class ServiceResponse {
+export class Response {
     constructor(status, body, message = '') {
         this.status = status;
         this.body = body;
@@ -10,13 +10,16 @@ export class ServiceResponse {
     }
 }
 
-export class ImageResponse {
+export class ServiceResponse extends Response {
+    constructor(status, body, message = '') {
+        super(status, body, message);
+    }
+}
+
+export class ImageResponse extends Response {
     constructor(status, filepath, message = '') {
-        this.status = status;
-        this.filepath = filepath;
-        this.file = fs.readFileSync(filepath);
+        super(status, fs.readFileSync(filepath), message);
         this.contentType = ImageResponse.getContentType(filepath);
-        this.message = message;
     }
 
     static getContentType(filepath) {
@@ -27,6 +30,12 @@ export class ImageResponse {
             case 'png': return 'image/png';
             default: return '';
         }
+    }
+}
+
+export class CSVResponse extends Response {
+    constructor(content, message = '') {
+        super(200, content, message);
     }
 }
 
@@ -42,14 +51,23 @@ export function withResponse(serviceFunction) {
                     response.message
                 );
             }
-            if (response instanceof ImageResponse) {
+            else if (response instanceof ImageResponse) {
                 sendFileResponse(
                     res, 
                     response.status, 
-                    response.file, 
+                    response.body, 
                     response.contentType,
                     response.message
                 );
+            }
+            else if (response instanceof CSVResponse) {
+                sendFileResponse(
+                    res,
+                    response.status,
+                    response.body,
+                    "text/csv",
+                    response.message
+                )
             }
 
         } catch (error) {

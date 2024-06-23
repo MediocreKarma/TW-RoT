@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: My API
-  description: API for managing chapters, sign categories, and exercise categories
+  title: TW-RoT API
+  description: API for all related TW-RoT services
   version: 1.0.0
 servers:
   - url: https://localhost:12735/api/v1
@@ -1800,25 +1800,6 @@ paths:
                           type: integer
                   total:
                     type: integer
-        '500':
-          description: Internal server error
-  /leaderboard/rss:
-    get:
-      summary: Retrieve RSS feed for leaderboard
-      tags:
-        - Users
-      servers:
-        - url: https://localhost:12738/api/v1
-      description: |
-        Retrieves an RSS feed containing leaderboard data.
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/rss+xml:
-              schema:
-                type: string
-                format: utf-8
         '500':
           description: Internal server error
   /users:
