@@ -47,7 +47,6 @@ export const postFormData = async (url, data, options = {}) => {
         method: 'POST',
         credentials: 'include',
         headers: {
-            'Content-Type': 'multipart/form-data',
             ...options.headers,
         },
         body: data,
