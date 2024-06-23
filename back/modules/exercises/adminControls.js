@@ -121,7 +121,7 @@ const validateInfoQuestion = (question, validateText = true) => {
 const prepImage = async (question) => {
     if (question.binaryImage) {
         try {
-            const image = (await Jimp.read(question.binaryImage.data));
+            const image = await Jimp.read(question.binaryImage.data);
             const imageId = uuid4();
             question.imageId = imageId;
             addImageToQuestion(question);
@@ -235,7 +235,6 @@ export const addQuestion = withDatabaseTransaction(async function (
     if (!isAdmin(params['authorization'])) {
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
-    console.log(params);
     let question = params['body'];
     if (req.headers['content-type'].includes('multipart/form-data')) {
         try {
