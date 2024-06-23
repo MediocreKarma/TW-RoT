@@ -59,11 +59,11 @@ export const fetchQuestions = withDatabaseOperation(async function (
         return new ServiceResponse(200, {total: qst.length, data: qst}, 'Successfully retrieved question');
     }
 
-    const data = await client.query(
+    const data = (await client.query(
         `${SQL_SELECT_STATEMENT} ${SQL_WHERE_FETCH_STATEMENT} ${SQL_GROUPING_STATEMENT}
             offset $2::int limit $3::int`,
         [query, start, count]
-    ).rows;
+    )).rows;
 
     const cnt = parseInt((await client.query(
         `SELECT 
