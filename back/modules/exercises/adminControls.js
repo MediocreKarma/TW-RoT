@@ -107,12 +107,31 @@ const validateInfoQuestion = (question, validateText = true) => {
     if (!question.categoryTitle && !Number.isInteger(question.categoryId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_CATEGORY_ID}, 'Invalid category id');
     }
+    if (question.categoryTitle && question.categoryTitle >= 256) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.CATEGORY_TITLE_TOO_LONG}, 'Category title too long');
+    }
     if (validateText && !question.text) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.MISSING_TEXT_FROM_QUESTION}, 'Missing text from question');
+    }
+    if (validateText && question.description >= 4096) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.DESCRIPTION_TOO_LONG}, 'Description too long');
     }
 }
 
 const prepImage = async (question) => {
+    if (question.binaryImage) {
+        try {
+            const image = (await Jimp.read(question.binaryImage.data));
+            const imageId = uuid4();
+            question.imageId = imageId;
+            addImageToQuestion(question);
+            delete question.binaryImage;
+            return {image: image, imageId: imageId};
+        } catch (err) {
+            delete question.image;
+            return {image: null, imageId: null};
+        }
+    }
     if (!question.image) {
         return {image: null, imageId: null};
     }
@@ -207,7 +226,7 @@ const writeQuestion = async function(client, question, image = null, imageId = n
  * Uploads images if one is provided in the body as a base64 encoding
  */
 export const addQuestion = withDatabaseTransaction(async function (
-    client, _req, _res, params
+    client, req, _res, params
 ) {
     const authValidation = validateAuth(params['authorization']);
     if (authValidation instanceof ServiceResponse) {
@@ -216,7 +235,17 @@ export const addQuestion = withDatabaseTransaction(async function (
     if (!isAdmin(params['authorization'])) {
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
-    const question = params['body'];
+    let question = params['body'];
+    if (req.headers['content-type'] === 'multipart/form-data') {
+        try {
+            question = JSON.parse(params['body']?.fields?.question);
+        } catch (err) {
+            return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_FORMAT}, 'Invalid form data submission');
+        }
+        question.binaryImage = params['body']?.files?.image;
+    }
+
+
     const validation = await validateQuestion(client, question);
     if (validation instanceof ServiceResponse) {
         return validation;

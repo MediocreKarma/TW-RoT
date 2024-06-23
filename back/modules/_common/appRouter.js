@@ -9,6 +9,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { load, dump } from 'js-yaml';
+import {IncomingForm} from 'formidable';
 
 /**
  * All implemented HTTP Methods
@@ -44,7 +45,7 @@ const getCWD = () => {
  * It is capable of parsing dynamic routes, specified using <:pathname>
  * structures in given routes.
  * 
- * Aditionally, generates the appropiate swagger-ui for the server on launch,
+ * Additionally, generates the appropriate swagger-ui for the server on launch,
  * if a template is defined, and is capable of serving it.
  */
 export class AppRouter extends Server {
@@ -119,13 +120,19 @@ export class AppRouter extends Server {
         return this;
     }
 
-     async requestHandler(req, res) {
+    async requestHandler(req, res) {
         const method = req.method.toUpperCase();
         const {pathname, query} = parse(req.url, true);
         let body = null;
         console.log(`Received request ${method} ${pathname}`);
         try {
-            body = await this.getRequestBody(req);
+            const requestType = req.headers['content-type'];
+            if (requestType === 'multipart/form-data') {
+                body = await this.getMultipartFormData(req);
+            }
+            else if (requestType === 'application/json') {
+                body = await this.getJSONRequestBody(req);
+            }
         } catch (err) {
             sendJsonResponse(res, 400, {errorCode: ErrorCodes.INVALID_JSON_INPUT}, 'Could not parse body to json');
             return;
@@ -194,7 +201,7 @@ export class AppRouter extends Server {
         return params;
     }
 
-    getRequestBody(req) {
+    getJSONRequestBody(req) {
         return new Promise((resolve, reject) => {
             let body = '';
             req.on('data', (chunk) => {
@@ -213,6 +220,38 @@ export class AppRouter extends Server {
             });
             req.on('error', (err) => {
                 reject(err);
+            });
+        });
+    }
+
+    getMultipartFormData(req) {
+        return new Promise((resolve, reject) => {
+            const form = new IncomingForm();
+            form.parse(req, (err, fields, files) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                const formDataObject = {
+                    fields: fields,
+                    files: {}
+                };
+
+                for (const fileKey in files) {
+                    if (files.hasOwnProperty(fileKey)) {
+                        const file = files[fileKey];
+
+                        formDataObject.files[fileKey] = {
+                            name: file.name,
+                            type: file.type,
+                            size: file.size, 
+                            data: file._readStream
+                        };
+                    }
+                }
+
+                resolve(formDataObject);
             });
         });
     }
