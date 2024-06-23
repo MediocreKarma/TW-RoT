@@ -203,6 +203,7 @@ export const collectFormData = async (form) => {
 
     if (dataObject['image-upload'] && dataObject['image-upload'] != '') {
         finalDataObj.image = dataObject['image-upload'];
+        console.log(finalDataObj.image);
     }
     if (dataObject['category-id'] === NEW_CATEGORY_SELECT_OPTION.value) {
         finalDataObj.categoryTitle = dataObject['category-title'];

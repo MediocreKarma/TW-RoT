@@ -47,12 +47,20 @@ export const isLoggedIn = () => {
     return cachedUserData() ? true : false;
 };
 
-export const isAdmin = () => {
-    return parseInt(cachedUserData().flags, 10) === 1 ? true : false;
+export const isAdmin = (flags) => {
+    return (Number.isInteger(flags)
+        ? flags
+        : parseInt(cachedUserData().flags, 10)) === 1
+        ? true
+        : false;
 };
 
-export const isBanned = () => {
-    return parseInt(cachedUserData().flags, 10) > 1 ? true : false;
+export const isBanned = (flags) => {
+    return (Number.isInteger(flags)
+        ? flags
+        : parseInt(cachedUserData().flags, 10)) > 1
+        ? true
+        : false;
 };
 
 export const clearUserData = () => {

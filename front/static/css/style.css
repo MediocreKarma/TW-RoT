@@ -1021,6 +1021,9 @@ body[data-theme=dark] {
 .admin-dashboard .dashboard-card__label {
   display: none;
 }
+.admin-dashboard .dashboard-card__username, .admin-dashboard .dashboard-card__email {
+  word-break: break-all;
+}
 @media only screen and (max-width: 820px) {
   .admin-dashboard .dashboard-card {
     grid-template-columns: 1fr 1fr;

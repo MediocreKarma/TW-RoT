@@ -130,6 +130,11 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
             display: none;
         }
 
+        &__username,
+        &__email {
+            word-break: break-all;
+        }
+
         @media only screen and (max-width: vars.$media-query-size-big) {
             // background-color: red;
             grid-template-columns: 1fr 1fr;

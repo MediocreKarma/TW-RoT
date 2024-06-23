@@ -182,7 +182,12 @@ export const getFirstUnansweredQuestion = async () => {
         // delete skipped status and return the first question
         questionnaire.questions.forEach((q) => delete q.skipped);
         saveQuestionnaire(questionnaire);
-        return questionnaire.questions[0];
+        const unsent = questionnaire.questions.find(
+            (question) => !question.sent
+        );
+        if (unsent) {
+            return unsent;
+        }
     }
 
     return null;
@@ -237,6 +242,12 @@ export const trySubmittingQuestionnaireAutomatically = async () => {
     const questionnaireStats = await getQuestionnaireStats();
 
     if (questionnaireStats.unsolvedQuestions < 5) {
+        return;
+    }
+
+    if (
+        questionnaireStats.unsentQuestions !== questionnaireStats.totalQuestions
+    ) {
         return;
     }
 

@@ -5,6 +5,7 @@ import {
     getQuestionnaireStats,
     submitSolution,
     skipQuestion,
+    submitQuestionnaire,
 } from './common.js';
 import { cachedUserData } from '/js/auth.js';
 import { renderMessage } from '/js/render.js';
@@ -84,6 +85,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         const question = await getFirstUnansweredQuestion();
+        if (question === null) {
+            await submitQuestionnaire();
+            window.location.reload();
+        }
         const stats = await getQuestionnaireStats();
 
         const questionCard = await renderQuestionnaireQuestion(question, stats);
