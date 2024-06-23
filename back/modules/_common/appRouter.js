@@ -127,7 +127,6 @@ export class AppRouter extends Server {
         console.log(`Received request ${method} ${pathname}`);
         try {
             const requestType = req.headers['content-type'];
-            console.log(requestType);
             if (requestType?.includes('multipart/form-data')) {
                 body = await this.getMultipartFormData(req);
             }

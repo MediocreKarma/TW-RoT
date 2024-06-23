@@ -45,7 +45,7 @@ export async function getAuth(req, res) {
             port: url.port,
             path: '/api/v1/auth/authenticated',
             method: 'POST',
-            headers: { ...req.headers, 'Content-Length': 0 },
+            headers: { ...req.headers, 'Content-Length': 0, 'Content-Type': null },
             ca: ROOT_CA
         };
         const protocol = url.protocol.startsWith('https') ? https : http;
