@@ -183,24 +183,3 @@
         }
     }
 }
-
-// #password, #password-confirm {
-
-//     background: white url('/img/favicon.ico') right no-repeat;
-
-//     &:after {
-//         display: block;
-//         z-index: 1000000;
-//         content: ''; /* Required for pseudo-elements */
-//         position: relative;
-//         top: 50%; /* Position it vertically centered */
-//         right: 10px; /* Adjust as needed */
-//         transform: translateY(-50%);
-//         width: 500px; /* Adjust width as needed */
-//         height: 500px; /* Adjust height as needed */
-//         //background-image: url('/img/favicon.ico'); /* Replace with your image path */
-//         background-color: red;
-//         background-size: cover; /* Ensure the image covers the button */
-//         cursor: pointer; /* Change cursor on hover */
-//     }
-// }
