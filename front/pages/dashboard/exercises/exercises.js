@@ -90,6 +90,14 @@ const renderCard = (question) => {
 
         try {
             await deleteExercise(question.id);
+            console.log(currentQuery);
+            if (!isNaN(currentQuery) && /^[0-9]+$/.test(currentQuery)) {
+                currentQuery = '';
+                const searchInput = document.getElementById('search');
+                searchInput.value = currentQuery;
+                updateUrlParameter('query', '');
+                
+            }
             showInfoModal(
                 renderMessage('Întrebarea a fost ștearsă cu succes.')
             );

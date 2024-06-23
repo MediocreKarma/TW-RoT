@@ -2235,6 +2235,9 @@ body[data-theme=dark] {
     flex-direction: column;
   }
 }
+.intrebare-card__right, .intrebare-card__wrong {
+  text-align: center;
+}
 
 .questionnaire-results {
   width: 100%;

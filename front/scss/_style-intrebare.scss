@@ -195,4 +195,8 @@
             flex-direction: column;
         }
     }
+
+    &__right, &__wrong {
+        text-align: center;
+    }
 }

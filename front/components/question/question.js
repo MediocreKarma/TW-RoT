@@ -56,22 +56,24 @@ export const showCorrectAnswers = (
     correctAnswers.forEach((answer) => {
         const label = questionCard.querySelector(`label[for="${answer.id}"]`);
         if (label) {
-            label.textContent += answer.correct ? ' [corect]' : ' [greșit]';
+            label.textContent += answer.correct ? ' \u2705' : ' \u274C';
+        }
+        const inputCheckbox = document.getElementById(`${answer.id}`);
+        if (inputCheckbox) {
+            inputCheckbox.disabled = true;
         }
     });
 
-    if (isCorrect) {
-        const resultMessage = document.createElement('p');
-        resultMessage.className = isCorrect
-            ? 'intrebare-card__right'
-            : 'intrebare-card__wrong';
-        resultMessage.textContent = `Ai răspuns ${
-            isCorrect ? 'corect' : 'greșit'
-        }!`;
-    }
+    const resultMessage = document.createElement('p');
+    resultMessage.className = isCorrect
+        ? 'intrebare-card__right'
+        : 'intrebare-card__wrong';
+    resultMessage.textContent = `Ai răspuns ${
+        isCorrect ? 'corect' : 'greșit'
+    }!`;
 
-    const cardBody = questionCard.querySelector('.intrebare-card__body');
-    if (cardBody) {
-        cardBody.appendChild(resultMessage);
+    const buttons = questionCard.querySelector('.intrebare-card__buttons');
+    if (buttons) {
+        buttons.parentNode.insertBefore(resultMessage, buttons);
     }
 };

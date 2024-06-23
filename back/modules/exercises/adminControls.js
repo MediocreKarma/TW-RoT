@@ -53,7 +53,7 @@ export const fetchQuestions = withDatabaseOperation(async function (
 
     if (isStringValidInteger(query)) {
         const question = (await client.query(
-            `${SQL_SELECT_STATEMENT} where q.id = $1::int ${SQL_GROUPING_STATEMENT}`,
+            `${SQL_SELECT_STATEMENT} where q.id = $1::int and not q.deleted ${SQL_GROUPING_STATEMENT}`,
             [query]
         )).rows;
         
