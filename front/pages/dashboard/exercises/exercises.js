@@ -19,6 +19,9 @@ let total = 0;
 let currentPage = 0;
 let currentQuery;
 
+let jsonExportPage;
+let csvExportPage;
+
 const renderCard = (question) => {
     const card = document.createElement('div');
     card.className = 'dashboard-card';
@@ -171,6 +174,9 @@ const setInitialParams = () => {
     const pageParam = parseInt(getUrlParameter('page'), 10);
     const queryParam = getUrlParameter('query');
 
+    jsonExportPage = document.getElementById('json-export-button');
+    csvExportPage  = document.getElementById('csv-export-button');
+
     currentPage = pageParam >= 0 ? pageParam : defaultPage;
     updateUrlParameter('page', currentPage);
 
@@ -202,8 +208,12 @@ async function updatePageContent() {
             currentQuery
         );
 
+        csvExportPage.href = new URL(`${API.EXERCISES}/exercises?start=${currentStart()}&count=${COUNT}&output=csv`);
+
         data = responseData.data;
         total = responseData.total;
+
+        jsonExportPage.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type: `text/json`}));
 
         const exerciseById = data.filter(
             (exercise) => `${exercise.id}` === currentQuery

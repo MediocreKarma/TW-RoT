@@ -1091,6 +1091,19 @@ body[data-theme=dark] {
 .admin-dashboard .dashboard-card__actions .button[disabled], .admin-dashboard .dashboard-card__actions .button:disabled {
   background-color: #808080;
 }
+.admin-dashboard .dashboard-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+.admin-dashboard .dashboard-buttons a {
+  margin-top: 0px;
+  margin-bottom: 10px;
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+}
 
 .question-edit {
   width: 100%;

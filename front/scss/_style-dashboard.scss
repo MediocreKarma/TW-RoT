@@ -171,4 +171,20 @@ $grid-cols-desktop: 2fr 1fr 2fr 2fr;
             flex-wrap: wrap;
         }
     }
+
+    .dashboard-buttons {
+        
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: vars.$padding-small;
+
+        a {
+            margin-top: 0px;
+            margin-bottom: 10px;
+            flex: 1;
+            align-self: stretch;
+            text-align: center;
+        }
+    }
 }

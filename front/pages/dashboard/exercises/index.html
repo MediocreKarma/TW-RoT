@@ -36,9 +36,17 @@
                     />
                     <button type="submit"><span>⚲</span></button>
                 </form>
-                <a href="/dashboard/exercises/add" class="button dashboard-container__button"
-                    >Adaugă întrebare</a
-                >
+                <div class="dashboard-buttons">
+                    <a href="/dashboard/exercises/add" class="button dashboard-container__button"
+                        >Adaugă întrebare</a
+                    >
+                    <a href="#" class="button dashboard-container__button" id="json-export-button" download="exercises.json"
+                        >Exportează conținutul ca JSON</a
+                    >
+                    <a href="#" class="button dashboard-container__button" id="csv-export-button"
+                        >Exportează conținutul ca CSV</a
+                    >
+                </div>
                 <div class="dashboard-container">
                     <div class="dashboard-container__header">
                         <div class="dashboard-container__header__item">
