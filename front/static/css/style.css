@@ -600,6 +600,10 @@ body[data-theme=dark] {
 .about__title {
   text-align: center;
 }
+.about__button {
+  width: fit-content;
+  align-self: center;
+}
 @media only screen and (max-width: 600px) {
   .about {
     padding: 1rem;
@@ -664,6 +668,10 @@ body[data-theme=dark] {
 }
 .help__title {
   text-align: center;
+}
+.help__button {
+  width: fit-content;
+  align-self: center;
 }
 @media only screen and (max-width: 600px) {
   .help {
@@ -938,6 +946,10 @@ body[data-theme=dark] {
 .admin-dashboard__title {
   text-align: center;
 }
+.admin-dashboard__button {
+  width: fit-content;
+  align-self: center;
+}
 @media only screen and (max-width: 600px) {
   .admin-dashboard {
     padding: 1rem;
@@ -1129,6 +1141,10 @@ body[data-theme=dark] {
 .question-edit__title {
   text-align: center;
 }
+.question-edit__button {
+  width: fit-content;
+  align-self: center;
+}
 @media only screen and (max-width: 600px) {
   .question-edit {
     padding: 1rem;
@@ -1166,6 +1182,10 @@ body[data-theme=dark] {
 }
 .single-card__container__title {
   text-align: center;
+}
+.single-card__container__button {
+  width: fit-content;
+  align-self: center;
 }
 @media only screen and (max-width: 600px) {
   .single-card__container {
@@ -1225,6 +1245,10 @@ body[data-theme=dark] {
 .reset-container__title {
   text-align: center;
 }
+.reset-container__button {
+  width: fit-content;
+  align-self: center;
+}
 @media only screen and (max-width: 600px) {
   .reset-container {
     padding: 1rem;
@@ -1264,6 +1288,10 @@ body[data-theme=dark] {
 }
 .profile__title {
   text-align: center;
+}
+.profile__button {
+  width: fit-content;
+  align-self: center;
 }
 @media only screen and (max-width: 600px) {
   .profile {
@@ -1372,6 +1400,10 @@ body[data-theme=dark] {
 .cod-rutier__title {
   text-align: center;
 }
+.cod-rutier__button {
+  width: fit-content;
+  align-self: center;
+}
 @media only screen and (max-width: 600px) {
   .cod-rutier {
     padding: 1rem;
@@ -1410,6 +1442,10 @@ body[data-theme=dark] {
 }
 .cod-rutier .chapters-container .chapter-card .chapter-card__title {
   margin: 0;
+}
+.cod-rutier .chapters-container .chapter-card .chapter-card__buttons {
+  display: flex;
+  gap: 1rem;
 }
 .cod-rutier .chapters-container .chapter-card--anexa .button {
   background-color: #ea9a4b;
@@ -1453,6 +1489,10 @@ body[data-theme=dark] {
 }
 .capitol__title {
   text-align: center;
+}
+.capitol__button {
+  width: fit-content;
+  align-self: center;
 }
 @media only screen and (max-width: 600px) {
   .capitol {
@@ -1555,6 +1595,10 @@ body[data-theme=dark] {
 }
 .indicatoare__title {
   text-align: center;
+}
+.indicatoare__button {
+  width: fit-content;
+  align-self: center;
 }
 @media only screen and (max-width: 600px) {
   .indicatoare {
@@ -1687,6 +1731,10 @@ body[data-theme=dark] {
 .comparison__title {
   text-align: center;
 }
+.comparison__button {
+  width: fit-content;
+  align-self: center;
+}
 @media only screen and (max-width: 600px) {
   .comparison {
     padding: 1rem;
@@ -1807,6 +1855,10 @@ body[data-theme=dark] {
 }
 .exerseaza__title {
   text-align: center;
+}
+.exerseaza__button {
+  width: fit-content;
+  align-self: center;
 }
 @media only screen and (max-width: 600px) {
   .exerseaza {
@@ -2081,6 +2133,10 @@ body[data-theme=dark] {
 .intrebare__title {
   text-align: center;
 }
+.intrebare__button {
+  width: fit-content;
+  align-self: center;
+}
 @media only screen and (max-width: 600px) {
   .intrebare {
     padding: 1rem;
@@ -2275,6 +2331,10 @@ body[data-theme=dark] {
 }
 .questionnaire-results__title {
   text-align: center;
+}
+.questionnaire-results__button {
+  width: fit-content;
+  align-self: center;
 }
 @media only screen and (max-width: 600px) {
   .questionnaire-results {

@@ -10,10 +10,7 @@ const getQuestionnaire = async (userId) => {
     return await response.json();
 };
 
-if (isLoggedIn()) {
-    if (isAdmin()) {
-        return;
-    }
+if (isLoggedIn() && !isAdmin()) {
     let hasQuestionnaire = false;
 
     const questionnaire = localStorage.getItem(UserData.questionnaire);

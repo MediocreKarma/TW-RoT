@@ -1,10 +1,10 @@
-@use "vars";
-@use "color-themes";
-@use "utils";
+@use 'vars';
+@use 'color-themes';
+@use 'utils';
 
 .cod-rutier {
     @include utils.main-page-container;
-    
+
     .chapters-container {
         // margin-top: vars.$padding-small * 2;
         display: flex;
@@ -15,7 +15,7 @@
 
         // TODO, optional : card mixin in utils
         // bc this has a bit in common with the cards from index
-        
+
         a {
             color: var(--text-color);
             flex: 0 0 22%;
@@ -37,24 +37,29 @@
             flex-direction: column;
             align-items: center;
 
-            .chapter-card__title {
-                margin: 0;
+            .chapter-card {
+                &__title {
+                    margin: 0;
+                }
+
+                &__buttons {
+                    display: flex;
+                    gap: vars.$padding-small;
+                }
             }
-        
+
             &--anexa {
                 @include color-themes.secondary;
             }
         }
-    
+
         @media only screen and (max-width: 800px) {
             // grid-template-columns: 1fr 1fr;
             flex-direction: column;
-        } 
+        }
 
         .button {
             width: fit-content;
         }
     }
 }
-
-

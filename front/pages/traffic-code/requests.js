@@ -1,5 +1,5 @@
 import API from '/js/api.js';
-import { get } from '/js/authRequests.js';
+import { get, del } from '/js/authRequests.js';
 
 export const fetchChapter = async (id) => {
     const response = await get(`${API.CHAPTERS}/chapters/${id}`);
@@ -9,4 +9,8 @@ export const fetchChapter = async (id) => {
 export const fetchChapters = async () => {
     const response = await get(`${API.CHAPTERS}/chapters`);
     return await response.json();
+};
+
+export const deleteChapter = async (id) => {
+    await del(`${API.CHAPTERS}/chapters/${id}`);
 };

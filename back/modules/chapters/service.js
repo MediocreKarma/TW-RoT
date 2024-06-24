@@ -84,7 +84,6 @@ export const postChapter = withDatabaseOperation(async function(client,
     if (!isAdmin(params['authorization'])) {
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
-    console.log(chapter)
 
     const title = chapter?.title;
     const content = chapter?.content;
@@ -222,7 +221,7 @@ export const patchChapter = withDatabaseOperation(async function(client,
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
 
-    const originalChapter = (
+    let originalChapter = (
         await client.query(
             'select number, title, content, isaddendum from chapter where id=$1::int',
             [id]
@@ -235,6 +234,8 @@ export const patchChapter = withDatabaseOperation(async function(client,
             'No chapter with given id'
         );
     }
+
+    originalChapter = originalChapter[0];
 
     const chapter = params['body'];
 
@@ -290,7 +291,6 @@ export const patchChapter = withDatabaseOperation(async function(client,
         );
     }
     
-    
     if (title === null) {
         return new ServiceResponse(
             400,
@@ -299,12 +299,20 @@ export const patchChapter = withDatabaseOperation(async function(client,
         );
     }
 
+    const objectWithValueIfExistent = (key, value) => {
+        let object = {};
+        if (value !== undefined) {
+            object[key] = value;
+        }
+        return object;
+    }
+
     const newChapter = {
         ...originalChapter,
-        ...(chapter?.title ? {title: chapter.title} : {}),
-        ...(chapter?.number ? {number: chapter.number} : {}),
-        ...(chapter?.content ? {content: chapter.content} : {}),
-        ...(chapter?.isaddendum ? {isaddendum: chapter.isaddendum} : {}),
+        ...objectWithValueIfExistent('title', chapter.title),
+        ...objectWithValueIfExistent('number', chapter.number),
+        ...objectWithValueIfExistent('content', chapter.content),
+        ...objectWithValueIfExistent('isaddendum', chapter.isaddendum),
     }
 
     await client.query(

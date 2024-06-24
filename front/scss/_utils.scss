@@ -87,6 +87,11 @@
         text-align: center;
     }
 
+    &__button {
+        width: fit-content;
+        align-self: center;
+    }
+
     @media only screen and (max-width: vars.$media-query-size-small) {
         padding: vars.$padding-small;
         padding-bottom: calc(vars.$padding-big + 2rem);
