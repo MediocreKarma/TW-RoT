@@ -9,7 +9,6 @@ export const NEW_CATEGORY_SELECT_OPTION = {
 };
 
 export const validateFormData = (formData) => {
-    console.log(formData);
     const validatorResponse = (isValid, errorMessage) => {
         return {
             valid: isValid,
@@ -18,7 +17,6 @@ export const validateFormData = (formData) => {
     };
 
     try {
-        console.log(formData.categoryId);
         if (formData.categoryId === DEFAULT_SELECT_OPTION.value) {
             return validatorResponse(false, 'Nu a fost selectată o categorie');
         }
@@ -204,21 +202,6 @@ export const convertObjectToFormData = (objectData) => {
     return data;
 };
 
-export const readFileIntoString = async (file) => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-
-        reader.onerror = () => {
-            reader.abort();
-            reject(new Error('Invalid file'));
-        }
-        reader.onload = () => {
-            resolve(reader.result);
-        }
-        reader.readAsText(file);
-    });
-} 
-
 export const collectFormData = async (form) => {
     const data = new FormData(form);
     const dataObject = Object.fromEntries(data.entries());
@@ -227,7 +210,6 @@ export const collectFormData = async (form) => {
 
     if (form.querySelector('#image-upload').files.length > 0) {
         finalDataObj.image = dataObject['image-upload'];
-        console.log(finalDataObj.image);
     }
     if (dataObject['category-id'] === NEW_CATEGORY_SELECT_OPTION.value) {
         finalDataObj.categoryTitle = dataObject['category-title'];

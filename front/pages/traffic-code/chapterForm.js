@@ -10,8 +10,13 @@ import { isAdmin } from '/js/auth.js';
 import { showFormError } from '/js/form/errors.js';
 import { validateForm } from '/js/form/validate.js';
 import { disableFormSubmit, enableFormSubmit } from '/js/form/utils.js';
+import { postChapter, postChapterForm } from './requests.js';
+import {readFileIntoString} from '/js/utils.js';
 
 export const renderChapterForm = () => {
+    if (!isAdmin()) {
+        return;
+    }
     const form = document.createElement('form');
     form.classList.add('form');
     const titleGroup = document.createElement('div');
@@ -75,6 +80,47 @@ export const renderChapterForm = () => {
     impInput.id = 'import';
     impInput.style.display = 'none';
     buttons.append(impLabel, impInput, confirm);
+    impInput.addEventListener('change', async (event) => {
+        try {
+            const file = event.target.files[0];
+            if (file.type.includes('text/csv')) {
+                const formData = new FormData();
+                formData.append('csv', file, 'file.csv');
+                showInfoModal(
+                    renderMessage('Capitolele noi au fost adăugat cu succes.'),
+                    () => {
+                        window.location.reload();
+                    }
+                )
+            } else {
+                let result;
+                try {
+                    result = JSON.parse(await readFileIntoString(file));
+                } catch (err) {
+                    console.log(err);
+                    showInfoModal(
+                        renderMessage(
+                            `Eroare la citirea fișierului JSON. Fișierul este invalid`
+                        ),
+                        () => {
+                            window.location.reload();
+                        }
+                    );
+                }
+                await postChapter(result);
+                showInfoModal(
+                    renderMessage('Capitolele noi au fost adăugat cu succes.'),
+                    () => {
+                        window.location.reload();
+                    }
+                );
+            }        
+        } catch (err) {
+            console.log(err);
+            showInfoModal(renderMessage('Eroare la import, fișier invalid'), () => {window.location.reload();});
+        }
+
+    });
 
     form.append(buttons);
     return form;
@@ -123,7 +169,6 @@ export const chapterFormSubmit = (closeModal, onConfirm, refresh) => {
         const data = Object.fromEntries(formData);
 
         data.number = parseInt(data.number, 10);
-        console.log(formData.get('isaddendum'));
         data.isaddendum = formData.get('isaddendum') === 'on' ? true : false;
 
         try {

@@ -6,7 +6,6 @@ import {
     validateFormData,
     convertObjectToFormData,
     setSubmitButtonDisabled,
-    readFileIntoString,
 } from './form.js';
 import { showInfoModal } from '/js/modals.js';
 import { renderMessage } from '/js/render.js';
@@ -17,6 +16,7 @@ import {
     postExercise,
     postExercises,
 } from '../requests.js';
+import {readFileIntoString} from '/js/utils.js';
 
 export const reactToSubmitResponse = async (
     form,
@@ -61,7 +61,6 @@ const onFormSubmit = async (event) => {
     const data = await collectFormData(form);
     const validation = validateFormData(data);
 
-    console.log(validation);
     if (!validation.valid) {
         showFormError(form, validation.message);
         return;
@@ -88,7 +87,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         .addEventListener('change', async (event) => {
             const file = event.target.files[0];
             const formData = new FormData();
-            console.log(file.type);
             if (file.type.includes('text/csv')) {
                 formData.append('csv', file, 'file.txt');
             } else {

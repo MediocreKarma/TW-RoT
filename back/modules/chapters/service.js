@@ -1,7 +1,7 @@
 import { withDatabaseOperation } from '../_common/db.js';
 import { CSVResponse, ServiceResponse } from '../_common/serviceResponse.js';
 import { ErrorCodes } from '../../common/constants.js';
-import { isStringValidInteger, isAdmin } from '../../common/utils.js';
+import { isStringValidInteger, isAdmin, parseCSV } from '../../common/utils.js';
 import { buildCSVFromPGResult } from '../_common/utils.js';
 import { validateAuth } from "../_common/utils.js";
 
@@ -80,20 +80,7 @@ export const getChapterContent = withDatabaseOperation(async function (
     );
 });
 
-export const postChapter = withDatabaseOperation(async function(client,
-    _req,
-    _res,
-    params
-) {
-    const chapter = params['body'];
-    
-    const authValidation = validateAuth(params['authorization']);
-    if (authValidation) {
-        return authValidation;
-    }
-    if (!isAdmin(params['authorization'])) {
-        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
-    }
+const validateChapter = (chapter) => {
 
     const title = chapter?.title;
     const content = chapter?.content;
@@ -179,7 +166,13 @@ export const postChapter = withDatabaseOperation(async function(client,
             'Invalid chapter number'
         );
     }
+}
 
+const addNewChapter = async (client, chapter) => {
+    const validation = validateChapter(chapter);
+    if (validation) {
+        return validation;
+    }
     const id = (
         await client.query(
             'insert into chapter values(default, $1::int, $2::varchar, $3::text, $4::bool) returning id',
@@ -193,18 +186,50 @@ export const postChapter = withDatabaseOperation(async function(client,
             [id]
         )
     ).rows;
-    if (newChapter.length === 0) {
-        return new ServiceResponse(
-            404,
-            { errorCode: ErrorCodes.CHAPTER_NOT_FOUND },
-            'No chapter with given id'
-        );
-    }
+    
     return new ServiceResponse(
         200,
         newChapter[0],
         'Chapter added successfully'
     );
+}
+
+export const postChapter = withDatabaseOperation(async function(client,
+    _req,
+    _res,
+    params
+) {
+    const authValidation = validateAuth(params['authorization']);
+    if (authValidation) {
+        return authValidation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+
+    if (params.body?.files?.csv) {
+        const data = await parseCSV(params.body.files.csv.filepath);
+        for (const chapter of data) {
+            chapter.isaddendum = chapter.isaddendum === 'true' ? true : false;
+            const result = await addNewChapter(client, chapter);
+            if (result.status < 200 || 299 < result.status) {
+                return result;
+            }
+        }
+        return new ServiceResponse(204, null, 'Successfully added chapters');
+    }
+    else if (Array.isArray(params.body)) {
+        for (const chapter of params.body) {            
+            const result = await addNewChapter(client, chapter);
+            if (result.status < 200 || 299 < result.status) {
+                return result;
+            }
+        }
+        return new ServiceResponse(204, null, 'Successfully added chapters');
+    }
+    else {
+        return await addNewChapter(client, params.body);
+    }
 })
 
 
