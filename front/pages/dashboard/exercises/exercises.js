@@ -7,7 +7,7 @@ import {
     scrollToTop,
     disablePagination,
 } from '../common.js';
-import { getExercises, deleteExercise } from '../requests.js';
+import { getExercises, deleteExercise, getExercise } from '../requests.js';
 import { showInfoModal, showConfirmModal } from '/js/modals.js';
 import { renderError } from '/js/errors.js';
 import { renderMessage } from '/js/render.js';
@@ -188,6 +188,23 @@ async function updatePageContent() {
 
         data = responseData.data;
         total = responseData.total;
+
+        const exerciseById = data.filter(
+            (exercise) => `${exercise.id}` === currentQuery
+        );
+
+        if (exerciseById.length === 0) {
+            try {
+                const responseData = await getExercise(currentQuery);
+                data = [responseData, ...data];
+                total = total + 1;
+            } catch (e) {
+                if (e?.status === 404 || e?.status === 400) {
+                } else {
+                    throw e;
+                }
+            }
+        }
 
         showData(data);
         updatePagination(currentPage, total, COUNT, setPage);
