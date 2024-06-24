@@ -6,6 +6,7 @@ import {
     submitSolution,
     skipQuestion,
     submitQuestionnaire,
+    setQuestionnaireTimeout,
 } from './common.js';
 import { cachedUserData } from '/js/auth.js';
 import { renderMessage } from '/js/render.js';
@@ -17,7 +18,14 @@ import {
     getFormElement,
     setDisabled,
 } from '/components/question/questionnaire.js';
+import { isAdmin } from '/js/auth.js';
 
+/**
+ * Submits the question form.
+ * @param {*} questionData data of question
+ * @param {*} questionCard DOM node corresponding to the question card
+ * @param {*} event form submit event
+ */
 export const onFormSubmit = async (questionData, questionCard, event) => {
     event.preventDefault();
 
@@ -40,6 +48,53 @@ export const onFormSubmit = async (questionData, questionCard, event) => {
         });
         return;
     }
+};
+
+/**
+ * Disables all the buttons and links outside of the target node,
+ * making them show a modal upon clicking, saying the user
+ * cannot leave the page in the middle of a questionnaire
+ *
+ * @param {*} targetNode container node for buttons and links
+ * that shall not be disabled
+ */
+const disableOuterLinks = (targetNode) => {
+    if (isAdmin()) {
+        return;
+    }
+    const showModal = () => {
+        showInfoModal(
+            renderMessage('Nu puteți părăsi pagina în timpul unui chestionar.')
+        );
+    };
+
+    const allButtons = document.querySelectorAll('button');
+    const allLinks = document.querySelectorAll('a');
+
+    const innerButtons = targetNode.querySelectorAll('button');
+    const innerLinks = targetNode.querySelectorAll('a');
+
+    const innerButtonsArray = Array.from(innerButtons);
+    const innerLinksArray = Array.from(innerLinks);
+
+    const linkExceptions = ['/logout'];
+
+    allButtons.forEach((button) => {
+        if (!innerButtonsArray.includes(button)) {
+            button.addEventListener('click', showModal);
+            button.disabled = true;
+        }
+    });
+
+    allLinks.forEach((link) => {
+        if (
+            !innerLinksArray.includes(link) &&
+            !linkExceptions.includes(link.href)
+        ) {
+            link.addEventListener('click', showModal);
+            link.href = 'javascript:void(0)';
+        }
+    });
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -109,6 +164,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 event.target.disabled = false;
             }
         });
+
+        disableOuterLinks(questionCard);
+        setQuestionnaireTimeout();
     } catch (e) {
         showInfoModal(renderError(e), () => {
             window.location.href = '/exercises';

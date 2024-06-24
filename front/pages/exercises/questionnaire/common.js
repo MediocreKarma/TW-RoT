@@ -7,10 +7,18 @@ import {
 } from '../requests.js';
 import { cachedUserData, UserData } from '/js/auth.js';
 
+/**
+ * Saves questionnaire object to localStorage.
+ * @param {*} questionnaire questionnaire object
+ */
 const saveQuestionnaire = (questionnaire) => {
     localStorage.setItem(UserData.questionnaire, JSON.stringify(questionnaire));
 };
 
+/**
+ * Creates new questionnaire by calling the API.
+ * @returns questionnaire, if creation successful
+ */
 export const createQuestionnaire = async () => {
     const user = cachedUserData();
     if (!user) {
@@ -27,6 +35,9 @@ export const createQuestionnaire = async () => {
 const QUESTIONNAIRE_INTERVAL_MS = 30 * 60000;
 let questionnaireTimeout;
 
+/**
+ * Sets timeout for automatic submission of the questionnaire when time runs out.
+ */
 export const setQuestionnaireTimeout = async () => {
     const questionnaire = await getQuestionnaire();
     if (!questionnaire) {
@@ -49,8 +60,12 @@ export const setQuestionnaireTimeout = async () => {
     }, distance);
 };
 
-// gets user's questionnaire without creating a new one
-// forceInvalidate forces fetching from server
+/**
+ * Gets user's questionnaire without creating a new one.
+ * @param {*} forceInvalidate whether the local cache should be invalidated,
+ * and the questionnaire should be fetched from the server
+ * @returns questionnaire object, if successful
+ */
 export const getQuestionnaire = async (forceInvalidate = false) => {
     if (!forceInvalidate) {
         const data = localStorage.getItem(UserData.questionnaire);
@@ -91,6 +106,11 @@ export const getQuestionnaire = async (forceInvalidate = false) => {
     return questionnaire;
 };
 
+/**
+ * Sets `sent` status of question in local questionnaire to given status.
+ * @param {*} questionId id of question
+ * @param {*} sentStatus boolean status to set `sent` to
+ */
 export const setQuestionSent = async (questionId, sentStatus) => {
     const questionnaire = await getQuestionnaire();
     if (!questionnaire) {
@@ -103,6 +123,11 @@ export const setQuestionSent = async (questionId, sentStatus) => {
     }
 };
 
+/**
+ * Sets question `solved` to given `solvedStatus` in local questionnaire.
+ * @param {*} questionId id of question
+ * @param {*} solvedStatus boolean status
+ */
 export const setQuestionSolved = async (questionId, solvedStatus) => {
     const questionnaire = getQuestionnaire();
     if (questionnaire) {
@@ -116,6 +141,11 @@ export const setQuestionSolved = async (questionId, solvedStatus) => {
     }
 };
 
+/**
+ * Returns stats for the provided questionnaire object.
+ * @param {*} questionnaire questionnaire object
+ * @returns {*} total questions, unsolved questions, unsent questions of questionnaire
+ */
 export const getQuestionnaireStatsFromExisting = (questionnaire) => {
     const totalQuestions = questionnaire.questions.length;
     const wrongQuestions = questionnaire.questions.filter(
@@ -133,6 +163,12 @@ export const getQuestionnaireStatsFromExisting = (questionnaire) => {
     };
 };
 
+/**
+ * Returns stats for either the provided questionnaire object
+ * (if provided) or the local questionnaire.
+ * @param {*} questionnaire questionnaire object; optional
+ * @returns {*} total questions, unsolved questions, unsent questions of questionnaire
+ */
 export const getQuestionnaireStats = async (questionnaireData = undefined) => {
     const questionnaire = questionnaireData
         ? questionnaireData
@@ -144,16 +180,28 @@ export const getQuestionnaireStats = async (questionnaireData = undefined) => {
     return getQuestionnaireStatsFromExisting(questionnaire);
 };
 
+/**
+ * Gets unsolved questions of local questionnaire.
+ * @returns unsolved questions of local questionnaire
+ */
 export const getUnsolvedQuestionsCount = () => {
     const stats = getQuestionnaireStats();
     return stats ? stats.unsolvedQuestions : 0;
 };
 
+/**
+ * Gets unsent questions of local questionnaire.
+ * @returns unsent questions of local questionnaire
+ */
 export const getUnsentQuestionsCount = () => {
     const stats = getQuestionnaireStats();
     return stats ? stats.unsentQuestions : 0;
 };
 
+/**
+ * Marks question as skipped.
+ * @param {*} questionId id of question
+ */
 export const skipQuestion = async (questionId) => {
     const questionnaire = await getQuestionnaire();
     if (!questionnaire) {
@@ -166,6 +214,9 @@ export const skipQuestion = async (questionId) => {
     }
 };
 
+/**
+ * Gets first unsent, unskipped question from local questionnaire.
+ */
 export const getFirstUnansweredQuestion = async () => {
     const questionnaire = await getQuestionnaire();
     let allSkipped = true;
@@ -193,6 +244,11 @@ export const getFirstUnansweredQuestion = async () => {
     return null;
 };
 
+/**
+ * Submits solution for given question.
+ * @param {*} questionId id of question
+ * @param {*} answerData answer data
+ */
 export const submitSolution = async (questionId, answerData) => {
     const questionnaire = await getQuestionnaire();
     if (!questionnaire) {
@@ -238,6 +294,10 @@ export const submitSolution = async (questionId, answerData) => {
     await trySubmittingQuestionnaireAutomatically();
 };
 
+/**
+ * Submits the local questionnaire automatically, if either the questionnaire
+ * has over 4 questions answered wrongly or all of the questions have been answered.
+ */
 export const trySubmittingQuestionnaireAutomatically = async () => {
     const questionnaireStats = await getQuestionnaireStats();
 
@@ -254,6 +314,9 @@ export const trySubmittingQuestionnaireAutomatically = async () => {
     await submitQuestionnaire();
 };
 
+/**
+ * Submits the local questionnaire.
+ */
 export const submitQuestionnaire = async () => {
     const user = cachedUserData();
     const questionnaire = await getQuestionnaire();
