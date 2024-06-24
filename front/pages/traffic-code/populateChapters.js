@@ -122,9 +122,6 @@ const showChapters = (chapters) => {
 };
 
 const setAdminButtons = (chapterData) => {
-    if (!isAdmin()) {
-        return;
-    }
     const buttons = document.getElementById('chapters-buttons');
     let exportJSONButton = buttons.querySelector('#json-export');
     if (!exportJSONButton) {
@@ -148,19 +145,18 @@ const setAdminButtons = (chapterData) => {
         buttons.appendChild(exportCSVButton);
     }
     exportCSVButton.href = getChaptersCSV();
-};
 
-const fetchAndShowChapters = async () => {
     if (isAdmin()) {
         const addChapters = document.createElement('button');
         addChapters.type = 'button';
-        addChapters.classList.add('button', 'cod-rutier__button');
+        addChapters.className = 'button dashboard-card__action';
         addChapters.id = 'chapters-add';
         addChapters.textContent = 'Adaugă un capitol nou';
-        const title = document.getElementById('cod-rutier__title');
-        title.parentNode.insertBefore(addChapters, title.nextElementSibling);
+        buttons.appendChild(addChapters);
     }
+};
 
+const fetchAndShowChapters = async () => {
     try {
         const chapters = await fetchChapters();
         setAdminButtons(chapters);
