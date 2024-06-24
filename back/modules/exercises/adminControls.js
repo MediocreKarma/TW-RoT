@@ -312,9 +312,10 @@ export const createQuestions = withDatabaseTransaction(async function (
                 return new ServiceResponse(204, null, 'Successfully created multiple questions');
             }
             else if (params['body']?.fields?.questions[0]) {
-                
                 const questions = JSON.parse(params['body']?.fields?.questions[0]);
-
+                if (!Array.isArray(questions)) {
+                    return addQuestion(client, questions);
+                }
                 for (const qst of questions) {
                     const result = addQuestion(client, qst);
                     if (result.status < 200 || result.status > 299) {

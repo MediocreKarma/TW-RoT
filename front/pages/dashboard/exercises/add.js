@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             `Eroare la citirea fișierului JSON. Fișierul este invalid`
                         ),
                         () => {
-                            window.location.href = `/dashboard/exercises/add`;
+                            window.location.reload();
                         }
                     );
                 }
