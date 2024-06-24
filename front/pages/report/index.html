@@ -3,13 +3,13 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>RoT - Raport</title>
+        <title>ProRutier - Raport</title>
         <link rel="stylesheet" href="/report/style/style-report.css" />
     </head>
 
     <body prefix="schema: http://schema.org">
         <header>
-            <h1>RoT (Romanian Traffic Signs Tutor)</h1>
+            <h1>ProRutier</h1>
         </header>
         <div role="contentinfo">
             <section typeof="sa:AuthorsList">
@@ -59,18 +59,19 @@
         <section typeof="sa:Abstract" id="abstract" role="doc-abstract">
             <h2>2. Rezumat</h2>
             <p>
-                Proiectul RoT (Romanian Traffic Signs Tutor) este o aplicație
-                web dedicată învățării semnelor rutiere și a regulilor de
-                circulație în România și alte țări europene. Utilizatorii se pot
-                informa, prin intermediul aplicației, despre Codul Rutier
-                valabil în România și despre toate categoriile de indicatoare
-                din țară. De asemenea, pot fi comparate indicatoarele din
-                România cu echivalentele lor din alte țări. Utilizatorii își pot
-                testa apoi cunoștințele prin intermediul întrebărilor de pe
-                site, formulate într-un stil similar celor oficiale din
-                chestionarele auto din România. Pentru oferirea informațiilor se
-                va dezvolta un API REST propriu, care va fi folosit de aplicația
-                web pentru afișarea informațiilor relevante într-un mod dinamic.
+                Proiectul RoT (Romanian Traffic Signs Tutor), denumit ulterior
+                ProRutier, este o aplicație web dedicată învățării semnelor
+                rutiere și a regulilor de circulație în România și alte țări
+                europene. Utilizatorii se pot informa, prin intermediul
+                aplicației, despre Codul Rutier valabil în România și despre
+                toate categoriile de indicatoare din țară. De asemenea, pot fi
+                comparate indicatoarele din România cu echivalentele lor din
+                alte țări. Utilizatorii își pot testa apoi cunoștințele prin
+                intermediul întrebărilor de pe site, formulate într-un stil
+                similar celor oficiale din chestionarele auto din România.
+                Pentru oferirea informațiilor se va dezvolta un API REST
+                propriu, care va fi folosit de aplicația web pentru afișarea
+                informațiilor relevante într-un mod dinamic.
             </p>
         </section>
 
@@ -80,10 +81,9 @@
                 <h3>2.1. Scop</h3>
                 <p>
                     Scopul acestui document este de a specifica cerințele pentru
-                    RoT (Romanian Traffic Signs Tutor), aplicație web destinată
-                    învățării regulilor de circulație. Acest document descrie
-                    obiectivele, funcționalitățile și constrângerile
-                    proiectului.
+                    ProRutier, aplicație web destinată învățării regulilor de
+                    circulație. Acest document descrie obiectivele,
+                    funcționalitățile și constrângerile proiectului.
                 </p>
             </section>
             <section>
@@ -458,13 +458,14 @@
                     trimite/primi date, dar există și rute care acceptă conținut
                     de tipul
                     <i>multipart/form-data</i>, pentru transmiterea eficientă de
-                    imagini în format binar (spre exemplu, adăugarea de noi
+                    imagini în format binar (spre exemplu, la adăugarea de noi
                     întrebări).
                 </p>
                 <p>
-                    API-ul permite pentru majoritatea datelor aplicației
-                    (întrebări, semne de circulație, capitole ale Codului
-                    Rutier) să fie exportate în format JSON sau CSV.
+                    API-ul permite ca majoritatea datelor aplicației (întrebări,
+                    semne de circulație, capitole ale Codului Rutier) să fie
+                    exportate în format JSON sau CSV, unele rute permițând
+                    inclusiv importuri (de exemplu, la întrebări).
                 </p>
                 <p>
                     Pentru toate serviciile este pusă la dispoziție o interfață
@@ -504,7 +505,7 @@
                 <h3>3.3. Clase și caracteristici de utilizatori</h3>
                 <p>
                     Există diverse tipuri de utilizatori care ar putea folosi
-                    aplicația RoT:
+                    aplicația ProRutier:
                 </p>
                 <ul>
                     <li>
@@ -519,8 +520,8 @@
                     </li>
                     <li>
                         <b>Instructori auto: </b>instructorii de conducere sau
-                        școlile de șoferi pot utiliza site-ul RoT pentru a oferi
-                        materiale suplimentare de învățare și exerciții
+                        școlile de șoferi pot utiliza site-ul ProRutier pentru a
+                        oferi materiale suplimentare de învățare și exerciții
                         cursanților.
                     </li>
                     <li>
@@ -541,12 +542,22 @@
             <section>
                 <h3>3.4. Mediul de rulare</h3>
                 <p>
-                    Pentru funcționare, serverul web trebuie host-uit (fie
-                    local, fie prin cloud) și expus la internet, pentru a putea
-                    fi accesat de către utilizatori prin intermediul unui
-                    browser web. Trebuie ca baza de date să fie accesibilă și ca
-                    cele două servere Node.js să poată rula, pentru a furniza
+                    Pentru funcționare, serverul web trebuie ori rulat local,
+                    ori găzduit online și expus la internet, pentru a putea fi
+                    accesat de către utilizatori prin intermediul unui browser
+                    web. Trebuie ca baza de date să fie accesibilă și ca cele
+                    două servere Node.js să poată rula, pentru a furniza
                     serviciile de frontend și backend.
+                </p>
+                <p>
+                    Găzduirea serviciilor web necesare pentru funcționarea
+                    aplicației se realizează eficient cu ajutorul
+                    <b>ngrok</b>, o platformă care permite expunerea serverelor
+                    locale la internet prin crearea de tuneluri securizate.
+                    Aceasta se poate face prin modificarea variabilelor de
+                    configurare în fișierele de mediu (<i>.env</i>), care
+                    stochează setările esențiale ale aplicației, fără a necesita
+                    alte ajustări suplimentare în codul propriu-zis.
                 </p>
             </section>
             <section id="design-constraints">
@@ -566,8 +577,7 @@
                         asemenea site sunt necesare cunoștințe și experiență în
                         tehnologii precum HTML, CSS, preprocesorul SCSS,
                         JavaScript, protocolul REST pentru API, operarea de date
-                        în format XML sau JSON, baze de date relaționale,
-                        ș.a.m.d.
+                        în format JSON, baze de date relaționale, ș.a.m.d.
                     </li>
                     <li>
                         <b>Compatibilitate software: </b> aplicația trebuie să
@@ -620,7 +630,7 @@
             <section id="user-interfaces">
                 <h3>4.1. Interfețe pentru utilizator</h3>
                 <p>
-                    Utilizatorul poate interacționa cu aplicația RoT prin
+                    Utilizatorul poate interacționa cu aplicația ProRutier prin
                     diversele interfețe puse la dispoziție.
                 </p>
                 <ul>
@@ -1083,9 +1093,9 @@
                 <h4>5.1.3. Cerințe funcționale</h4>
                 <ul>
                     <li>
-                        Trebuie să se poată prelua la cerere prin intermediul
-                        API-ului informațiile necesare din baza de date, în
-                        momentul în care se doresc a fi accesate de vizitator.
+                        Se pot prelua la cerere prin intermediul API-ului
+                        informațiile necesare din baza de date, în momentul în
+                        care se doresc a fi accesate de vizitator.
                     </li>
                 </ul>
             </section>
@@ -1114,7 +1124,7 @@
                 <ul>
                     <li>
                         Comunicarea cu backend-ul pentru informații și apariția
-                        elementelor în pagină trebuie realizată programatic,
+                        elementelor în pagină se realizează programatic,
                         folosind JavaScript.
                     </li>
                 </ul>
@@ -1150,15 +1160,15 @@
                 <h4>5.3.3. Cerințe funcționale</h4>
                 <ul>
                     <li>
-                        Trebuie să se poată gestiona sesiunea curentă a
-                        utilizatorului, pentru a stabili dacă este sau nu logat.
+                        Se poate gestiona sesiunea curentă a utilizatorului,
+                        pentru a stabili dacă este sau nu logat.
                     </li>
                     <li>
-                        Trebuie ca datele utilizatorului să poată fi adăugate în
-                        baza de date, și apoi modificate la cerere.
+                        Datele utilizatorului pot fi adăugate în baza de date,
+                        și apoi modificate la cerere.
                     </li>
                     <li>
-                        Trebuie implementat flow-ul în cazul schimbării de date
+                        Este implemntat flow-ul în cazul schimbării de date
                         personale (email, parolă, nume de utilizator), care va
                         implica trimiterea unor link-uri de verificare prin
                         email pentru a putea executa schimbările dorite.

@@ -301,17 +301,12 @@ export const submitSolution = async (questionId, answerData) => {
 export const trySubmittingQuestionnaireAutomatically = async () => {
     const questionnaireStats = await getQuestionnaireStats();
 
-    if (questionnaireStats.unsolvedQuestions < 5) {
-        return;
-    }
-
     if (
-        questionnaireStats.unsentQuestions !== questionnaireStats.totalQuestions
+        questionnaireStats.unsolvedQuestions >= 5 ||
+        questionnaireStats.unsentQuestions === questionnaireStats.totalQuestions
     ) {
-        return;
+        await submitQuestionnaire();
     }
-
-    await submitQuestionnaire();
 };
 
 /**
