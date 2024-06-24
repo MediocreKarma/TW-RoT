@@ -162,7 +162,7 @@ const getSignCategoryData = async (content) => {
  */
 export const scrapeSigns = async () => {
     try {
-        const url = 'https://web.archive.org/web/20240220222115/https://www.codrutier.ro/semne-de-circulatie';
+        const url = 'https://www.codrutier.ro/semne-de-circulatie';
 
         const indexData = await getContent(url);
         const signCategoryNodes = getSignCategoryNodes(indexData);
