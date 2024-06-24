@@ -87,6 +87,22 @@ export const errorMessages = {
     CATEGORY_TITLE_TOO_LONG: 'Titlul categoriei este prea lung',
     DESCRIPTION_TOO_LONG: 'Descrierea este prea lungă',
     INVALID_QUESTION_FORMAT: 'Formatul întrebării este invalid',
+    USER_NOT_FOUND: 'Utilizatorul nu a fost găsit',
+    CHAPTER_TITLE_NOT_IN_BODY: 'Titlul capitolului nu a fost furnizat',
+    CHAPTER_TITLE_TOO_LONG: 'Titlul capitolului este prea lung',
+    CHAPTER_TITLE_TOO_SHORT: 'Titlul capitolului este prea scurt',
+    CHAPTER_CONTENT_NOT_IN_BODY: 'Conținutul capitolului nu a fost furnizat',
+    CHAPTER_CONTENT_TOO_SHORT: 'Conținutul capitolului este prea scurt',
+    CHAPTER_ADDENDUM_STATUS_NOT_IN_BODY:
+        'Statusul de anexă al capitolului nu a fost furnizat',
+    CHAPTER_NUMBER_NOT_IN_BODY: 'Numărul capitolului nu a fost furnizat',
+    INVALID_CHAPTER_NUMBER: 'Numărul capitolului este invalid',
+    INVALID_CHAPTER_ADDENDUM_STATUS:
+        'Statusul de anexă al capitolului este invalid',
+    INVALID_CHAPTER_TITLE: 'Titlul capitolului este invalid',
+    INVALID_CHAPTER_CONTENT: 'Conținutul capitolului este invalid',
+    FAILED_TO_CREATE_SIGN_CATEGORY: 'Crearea categoriei de semne a eșuat',
+    FAILED_TO_CREATE_SIGNS: 'Crearea semnelor a eșuat',
 };
 
 export const errors = Object.fromEntries(
