@@ -442,17 +442,17 @@ export const requestCredentialChange = withDatabaseOperation(async function (
 /**
  * Perform an email update if possible
  */
-const updateEmail = withDatabaseTransaction(async (client, userId, newEmail, username = '\b') => {
-    if (await isEmailUsed(client, email)) {
+const updateEmail = withDatabaseTransaction(async (client, userId, newEmail) => {
+    if (await isEmailUsed(client, newEmail)) {
         return;
     }
 
-    await client.query(
+    const username = (await client.query(
         `update user_account 
             set updated_at = now()::timestamp, new_email = $1::varchar
-            where id = $2::int`,
+            where id = $2::int returning username`,
         [newEmail, userId]
-    );
+    )).rows[0].username;
 
     const token = await genToken();
     await client.query(
@@ -505,7 +505,7 @@ const updatePassword = withDatabaseOperation(async (client, userId, newPassword)
 export const verifyChangeRequest = withDatabaseTransaction(async function (
     client,
     req,
-    _res,
+    res,
     params
 ) {
     const type = /\/change-([a-z]+)/.exec(parse(req.url, false).pathname)[1];
@@ -521,9 +521,11 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
     if (validationStatus) {
         return validationStatus;
     }
-    const adminState = isAdmin(params['authorization']);
+    
+    const user = await isAuthenticated(req, res, params);
+
     let userId;
-    if (!adminState) {
+    if (!user?.errorCode && (user.flags & USER_ROLES.ADMIN) !== 0 && (user.flags & USER_ROLES.BANNED) === 0) {
         const token = params['body']?.token;
         if (!token) {
             return new ServiceResponse(
@@ -591,7 +593,7 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
             updatePassword(userId, changeValue);
             break;
         case 'email':
-            updateEmail(userId, changeValue, info['username']);
+            updateEmail(userId, changeValue);
             break;
     }
     return new ServiceResponse(204, null, 'Successfully changed credential');

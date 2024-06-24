@@ -51,7 +51,7 @@ export const isBanned = (authorization) => {
  */
 export const isAdmin = (authorization) => {
     const flags = authorization?.user?.flags ?? USER_ROLES.BANNED;
-    return (flags & USER_ROLES.ADMIN) === 1 && (flags & USER_ROLES.BANNED) === 0;
+    return (flags & USER_ROLES.ADMIN) !== 0 && (flags & USER_ROLES.BANNED) === 0;
 }
 
 

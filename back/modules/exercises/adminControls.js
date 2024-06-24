@@ -241,7 +241,12 @@ export const addQuestion = withDatabaseTransaction(async function (
     let question = params['body'];
     if (req.headers['content-type'].includes('multipart/form-data')) {
         try {
-            question = JSON.parse(params['body']?.fields?.question);
+            if (params['body']?.fields?.question) {
+                question = JSON.parse(params['body']?.fields?.question);
+            }
+            else if (params['body']?.fields?.questions) {
+                
+            }   
         } catch (err) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_FORMAT}, 'Invalid form data submission');
         }
