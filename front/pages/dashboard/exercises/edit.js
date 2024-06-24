@@ -56,7 +56,11 @@ const onFormSubmit = async (originalData, event) => {
                 `Întrebarea a fost modificată cu succes. Veți fi redirectat la pagina de dashboard.`
             ),
             () => {
-                window.location.href = `/dashboard/exercises?query=${postQuestionData?.id}`;
+                window.location.href = `/dashboard/exercises${
+                    postQuestionData?.text
+                        ? '?query=' + postQuestionData?.text.slice(0, 100)
+                        : ''
+                }`;
             }
         );
     } catch (e) {

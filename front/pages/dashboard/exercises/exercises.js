@@ -11,7 +11,7 @@ import { getExercises, deleteExercise, getExercise } from '../requests.js';
 import { showInfoModal, showConfirmModal } from '/js/modals.js';
 import { renderError } from '/js/errors.js';
 import { renderMessage } from '/js/render.js';
-import API from '/js/api.js'
+import API from '/js/api.js';
 
 const defaultPage = 0;
 const COUNT = 20;
@@ -122,15 +122,19 @@ const renderCard = (question) => {
     const exportJSONButton = document.createElement('a');
     exportJSONButton.className = 'dashboard-card__action button';
     exportJSONButton.textContent = 'Exportă ca JSON';
-    
+
     const jsonString = JSON.stringify(question, null, 2);
-    exportJSONButton.href = URL.createObjectURL(new Blob([jsonString], {type: `text/json`}));
+    exportJSONButton.href = URL.createObjectURL(
+        new Blob([jsonString], { type: `text/json` })
+    );
     exportJSONButton.download = `question_${question.id}.json`;
 
     const exportCSVButton = document.createElement('a');
     exportCSVButton.className = 'dashboard-card__action button';
     exportCSVButton.textContent = 'Exportă ca CSV';
-    exportCSVButton.href = new URL(`${API.EXERCISES}/exercises/${question.id}?output=csv`);
+    exportCSVButton.href = new URL(
+        `${API.EXERCISES}/exercises/${question.id}?output=csv`
+    );
 
     actions.appendChild(actionsLabel);
     actions.appendChild(modifyButton);
@@ -175,7 +179,7 @@ const setInitialParams = () => {
     const queryParam = getUrlParameter('query');
 
     jsonExportPage = document.getElementById('json-export-button');
-    csvExportPage  = document.getElementById('csv-export-button');
+    csvExportPage = document.getElementById('csv-export-button');
 
     currentPage = pageParam >= 0 ? pageParam : defaultPage;
     updateUrlParameter('page', currentPage);
@@ -208,29 +212,18 @@ async function updatePageContent() {
             currentQuery
         );
 
-        csvExportPage.href = new URL(`${API.EXERCISES}/exercises?start=${currentStart()}&count=${COUNT}&output=csv`);
+        csvExportPage.href = new URL(
+            `${
+                API.EXERCISES
+            }/exercises?start=${currentStart()}&count=${COUNT}&output=csv`
+        );
 
         data = responseData.data;
         total = responseData.total;
 
-        jsonExportPage.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type: `text/json`}));
-
-        const exerciseById = data.filter(
-            (exercise) => `${exercise.id}` === currentQuery
+        jsonExportPage.href = URL.createObjectURL(
+            new Blob([JSON.stringify(data, null, 2)], { type: `text/json` })
         );
-
-        if (exerciseById.length === 0) {
-            try {
-                const responseData = await getExercise(currentQuery);
-                data = [responseData, ...data];
-                total = total + 1;
-            } catch (e) {
-                if (e?.status === 404 || e?.status === 400) {
-                } else {
-                    throw e;
-                }
-            }
-        }
 
         showData(data);
         updatePagination(currentPage, total, COUNT, setPage);

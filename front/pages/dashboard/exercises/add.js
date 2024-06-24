@@ -38,7 +38,11 @@ export const reactToSubmitResponse = async (
             ),
             () => {
                 if (!multiple) {
-                    window.location.href = `/dashboard/exercises?query=${questionData?.id}`;
+                    window.location.href = `/dashboard/exercises${
+                        questionData?.text
+                            ? '?query=' + questionData?.text.slice(0, 100)
+                            : ''
+                    }`;
                 } else {
                     window.location.href = '/dashboard/exercises';
                 }

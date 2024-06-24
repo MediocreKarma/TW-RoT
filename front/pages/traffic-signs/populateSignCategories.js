@@ -1,9 +1,16 @@
-import { fetchCategories } from './requests.js';
-import { showLoading } from '/js/render.js';
+import { fetchCategories, fetchCategory } from './requests.js';
+import { showLoading, renderMessage } from '/js/render.js';
 import { renderError } from '/js/errors.js';
-import { showInfoModal } from '/js/modals.js';
-import {isAdmin} from "/js/auth.js";
-import API from "/js/api.js";
+import { showInfoModal, showGeneralModal } from '/js/modals.js';
+import { isAdmin } from '/js/auth.js';
+import API from '/js/api.js';
+import {
+    renderCategoryForm,
+    categoryFormSubmit,
+    populateCategoryForm,
+} from './forms.js';
+
+let imgSrc = {}; // use ids as keys
 
 const renderCategory = (categoryData) => {
     const anchor = document.createElement('a');
@@ -40,11 +47,37 @@ const renderCategory = (categoryData) => {
     if (isAdmin()) {
         const editButton = document.createElement('div');
         editButton.className = 'button';
-        editButton.textContent = 'Șterge';
-    
+        editButton.textContent = 'Editează';
+
+        editButton.onclick = async (e) => {
+            e.preventDefault();
+
+            const form = renderCategoryForm();
+            try {
+                const category = await fetchCategory(categoryData.id);
+                populateCategoryForm(form, category);
+                const closeModal = showGeneralModal(form);
+
+                form.onsubmit = categoryFormSubmit(
+                    closeModal,
+                    async (objectFormData) => {
+                        console.log(objectFormData);
+                        showInfoModal(
+                            renderMessage(
+                                'Categoria a fost adăugată cu succes.'
+                            )
+                        );
+                    },
+                    showCategories
+                );
+            } catch (e) {
+                showInfoModal(renderError(e));
+            }
+        };
+
         const deleteButton = document.createElement('div');
         deleteButton.className = 'button';
-        deleteButton.textContent = 'Editează';
+        deleteButton.textContent = 'Șterge';
 
         deleteButton.addEventListener('click', () => {
             // try {
@@ -77,9 +110,14 @@ const showCategories = async () => {
     showLoading(container);
     try {
         const categoriesData = await fetchCategories();
-        document.getElementById('csv-export').href = `${API.TRAFFIC_SIGNS}/sign-categories?output=csv`;
-        document.getElementById('json-export').href = 
-            URL.createObjectURL(new Blob([JSON.stringify(categoriesData, null, 2)], {type: `text/json`}));
+        document.getElementById(
+            'csv-export'
+        ).href = `${API.TRAFFIC_SIGNS}/sign-categories?output=csv`;
+        document.getElementById('json-export').href = URL.createObjectURL(
+            new Blob([JSON.stringify(categoriesData, null, 2)], {
+                type: `text/json`,
+            })
+        );
 
         container.innerHTML = '';
 
@@ -93,14 +131,33 @@ const showCategories = async () => {
             newCategory.classList.add('button');
             newCategory.textContent = 'Adaugă o categorie nouă';
 
-            const buttons = document.getElementById('button-holder').append(newCategory);
+            newCategory.onclick = async (e) => {
+                e.preventDefault();
+
+                const form = renderCategoryForm();
+                const closeModal = showGeneralModal(form);
+
+                form.onsubmit = categoryFormSubmit(
+                    closeModal,
+                    async (objectFormData) => {
+                        console.log(objectFormData);
+                        showInfoModal(
+                            renderMessage(
+                                'Categoria a fost adăugată cu succes.'
+                            )
+                        );
+                    },
+                    showCategories
+                );
+            };
+
+            document.getElementById('button-holder').append(newCategory);
         }
     } catch (e) {
         showInfoModal(renderError(e), () => {
             window.location.href = '/';
         });
     }
-
 };
 
 window.addEventListener('load', showCategories);
