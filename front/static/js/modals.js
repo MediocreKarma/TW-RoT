@@ -5,7 +5,7 @@
  * @param {*} id the ID of the modal
  * @returns the DOM node representing the modal
  */
-const createOrUpdateModal = (innerNode, id = '__modal') => {
+const createOrUpdateModal = (innerNode, id = '__modal', additionalClass) => {
     let modalOverlay = document.getElementById(id);
     if (!modalOverlay) {
         modalOverlay = document.createElement('div');
@@ -14,6 +14,9 @@ const createOrUpdateModal = (innerNode, id = '__modal') => {
 
         let modal = document.createElement('div');
         modal.classList.add('modal');
+        if (additionalClass) {
+            modal.classList.add(additionalClass);
+        }
 
         // add close btn
         let closeButton = document.createElement('button');
@@ -43,13 +46,49 @@ const createOrUpdateModal = (innerNode, id = '__modal') => {
  */
 export const showInfoModal = (modalContent, onClose = undefined) => {
     const id = Math.random().toString(36).slice(2, 9);
-    const modalId = `error-modal-${id}`;
+    const modalId = `info-modal-${id}`;
     let modal = createOrUpdateModal(modalContent, modalId);
     document.body.append(modal);
     const closeBtn = document.getElementById(`${modalId}-close`);
 
     const onCloseModal = () => {
         modal.parentNode?.removeChild(modal);
+    };
+
+    closeBtn.onclick = (e) => {
+        if (onClose) {
+            onClose(e);
+        }
+        onCloseModal();
+    };
+
+    return onCloseModal;
+};
+
+/**
+ * Does the same thing as showInfoModal, but sets a "general" modifier to the modal class,
+ * in order to allow for bigger sized modals.
+ *
+ * @param {*} modalContent the DOM node with the inner contents of the modal
+ * @param {*} onClose function to be executed upon close
+ * @returns a function which removes the modal from the screen,
+ * without executing onClose
+ */
+export const showGeneralModal = (modalContent, onClose = undefined) => {
+    const id = Math.random().toString(36).slice(2, 9);
+    const modalId = `modal-${id}`;
+    let modalOverlay = createOrUpdateModal(modalContent, modalId);
+    document.body.append(modalOverlay);
+
+    const modal = modalOverlay.querySelector(`.modal`);
+    if (modal) {
+        modal.classList.add('modal--general');
+    }
+
+    const closeBtn = document.getElementById(`${modalId}-close`);
+
+    const onCloseModal = () => {
+        modalOverlay.parentNode?.removeChild(modalOverlay);
     };
 
     closeBtn.onclick = (e) => {

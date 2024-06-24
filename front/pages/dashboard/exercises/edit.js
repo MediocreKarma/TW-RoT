@@ -12,6 +12,7 @@ import { showInfoModal } from '/js/modals.js';
 import { renderMessage } from '/js/render.js';
 import { renderError } from '/js/errors.js';
 import { showFormError, clearFormError } from '/js/form/errors.js';
+import { setProperty, setValue } from '/js/form/utils.js';
 import {
     getExerciseCategories,
     getExercise,
@@ -73,26 +74,18 @@ const getQuestionId = () => {
 };
 
 const populateForm = (form, questionData) => {
-    const setProperty = (inputName, property, value) => {
-        form.querySelector(`[name=${inputName}]`)[property] = value;
-    };
-
-    const setValue = (inputName, value) =>
-        setProperty(inputName, 'value', value);
-
-    setValue('description', questionData.text);
+    setValue(form, 'description', questionData.text);
 
     for (let i = 0; i < Math.min(questionData.answers.length, 3); ++i) {
-        setValue(`answer${i + 1}`, questionData.answers[i].description);
+        setValue(form, `answer${i + 1}`, questionData.answers[i].description);
         if (questionData.answers[i].correct) {
-            setProperty(`correct${i + 1}`, 'checked', true);
+            setProperty(form, `correct${i + 1}`, 'checked', true);
         }
     }
-    setValue('category-id', questionData.categoryId);
+    setValue(form, 'category-id', questionData.categoryId);
     setImagePreview(questionData.image);
     imgSrc = questionData.image ? questionData.imageId : null;
 };
-
 
 export const addListenerToImageDeleteInput = (refSrc) => {
     const imageUpload = document.getElementById('image-upload');
