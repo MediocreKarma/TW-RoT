@@ -1,7 +1,11 @@
 import { fetchCategory } from './requests.js';
-import { showInfoModal } from '/js/modals.js';
+import { showInfoModal, showGeneralModal } from '/js/modals.js';
 import { showLoading } from '/js/render.js';
 import { renderError } from '/js/errors.js';
+import { isAdmin } from '/js/auth.js';
+import { renderSignForm } from './forms.js';
+
+let imgSrc = {}; // use ids as keys
 
 function renderCard(cardData) {
     // Create the main card div
@@ -47,25 +51,25 @@ const showCards = (targetNode, cardsData) => {
 
 const showInfo = (targetNode, categoryInfo) => {
     const attributeMapping = new Map([
-        ["Aspect", "design"],
-        ["Rol", "purpose"],
-        ["Sugestii", "suggestion"]
+        ['Aspect', 'design'],
+        ['Rol', 'purpose'],
+        ['Sugestii', 'suggestion'],
     ]);
     console.log(categoryInfo);
-    targetNode.querySelectorAll('.category-info__row').forEach(row => {
+    targetNode.querySelectorAll('.category-info__row').forEach((row) => {
         const keyElement = row.querySelector('.category-info__key');
         const valueElement = row.querySelector('.category-info__value');
         if (keyElement && valueElement) {
             try {
                 const key = keyElement.textContent.trim();
-                valueElement.innerText = categoryInfo[attributeMapping.get(key)];
-            }
-            catch (err) {
-                valueElement.innerText = "Nu s-a putut încărca informația"
+                valueElement.innerText =
+                    categoryInfo[attributeMapping.get(key)];
+            } catch (err) {
+                valueElement.innerText = 'Nu s-a putut încărca informația';
             }
         }
     });
-}
+};
 
 const showCategory = async () => {
     const id = document.location.pathname.replace(/\/+$/, '').split('/').pop();
@@ -77,14 +81,50 @@ const showCategory = async () => {
     showLoading(title);
 
     const info = document.getElementById('category-info');
-    
-    info.querySelectorAll('.category-info__value').forEach(value => {
+
+    info.querySelectorAll('.category-info__value').forEach((value) => {
         showLoading(value);
     });
 
     try {
         const categoryData = await fetchCategory(id);
         title.innerText = categoryData.category.title;
+
+        if (isAdmin()) {
+            let newCategory = document.getElementById('new-category');
+            if (!newCategory) {
+                newCategory = document.createElement('a');
+                newCategory.href = '#';
+                newCategory.id = 'new-category';
+                newCategory.classList.add('button');
+                newCategory.textContent = 'Adaugă un semn nou';
+                document.getElementById('sign-buttons').append(newCategory);
+            }
+
+            newCategory.onclick = async (e) => {
+                e.preventDefault();
+
+                const form = renderSignForm();
+                const closeModal = showGeneralModal(form);
+
+                const preview = form.querySelector('#image-preview');
+                const imageUpload = form.querySelector('#image-upload');
+
+                // form.onsubmit = categoryFormSubmit(
+                //     closeModal,
+                //     async (objectFormData) => {
+                //         console.log(objectFormData);
+                //         showInfoModal(
+                //             renderMessage(
+                //                 'Categoria a fost adăugată cu succes.'
+                //             )
+                //         );
+                //     },
+                //     showCategory
+                // );
+            };
+        }
+
         showInfo(info, categoryData.category);
         showCards(container, categoryData.signs);
     } catch (e) {

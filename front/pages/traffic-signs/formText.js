@@ -39,6 +39,13 @@ export const signCategoryFormInnerHtml = `<div class="form__group">
                 >
                     Resetează imaginea
                 </button>
+                <button
+                    type="button"
+                    class="button"
+                    id="image-delete"
+                >
+                    Șterge imaginea
+                </button>
             </div>
         </div>
     </div>
@@ -51,16 +58,8 @@ export const signFormInnerHtml = `<div class="form__group">
         <input type="text" id="title" name="title" class="form__input">
     </div>
     <div class="form__group">
-        <label for="design">Aspect</label>
-        <textarea id="design" name="design" rows="2" class="form__input"></textarea>
-    </div>
-    <div class="form__group">
-        <label for="purpose">Scop</label>
-        <textarea id="purpose" name="purpose" rows="2" class="form__input"></textarea>
-    </div>
-    <div class="form__group">
-        <label for="suggestion">Sugestii</label>
-        <textarea id="suggestion" name="suggestion" rows="2" class="form__input"></textarea>
+        <label for="description">Descriere</label>
+        <textarea id="description" name="description" rows="4" class="form__input"></textarea>
     </div>
     <div class="form__group">
         <label for="image-upload">Imagine:</label>
@@ -86,6 +85,13 @@ export const signFormInnerHtml = `<div class="form__group">
                     style="display: none"
                 >
                     Resetează imaginea
+                </button>
+                <button
+                    type="button"
+                    class="button"
+                    id="image-delete"
+                >
+                    Șterge imaginea
                 </button>
             </div>
         </div>

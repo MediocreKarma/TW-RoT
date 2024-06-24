@@ -10,102 +10,41 @@ import { showFormError } from '/js/form/errors.js';
 import { validateForm } from '/js/form/validate.js';
 import { disableFormSubmit, enableFormSubmit } from '/js/form/utils.js';
 
+export const getBase64Buffer = (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const base64Image = e.target.result;
+            resolve(base64Image);
+        };
+        reader.onerror = function (error) {
+            reject(error);
+        };
+        reader.readAsDataURL(file);
+    });
+};
+
+// export const setImagePreview = (preview, button, data) => {
+
+//     if (data) {
+//         preview.src = data;
+//         preview.style.display = 'block';
+//         if (!data.startsWith('http')) {
+//             button.style.display = 'block';
+//         } else {
+//             button.style.display = 'none';
+//         }
+//     } else {
+//         preview.src = '';
+//         preview.style.display = 'none';
+//         button.style.display = 'none';
+//     }
+// };
+
 export const renderCategoryForm = () => {
     const form = document.createElement('form');
     form.classList.add('form');
-    const titleGroup = document.createElement('div');
-    titleGroup.classList.add('form__group');
-    const titleLabel = document.createElement('label');
-    titleLabel.setAttribute('for', 'title');
-    titleLabel.innerText = 'Titlu';
-    const titleField = document.createElement('input');
-    titleField.type = 'text';
-    titleField.id = 'title';
-    titleField.name = 'title';
-    titleField.classList.add('form__input');
-    titleGroup.append(titleLabel, titleField);
-
-    const designGroup = document.createElement('div');
-    designGroup.classList.add('form__group');
-    const designLabel = document.createElement('label');
-    designLabel.setAttribute('for', 'design');
-    designLabel.innerText = 'Aspect';
-    const designField = document.createElement('textarea');
-    designField.id = 'design';
-    designField.name = 'design';
-    designField.rows = 2;
-    designField.classList.add('form__input');
-    designGroup.append(designLabel, designField);
-
-    const purposeGroup = document.createElement('div');
-    purposeGroup.classList.add('form__group');
-    const purposeLabel = document.createElement('label');
-    purposeLabel.setAttribute('for', 'purpose');
-    purposeLabel.innerText = 'Scop';
-    const purposeField = document.createElement('textarea');
-    purposeField.id = 'purpose';
-    purposeField.name = 'purpose';
-    purposeField.rows = 2;
-    purposeField.classList.add('form__input');
-    purposeGroup.append(purposeLabel, purposeField);
-
-    const suggestionGroup = document.createElement('div');
-    suggestionGroup.classList.add('form__group');
-    const suggestionLabel = document.createElement('label');
-    suggestionLabel.setAttribute('for', 'suggestion');
-    suggestionLabel.innerText = 'Sugestii';
-    const suggestionField = document.createElement('textarea');
-    suggestionField.id = 'suggestion';
-    suggestionField.name = 'suggestion';
-    suggestionField.rows = 2;
-    suggestionField.classList.add('form__input');
-    suggestionGroup.append(suggestionLabel, suggestionField);
-
-    const imageGroup = document.createElement('div');
-    imageGroup.classList.add('form__group');
-    const imageLabel = document.createElement('label');
-    imageLabel.setAttribute('for', 'image-upload');
-    imageLabel.innerText = 'Imagine:';
-    const imageDiv = document.createElement('div');
-    imageDiv.classList.add('form__image');
-    const imageField = document.createElement('input');
-    imageField.type = 'file';
-    imageField.classList.add('form__input');
-    imageField.id = 'image-upload';
-    imageField.name = 'image-upload';
-    imageField.accept = 'image/*';
-    const imagePreview = document.createElement('img');
-    imagePreview.id = 'image-preview';
-    imagePreview.src = '';
-    imagePreview.alt = 'Image Preview';
-    imagePreview.style.display = 'none';
-    const imageRow = document.createElement('div');
-    imageRow.classList.add('form__row');
-    const imageReset = document.createElement('button');
-    imageReset.type = 'button';
-    imageReset.classList.add('button');
-    imageReset.id = 'image-reset';
-    imageReset.innerText = 'Resetează imaginea';
-    imageReset.style.display = 'none';
-    imageRow.append(imageReset);
-    imageDiv.append(imageField, imagePreview, imageRow);
-    imageGroup.append(imageLabel, imageDiv);
-
-    const buttonsDiv = document.createElement('div');
-    buttonsDiv.classList.add('form__buttons');
-    const submitButton = document.createElement('button');
-    submitButton.type = 'submit';
-    submitButton.innerText = 'Confirmă';
-    buttonsDiv.append(submitButton);
-
-    form.append(
-        titleGroup,
-        designGroup,
-        purposeGroup,
-        suggestionGroup,
-        imageGroup,
-        buttonsDiv
-    );
+    form.innerHTML = signCategoryFormInnerHtml;
 
     return form;
 };
@@ -177,6 +116,8 @@ export const populateCategoryForm = (form, category) => {
     setValue(form, 'suggestion', category.suggestion);
     setValue(form, 'design', category.design);
     setValue(form, 'purpose', category.purpose);
+
+    // setImagePreview(category.image);
 };
 
 export const renderSignForm = () => {
@@ -188,7 +129,6 @@ export const renderSignForm = () => {
     return form;
 };
 
-// TODO
 export const signFormValidator = {
     title: {
         predicate: (title) => title.length > 0,

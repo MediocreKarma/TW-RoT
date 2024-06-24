@@ -58,7 +58,13 @@ const processNodes = async (nodes) => {
                 ...data,
             };
         };
-        linkData.push(await fetch());
+        try {
+            const data = await fetch();
+            linkData.push(data);
+        }
+        catch(e) {
+
+        }
     }
 
     console.log('processed all links');
@@ -156,7 +162,7 @@ const getSignCategoryData = async (content) => {
  */
 export const scrapeSigns = async () => {
     try {
-        const url = 'https://www.codrutier.ro/semne-de-circulatie';
+        const url = 'https://web.archive.org/web/20240220222115/https://www.codrutier.ro/semne-de-circulatie';
 
         const indexData = await getContent(url);
         const signCategoryNodes = getSignCategoryNodes(indexData);

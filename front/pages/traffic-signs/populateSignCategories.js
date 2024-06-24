@@ -54,7 +54,8 @@ const renderCategory = (categoryData) => {
 
             const form = renderCategoryForm();
             try {
-                const category = await fetchCategory(categoryData.id);
+                const category = (await fetchCategory(categoryData.id))
+                    .category;
                 populateCategoryForm(form, category);
                 const closeModal = showGeneralModal(form);
 
@@ -126,10 +127,15 @@ const showCategories = async () => {
         });
 
         if (isAdmin()) {
-            const newCategory = document.createElement('a');
-            newCategory.href = '#';
-            newCategory.classList.add('button');
-            newCategory.textContent = 'Adaugă o categorie nouă';
+            let newCategory = document.getElementById('new-category');
+            if (!newCategory) {
+                newCategory = document.createElement('a');
+                newCategory.href = '#';
+                newCategory.id = 'new-category';
+                newCategory.classList.add('button');
+                newCategory.textContent = 'Adaugă o categorie nouă';
+                document.getElementById('button-holder').append(newCategory);
+            }
 
             newCategory.onclick = async (e) => {
                 e.preventDefault();
@@ -150,8 +156,6 @@ const showCategories = async () => {
                     showCategories
                 );
             };
-
-            document.getElementById('button-holder').append(newCategory);
         }
     } catch (e) {
         showInfoModal(renderError(e), () => {
