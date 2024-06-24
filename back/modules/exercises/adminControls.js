@@ -302,9 +302,7 @@ export const createQuestions = withDatabaseTransaction(async function (
                         delete question.categoryId;
                     }
                     question.answers = JSON.parse(question.answers);
-                    console.log(question);
                     const result = await addQuestion(client, question);
-                    console.log(result);
                     if (result.status < 200 || result.status > 299) {
                         return result;
                     }
@@ -328,15 +326,12 @@ export const createQuestions = withDatabaseTransaction(async function (
                 return addQuestion(client, params['body']['fields']['question']);
             }
         } catch (err) {
-            console.log(err);
             return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_FORMAT}, 'Invalid form data submission');
         }
     }
     else {
         if (Array.isArray(params['body']?.fields?.questions)) {
-            console.log(params['body'].fields.questions);
             for (const qst of params['body'].fields.questions) {
-                console.log('hereeee');
                 const result = addQuestion(client, qst);
                 if (result.status < 200 || result.status > 299) {
                     return result;

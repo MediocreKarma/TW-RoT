@@ -2,11 +2,11 @@ import dotenv from 'dotenv';
 
 dotenv.config({path: '../../.env'});
 
-import {AppRouter} from "../_common/appRouter.js";
+import {AppRouter, Authentication} from "../_common/appRouter.js";
 import {getAllSignCategories, getComparison, getComparisonCategories, getComparisonCategory, getSignCategory}  from "./service.js";
 import {getImage} from '../_common/getLocalImage.js'
 
-const app = new AppRouter('RoT Traffic Signs', process.env.TRAFFIC_SIGNS_PORT);
+const app = new AppRouter('RoT Traffic Signs', process.env.TRAFFIC_SIGNS_PORT, Authentication.REQUIRE);
 
 app.get('/api/v1/sign-categories', getAllSignCategories);
 app.get('/api/v1/sign-categories/:id', getSignCategory);

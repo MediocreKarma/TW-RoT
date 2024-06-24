@@ -1,6 +1,6 @@
 import { ErrorCodes } from '../../common/constants.js';
 import { isStringValidInteger } from '../../common/utils.js';
-import { withDatabaseOperation } from '../_common/db.js';
+import { withDatabaseOperation, withDatabaseTransaction } from '../_common/db.js';
 import { CSVResponse, ImageResponse, ServiceResponse } from '../_common/serviceResponse.js';
 import dotenv from 'dotenv';
 import fs from 'fs';
@@ -173,4 +173,10 @@ export const getComparison = withDatabaseOperation(async function (
     }
     result.forEach(sign => buildImageForObj(sign));
     return new ServiceResponse(200, result, 'Successfully retrieved comparison category');
+});
+
+export const addSignCategory = withDatabaseTransaction(async function (
+    client, _req, _res, params
+) {
+    
 });

@@ -202,7 +202,15 @@ export const patchChapter = withDatabaseOperation(async function(client,
     _req,
     _res,
     params
-) {
+) {    
+    const authValidation = validateAuth(params['authorization']);
+    if (authValidation) {
+        return authValidation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+
     const id = params['path']?.id;
 
     if (!isStringValidInteger(id)) {
@@ -211,14 +219,6 @@ export const patchChapter = withDatabaseOperation(async function(client,
             { errorCode: ErrorCodes.INVALID_CHAPTER_ID },
             'Invalid id format'
         );
-    }
-    
-    const authValidation = validateAuth(params['authorization']);
-    if (authValidation) {
-        return authValidation;
-    }
-    if (!isAdmin(params['authorization'])) {
-        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
 
     let originalChapter = (
@@ -334,6 +334,14 @@ export const deleteChapter = withDatabaseOperation(async function(client,
     _res,
     params
 ) {
+    const authValidation = validateAuth(params['authorization']);
+    if (authValidation) {
+        return authValidation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+
     const id = params['path']?.id;
 
     if (!isStringValidInteger(id)) {
