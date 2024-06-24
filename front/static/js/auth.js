@@ -63,7 +63,7 @@ export const isLoggedIn = () => {
 export const isAdmin = (flags) => {
     return (Number.isInteger(flags)
         ? flags
-        : parseInt(cachedUserData().flags, 10)) === USER_ROLES.ADMIN
+        : parseInt(cachedUserData()?.flags, 10)) === USER_ROLES.ADMIN
         ? true
         : false;
 };
@@ -71,7 +71,7 @@ export const isAdmin = (flags) => {
 export const isBanned = (flags) => {
     return (Number.isInteger(flags)
         ? flags
-        : parseInt(cachedUserData().flags, 10)) === USER_ROLES.BANNED
+        : parseInt(cachedUserData()?.flags, 10)) === USER_ROLES.BANNED
         ? true
         : false;
 };

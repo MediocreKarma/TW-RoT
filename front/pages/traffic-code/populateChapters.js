@@ -98,6 +98,16 @@ const showChapters = (chapters) => {
 };
 
 const fetchAndShowChapters = async () => {
+    if (isAdmin()) {
+        const addChapters = document.createElement('button');
+        addChapters.type = 'button';
+        addChapters.classList.add('button', 'cod-rutier__button');
+        addChapters.id = 'chapters-add';
+        addChapters.textContent = 'Adaugă un capitol nou';
+        const title = document.getElementById('cod-rutier__title');
+        title.parentNode.insertBefore(addChapters, title.nextElementSibling);
+    }
+
     try {
         const chapters = await fetchChapters();
         showChapters(chapters);
