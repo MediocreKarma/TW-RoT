@@ -215,7 +215,7 @@ async function updatePageContent() {
         csvExportPage.href = new URL(
             `${
                 API.EXERCISES
-            }/exercises?start=${currentStart()}&count=${COUNT}&output=csv`
+            }/exercises?start=${currentStart()}&count=${COUNT}&query=${currentQuery}&output=csv`
         );
 
         data = responseData.data;
