@@ -1,4 +1,6 @@
 import { USER_ROLES } from "./constants.js";
+import fs from 'fs';
+import { parse } from 'csv-parse';
 
 /**
  * zip function similar to default python api
@@ -54,4 +56,27 @@ export const isAdmin = (authorization) => {
     return (flags & USER_ROLES.ADMIN) !== 0 && (flags & USER_ROLES.BANNED) === 0;
 }
 
+/**
+ * parse a csv into an array of results from
+ * a given filepath
+ * 
+ * @param {*} filepath - filepath of the csv 
+ * @returns 
+ */
+export const parseCSV = (filepath) => {
+    return new Promise((resolve, reject) => {
+        const results = [];
 
+        fs.createReadStream(filepath)
+            .pipe(parse({columns: true}))
+            .on('data', (row) => {
+                results.push(row);
+            })
+            .on('end', () => {
+                resolve(results);
+            })
+            .on('error', (err) => {
+                reject(err);
+            });
+    });
+}

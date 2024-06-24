@@ -186,7 +186,61 @@ paths:
         '500':
           description: Internal Server Error
 
-  /exercises/{id}:
+  /exercises/{id}: 
+    get:
+      summary: Get an exercise
+      description: Retrieve exercise with its details
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The index of the question
+      tags:
+        - Exercises
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Exercise ID
+                  categoryId:
+                    type: integer
+                    description: Category ID of the exercise
+                  categoryTitle:
+                    type: string
+                    description: Title of the category
+                  text:
+                    type: string
+                    description: Text of the exercise
+                  imageId:
+                    type: string
+                    description: ID of the image associated with the exercise
+                  answers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Answer ID
+                        description:
+                          type: string
+                          description: Description of the answer
+                  image:
+                    type: string
+                    format: uri
+                    description: URL of the image associated with the exercise
     put:
       summary: Update question
       description: Update question

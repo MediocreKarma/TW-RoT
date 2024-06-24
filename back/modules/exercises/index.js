@@ -17,7 +17,7 @@ import {
     submitQuestionnaireSolution 
 } from './questionnaire.js';
 import {getImage} from '../_common/getLocalImage.js'
-import { addQuestion, deleteQuestion, fetchQuestions, updateQuestion } from './adminControls.js';
+import { addQuestion, deleteQuestion, fetchQuestion, fetchQuestions, updateQuestion } from './adminControls.js';
 
 const app = new AppRouter('RoT Exercises', process.env.EXERCISES_PORT, Authentication.REQUIRE);
 
@@ -37,6 +37,7 @@ app.post('/api/v1/users/:id/questionnaire/questions/:qId/solution', submitQuesti
 app.put('/api/v1/users/:id/questionnaire/submitted', finishQuestionnaire);
 
 app.get('/api/v1/exercises', fetchQuestions);
+app.get('/api/v1/exercises/:id', fetchQuestion);
 app.post('/api/v1/exercises', addQuestion);
 app.put('/api/v1/exercises/:id', updateQuestion);
 app.delete('/api/v1/exercises/:id', deleteQuestion);

@@ -1,5 +1,5 @@
 import { ErrorCodes } from "../../common/constants.js";
-import { isAdmin, isStringValidInteger, zip } from "../../common/utils.js";
+import { isAdmin, isStringValidInteger, parseCSV, zip } from "../../common/utils.js";
 import { withDatabaseOperation, withDatabaseTransaction } from "../_common/db.js"
 import { CSVResponse, ServiceResponse } from "../_common/serviceResponse.js";
 import { validateAuth, validateStartAndCountParams } from "../_common/utils.js";
@@ -51,20 +51,6 @@ export const fetchQuestions = withDatabaseOperation(async function (
 
     const query = params['query']?.query ?? '';
 
-    if (isStringValidInteger(query)) {
-        const question = (await client.query(
-            `${SQL_SELECT_STATEMENT} where q.id = $1::int and not q.deleted ${SQL_GROUPING_STATEMENT}`,
-            [query]
-        )).rows;
-        
-        question.forEach(q => {
-            q.answers.sort((a, b) => a.id - b.id); 
-            adjustOutputAnswerSet(q.answers);
-            addImageToQuestion(q);
-        });
-        return new ServiceResponse(200, {total: question.length, data: question}, 'Successfully retrieved question');
-    }
-
     const data = (await client.query(
         `${SQL_SELECT_STATEMENT} ${SQL_WHERE_FETCH_STATEMENT} ${SQL_GROUPING_STATEMENT}
             offset $2::int limit $3::int`,
@@ -99,6 +85,40 @@ export const fetchQuestions = withDatabaseOperation(async function (
 
     return new ServiceResponse(200, {total: cnt, data: data}, 'Successfully fetched questions');
 })
+
+export const fetchQuestion = withDatabaseOperation(async function (
+    client, _req, _res, params
+) {
+    const validation = validateAuth(params['authorization']);
+    if (validation instanceof ServiceResponse) {
+        return validation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+
+    const qId = params['path']['id'];
+    if (!isStringValidInteger(qId)) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_ID}, 'Invalid question id');
+    }
+    console.log(`${SQL_SELECT_STATEMENT} where not q.deleted and q.id = $1::int ${SQL_GROUPING_STATEMENT}`)
+    const res = (await client.query(
+        `${SQL_SELECT_STATEMENT} where not q.deleted and q.id = $1::int ${SQL_GROUPING_STATEMENT}`,
+        [qId]
+    )).rows;
+
+    console.log(res);
+
+    if (res.length === 0) {
+        return new ServiceResponse(404, {errorCode: ErrorCodes.QUESTION_ID_NOT_FOUND}, 'No question found');
+    }
+
+    const question = res[0];
+    question.answers.sort((a, b) => a.id - b.id); 
+    adjustOutputAnswerSet(question.answers);
+    addImageToQuestion(question);
+    return new ServiceResponse(200, question, 'Successfully retrieved question');
+});
 
 const validateInfoQuestion = (question, validateText = true) => {
     if (!question) {
@@ -224,36 +244,7 @@ const writeQuestion = async function(client, question, image = null, imageId = n
     return new ServiceResponse(201, question, 'Successfully created question');
 }
 
-/**
- * Admin handler for creating a new question.
- * Uploads images if one is provided in the body as a base64 encoding
- */
-export const addQuestion = withDatabaseTransaction(async function (
-    client, req, _res, params
-) {
-    const authValidation = validateAuth(params['authorization']);
-    if (authValidation instanceof ServiceResponse) {
-        return authValidation;
-    }
-    if (!isAdmin(params['authorization'])) {
-        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
-    }
-    let question = params['body'];
-    if (req.headers['content-type'].includes('multipart/form-data')) {
-        try {
-            if (params['body']?.fields?.question) {
-                question = JSON.parse(params['body']?.fields?.question);
-            }
-            else if (params['body']?.fields?.questions) {
-                
-            }   
-        } catch (err) {
-            return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_FORMAT}, 'Invalid form data submission');
-        }
-        question.imageInfo = params['body']?.files?.image;
-    }
-
-
+export const addQuestion = async function (client, question) {
     const validation = await validateQuestion(client, question);
     if (validation instanceof ServiceResponse) {
         return validation;
@@ -267,6 +258,54 @@ export const addQuestion = withDatabaseTransaction(async function (
     )).rows[0].id;
 
     return await writeQuestion(client, question, image, imageId);
+}
+
+/**
+ * Admin handler for creating a new question.
+ * Uploads images if one is provided in the body as a base64 encoding
+ */
+export const createQuestions = withDatabaseTransaction(async function (
+    client, req, _res, params
+) {
+    const authValidation = validateAuth(params['authorization']);
+    if (authValidation instanceof ServiceResponse) {
+        return authValidation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+    if (req?.headers['content-type']?.includes('multipart/form-data')) {
+        try {
+            if (params['body']?.fields?.question) {
+                const question = JSON.parse(params['body']?.fields?.question);
+                question.imageInfo = params['body']?.files?.image;
+                return await addQuestion(client, question);
+            }
+            else if (params['body']?.files?.csv) {
+                const questions = await parseCSV(params['body'].files.csv.filepath);
+                console.log(questions);
+                // for (const question of questions) {
+                //     delete question.id;
+                //     question.categoryId = parseInt(question.categoryId);
+                // }
+            }   
+        } catch (err) {
+            return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_FORMAT}, 'Invalid form data submission');
+        }
+    }
+    else {
+        if (Array.isArray(params['body'])) {
+            for (const qst of params['body']) {
+                const result = addQuestion(client, qst);
+                if (result.status < 200 || result.status > 299) {
+                    return result;
+                }
+            }
+        }
+        else {
+            return addQuestion(client, params['body']);
+        }
+    }
 });
 
 /**
