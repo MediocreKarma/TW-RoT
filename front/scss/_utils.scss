@@ -92,6 +92,21 @@
         align-self: center;
     }
 
+    &__buttons {
+        display: flex;
+        gap: vars.$padding-small;
+        justify-content: center;
+        width: 80%;
+        flex-wrap: wrap;
+
+        > * {
+            flex: 1;
+            align-self: stretch;
+            text-align: center;
+            justify-self: center;
+        }
+    }
+
     @media only screen and (max-width: vars.$media-query-size-small) {
         padding: vars.$padding-small;
         padding-bottom: calc(vars.$padding-big + 2rem);

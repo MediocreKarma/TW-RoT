@@ -434,6 +434,12 @@ body[data-theme=dark] {
   display: flex;
   flex-direction: column;
 }
+.modal--general {
+  width: 80%;
+}
+.modal__content {
+  width: 100%;
+}
 .modal__close {
   padding: 8px;
   align-self: flex-end;
@@ -606,6 +612,19 @@ body[data-theme=dark] {
   width: fit-content;
   align-self: center;
 }
+.about__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.about__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
+}
 @media only screen and (max-width: 600px) {
   .about {
     padding: 1rem;
@@ -674,6 +693,19 @@ body[data-theme=dark] {
 .help__button {
   width: fit-content;
   align-self: center;
+}
+.help__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.help__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
 }
 @media only screen and (max-width: 600px) {
   .help {
@@ -841,6 +873,15 @@ body[data-theme=dark] {
 .form__row--equal > * {
   flex: 1;
 }
+.form__row--between {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-direction: row;
+}
+.form__row--between input[type=checkbox] {
+  width: 40px;
+}
 .form__group {
   display: flex;
   flex-direction: column;
@@ -951,6 +992,19 @@ body[data-theme=dark] {
 .admin-dashboard__button {
   width: fit-content;
   align-self: center;
+}
+.admin-dashboard__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.admin-dashboard__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
 }
 @media only screen and (max-width: 600px) {
   .admin-dashboard {
@@ -1147,6 +1201,19 @@ body[data-theme=dark] {
   width: fit-content;
   align-self: center;
 }
+.question-edit__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.question-edit__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
+}
 @media only screen and (max-width: 600px) {
   .question-edit {
     padding: 1rem;
@@ -1188,6 +1255,19 @@ body[data-theme=dark] {
 .single-card__container__button {
   width: fit-content;
   align-self: center;
+}
+.single-card__container__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.single-card__container__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
 }
 @media only screen and (max-width: 600px) {
   .single-card__container {
@@ -1251,6 +1331,19 @@ body[data-theme=dark] {
   width: fit-content;
   align-self: center;
 }
+.reset-container__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.reset-container__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
+}
 @media only screen and (max-width: 600px) {
   .reset-container {
     padding: 1rem;
@@ -1294,6 +1387,19 @@ body[data-theme=dark] {
 .profile__button {
   width: fit-content;
   align-self: center;
+}
+.profile__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.profile__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
 }
 @media only screen and (max-width: 600px) {
   .profile {
@@ -1406,6 +1512,19 @@ body[data-theme=dark] {
   width: fit-content;
   align-self: center;
 }
+.cod-rutier__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.cod-rutier__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
+}
 @media only screen and (max-width: 600px) {
   .cod-rutier {
     padding: 1rem;
@@ -1495,6 +1614,19 @@ body[data-theme=dark] {
 .capitol__button {
   width: fit-content;
   align-self: center;
+}
+.capitol__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.capitol__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
 }
 @media only screen and (max-width: 600px) {
   .capitol {
@@ -1601,6 +1733,19 @@ body[data-theme=dark] {
 .indicatoare__button {
   width: fit-content;
   align-self: center;
+}
+.indicatoare__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.indicatoare__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
 }
 @media only screen and (max-width: 600px) {
   .indicatoare {
@@ -1751,6 +1896,19 @@ body[data-theme=dark] {
   width: fit-content;
   align-self: center;
 }
+.comparison__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.comparison__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
+}
 @media only screen and (max-width: 600px) {
   .comparison {
     padding: 1rem;
@@ -1875,6 +2033,19 @@ body[data-theme=dark] {
 .exerseaza__button {
   width: fit-content;
   align-self: center;
+}
+.exerseaza__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.exerseaza__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
 }
 @media only screen and (max-width: 600px) {
   .exerseaza {
@@ -2153,6 +2324,19 @@ body[data-theme=dark] {
   width: fit-content;
   align-self: center;
 }
+.intrebare__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.intrebare__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
+}
 @media only screen and (max-width: 600px) {
   .intrebare {
     padding: 1rem;
@@ -2351,6 +2535,19 @@ body[data-theme=dark] {
 .questionnaire-results__button {
   width: fit-content;
   align-self: center;
+}
+.questionnaire-results__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 80%;
+  flex-wrap: wrap;
+}
+.questionnaire-results__buttons > * {
+  flex: 1;
+  align-self: stretch;
+  text-align: center;
+  justify-self: center;
 }
 @media only screen and (max-width: 600px) {
   .questionnaire-results {

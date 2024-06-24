@@ -90,14 +90,16 @@
             > * {
                 flex: 1;
             }
-            // // TODO: keep flex, if possible... :(
-            // display: grid;
-            // grid-template-columns: 1fr 1fr;
-            // gap: vars.$padding-small;
+        }
+        &--between {
+            display: flex;
+            justify-content: space-between;
+            gap: vars.$padding-small;
+            flex-direction: row;
 
-            // @media only screen and (max-width: vars.$media-query-size-small) {
-            //     grid-template-columns: 1fr;
-            // }
+            input[type='checkbox'] {
+                width: 40px;
+            }
         }
     }
 
@@ -171,7 +173,7 @@
             right: 5px;
         }
 
-        &--on { 
+        &--on {
             transform: translateY(calc(+90% + 3px)) scaleY(103%) scaleX(95%);
             right: 67px;
             width: 30px;

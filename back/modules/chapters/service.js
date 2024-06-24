@@ -22,7 +22,7 @@ export const getAllChapters = withDatabaseOperation(async function (
     }
 
     const chapters = (
-        await client.query('select id, number, title, isaddendum from chapter')
+        await client.query('select id, number, title, isaddendum from chapter order by id')
     ).rows;
     return new ServiceResponse(
         200,

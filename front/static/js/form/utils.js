@@ -14,3 +14,9 @@ export const disableFormSubmit = (form) => {
 export const enableFormSubmit = (form) => {
     setFormSubmitDisabled(form, false);
 };
+
+export const setProperty = (form, inputName, property, value) => {
+    form.querySelector(`[name=${inputName}]`)[property] = value;
+};
+export const setValue = (form, inputName, value) =>
+    setProperty(form, inputName, 'value', value);
