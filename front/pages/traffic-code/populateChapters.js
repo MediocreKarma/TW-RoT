@@ -12,10 +12,8 @@ import {
     showConfirmModal,
     showGeneralModal,
 } from '/js/modals.js';
-import { renderMessage, showLoading } from '/js/render.js';
+import { renderMessage } from '/js/render.js';
 import { isAdmin } from '/js/auth.js';
-import { showFormError } from '/js/form/errors.js';
-import { validateForm } from '/js/form/validate.js';
 import {
     renderChapterForm,
     chapterFormSubmit,
@@ -58,20 +56,15 @@ const renderChapterCard = (chapter) => {
             const chapterData = await getChapter(chapter.id);
             populateChapterForm(form, chapterData);
             const closeModal = showGeneralModal(form);
-            form.addEventListener(
-                'submit',
-                chapterFormSubmit(
-                    closeModal,
-                    async (objectFormData) => {
-                        await patchChapter(chapter.id, objectFormData);
-                        showInfoModal(
-                            renderMessage(
-                                'Capitolul a fost modificat cu succes.'
-                            )
-                        );
-                    },
-                    fetchAndShowChapters
-                )
+            form.onsubmit = chapterFormSubmit(
+                closeModal,
+                async (objectFormData) => {
+                    await patchChapter(chapter.id, objectFormData);
+                    showInfoModal(
+                        renderMessage('Capitolul a fost modificat cu succes.')
+                    );
+                },
+                fetchAndShowChapters
             );
             editButton.disabled = false;
         };
@@ -121,45 +114,60 @@ const showChapters = (chapters) => {
     });
 };
 
-const setAdminButtons = (chapterData) => {
+const setTopButtons = (chapterData) => {
     const buttons = document.getElementById('chapters-buttons');
     let exportJSONButton = buttons.querySelector('#json-export');
-    if (!exportJSONButton) {
-        exportJSONButton = document.createElement('a');
-        exportJSONButton.className = 'button';
-        exportJSONButton.href = '';
-        exportJSONButton.textContent = 'Exportează ca JSON';
-        buttons.appendChild(exportJSONButton);
+    if (exportJSONButton) {
+        const jsonString = JSON.stringify(chapterData, null, 2);
+        exportJSONButton.href = URL.createObjectURL(
+            new Blob([jsonString], { type: `text/json` })
+        );
+        exportJSONButton.download = `chapters.json`;
     }
-    const jsonString = JSON.stringify(chapterData, null, 2);
-    exportJSONButton.href = URL.createObjectURL(
-        new Blob([jsonString], { type: `text/json` })
-    );
-    exportJSONButton.download = `chapters.json`;
 
     let exportCSVButton = buttons.querySelector('#csv-export');
-    if (!exportCSVButton) {
-        exportCSVButton = document.createElement('a');
-        exportCSVButton.className = 'dashboard-card__action button';
-        exportCSVButton.textContent = 'Exportează ca CSV';
-        buttons.appendChild(exportCSVButton);
+    if (exportCSVButton) {
+        exportCSVButton.href = getChaptersCSV();
     }
-    exportCSVButton.href = getChaptersCSV();
 
-    if (isAdmin()) {
-        const addChapters = document.createElement('button');
+    if (!isAdmin()) {
+        return;
+    }
+
+    let addChapters = buttons.querySelector('#chapters-add');
+    if (!addChapters) {
+        addChapters = document.createElement('button');
         addChapters.type = 'button';
         addChapters.className = 'button dashboard-card__action';
         addChapters.id = 'chapters-add';
         addChapters.textContent = 'Adaugă un capitol nou';
         buttons.appendChild(addChapters);
     }
-};
 
+    addChapters.onclick = async (e) => {
+        e.preventDefault();
+
+        const form = renderChapterForm();
+        addChapters.disabled = true;
+
+        const closeModal = showGeneralModal(form);
+        form.onsubmit = chapterFormSubmit(
+            closeModal,
+            async (objectFormData) => {
+                await postChapter(objectFormData);
+                showInfoModal(
+                    renderMessage('Capitolul nou a fost adăugat cu succes.')
+                );
+            },
+            fetchAndShowChapters
+        );
+        addChapters.disabled = false;
+    };
+};
 const fetchAndShowChapters = async () => {
     try {
         const chapters = await fetchChapters();
-        setAdminButtons(chapters);
+        setTopButtons(chapters);
         showChapters(chapters);
     } catch (e) {
         showInfoModal(renderError(e), () => {

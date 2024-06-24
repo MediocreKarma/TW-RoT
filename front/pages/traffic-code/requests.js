@@ -31,3 +31,7 @@ export const getChapter = async (id) => {
 export const getChaptersCSV = () => {
     return `${API.CHAPTERS}/chapters?output=csv`;
 };
+
+export const getChapterCSV = (id) => {
+    return `${API.CHAPTERS}/chapter/${id}?output=csv`;
+};

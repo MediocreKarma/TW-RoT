@@ -34,9 +34,7 @@ export const validateForm = (form, validators) => {
     let predicateResults;
 
     form.querySelectorAll('input').forEach((input) => {
-        console.log('in input...');
         const inputName = input?.getAttribute('name');
-        console.log(inputName);
         if (!inputName) {
             return;
         }
@@ -51,7 +49,6 @@ export const validateForm = (form, validators) => {
         }
         const validator = validators[inputName];
         const isValid = validator.predicate(input.value);
-        console.log(inputName + ' ' + input.value);
         if (!isValid) {
             predicateResults = {
                 valid: false,

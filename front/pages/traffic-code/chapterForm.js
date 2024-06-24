@@ -111,8 +111,8 @@ export const chapterFormSubmit = (closeModal, onConfirm, refresh) => {
         const data = Object.fromEntries(formData);
 
         data.number = parseInt(data.number, 10);
-        data.isaddendum =
-            formData.get('isaddendum') === undefined ? false : true;
+        console.log(formData.get('isaddendum'));
+        data.isaddendum = formData.get('isaddendum') === 'on' ? true : false;
 
         try {
             await onConfirm(data);

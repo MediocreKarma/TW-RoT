@@ -12,21 +12,34 @@ import { showInfoModal } from '/js/modals.js';
 import { renderMessage } from '/js/render.js';
 import { renderError } from '/js/errors.js';
 import { showFormError, clearFormError } from '/js/form/errors.js';
-import { getExerciseCategories, postExercise, postExercises } from '../requests.js';
+import {
+    getExerciseCategories,
+    postExercise,
+    postExercises,
+} from '../requests.js';
 
-export const reactToSubmitResponse = async (form, formData, multiple = false) => {
+export const reactToSubmitResponse = async (
+    form,
+    formData,
+    multiple = false
+) => {
     try {
-        const questionData = multiple ? await postExercises(formData) : await postExercise(formData);
+        const questionData = multiple
+            ? await postExercises(formData)
+            : await postExercise(formData);
         setSubmitButtonDisabled(form, false);
         showInfoModal(
             renderMessage(
-                `${multiple ? 'Întrebările au fost înregistrate cu succes' : 'Întrebarea a fost înregistrată cu succes'}. Veți fi redirectat la pagina de dashboard.`
+                `${
+                    multiple
+                        ? 'Întrebările au fost înregistrate cu succes'
+                        : 'Întrebarea a fost înregistrată cu succes'
+                }. Veți fi redirectat la pagina de dashboard.`
             ),
             () => {
                 if (!multiple) {
                     window.location.href = `/dashboard/exercises?query=${questionData?.id}`;
-                }
-                else {
+                } else {
                     window.location.href = '/dashboard/exercises';
                 }
             }
@@ -34,7 +47,7 @@ export const reactToSubmitResponse = async (form, formData, multiple = false) =>
     } catch (e) {
         showInfoModal(renderError(e));
     }
-} 
+};
 
 const onFormSubmit = async (event) => {
     event.preventDefault();
@@ -56,7 +69,6 @@ const onFormSubmit = async (event) => {
     await reactToSubmitResponse(form, formData);
 };
 
-
 document.addEventListener('DOMContentLoaded', async () => {
     addListenerToImageInput();
     addListenerToImageResetInput();
@@ -72,10 +84,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         .addEventListener('change', async (event) => {
             const file = event.target.files[0];
             const formData = new FormData();
+            console.log(file.type);
             if (file.type.includes('text/csv')) {
                 formData.append('csv', file, 'file.txt');
-            }
-            else {
+            } else {
                 try {
                     const result = await readFileIntoString(file);
                     formData.append('questions', result);
