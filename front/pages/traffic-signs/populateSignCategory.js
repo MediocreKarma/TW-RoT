@@ -4,6 +4,7 @@ import { showLoading } from '/js/render.js';
 import { renderError } from '/js/errors.js';
 import { isAdmin } from '/js/auth.js';
 import { renderSignForm } from './forms.js';
+import API from '/js/api.js';
 
 let imgSrc = {}; // use ids as keys
 
@@ -90,40 +91,12 @@ const showCategory = async () => {
         const categoryData = await fetchCategory(id);
         title.innerText = categoryData.category.title;
 
-        if (isAdmin()) {
-            let newCategory = document.getElementById('new-category');
-            if (!newCategory) {
-                newCategory = document.createElement('a');
-                newCategory.href = '#';
-                newCategory.id = 'new-category';
-                newCategory.classList.add('button');
-                newCategory.textContent = 'Adaugă un semn nou';
-                document.getElementById('sign-buttons').append(newCategory);
-            }
-
-            newCategory.onclick = async (e) => {
-                e.preventDefault();
-
-                const form = renderSignForm();
-                const closeModal = showGeneralModal(form);
-
-                const preview = form.querySelector('#image-preview');
-                const imageUpload = form.querySelector('#image-upload');
-
-                // form.onsubmit = categoryFormSubmit(
-                //     closeModal,
-                //     async (objectFormData) => {
-                //         console.log(objectFormData);
-                //         showInfoModal(
-                //             renderMessage(
-                //                 'Categoria a fost adăugată cu succes.'
-                //             )
-                //         );
-                //     },
-                //     showCategory
-                // );
-            };
-        }
+        document.getElementById('csv-export').href = 
+            `${API.TRAFFIC_SIGNS}/sign-categories?output=csv`;
+        
+        document.getElementById('json-export').href = URL.createObjectURL(
+            new Blob([JSON.stringify(categoryData, null, 2)], { type: `text/json` })
+        );
 
         showInfo(info, categoryData.category);
         showCards(container, categoryData.signs);

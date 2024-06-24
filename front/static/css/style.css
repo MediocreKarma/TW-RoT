@@ -1772,6 +1772,9 @@ body[data-theme=dark] {
   flex: 1;
   align-self: stretch;
 }
+.indicatoare__info {
+  margin-bottom: 10px;
+}
 
 .category-container {
   display: flex;

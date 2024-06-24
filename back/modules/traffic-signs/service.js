@@ -68,9 +68,11 @@ export const getSignCategory = withDatabaseOperation(async function (
             'select id, title, design, purpose, suggestion, image_id as "imageId" from sign_category where id = $1::int',
             [id]
         )
-    ).rows;
+    );
 
-    if (results.length === 0) {
+    const rows = results.rows;
+
+    if (rows.length === 0) {
         return new ServiceResponse(
             404,
             { errorCode: ErrorCodes.SIGN_CATEGORY_NOT_FOUND },
@@ -78,7 +80,7 @@ export const getSignCategory = withDatabaseOperation(async function (
         );
     }
 
-    const categoryInfo = buildImageForObj(results[0]);
+    const categoryInfo = buildImageForObj(rows[0]);
     const signCategory = (
         await client.query(
             'select id, title, description, image_id as "imageId"' +
@@ -88,6 +90,11 @@ export const getSignCategory = withDatabaseOperation(async function (
     ).rows;
 
     signCategory.forEach((sign) => buildImageForObj(sign));
+
+    if (params.query.output === 'csv') {
+        return CSVResponse(buildCSVFromPGResult(results));
+    }
+
     return new ServiceResponse(
         200,
         { category: categoryInfo, signs: signCategory },
