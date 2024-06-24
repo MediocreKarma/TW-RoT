@@ -31,6 +31,13 @@ export const postExercise = async (questionData) => {
     return await response.json();
 };
 
+export const postExercises = async (questionData) => {
+    const response = await postFormData(
+        `${API.EXERCISES}/exercises`,
+        questionData
+    );
+};
+
 export const deleteExercise = async (questionId) => {
     await del(`${API.EXERCISES}/exercises/${questionId}`);
 };

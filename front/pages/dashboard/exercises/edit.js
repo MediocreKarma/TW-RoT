@@ -93,14 +93,18 @@ const populateForm = (form, questionData) => {
     imgSrc = questionData.image ? questionData.imageId : null;
 };
 
+
 export const addListenerToImageDeleteInput = (refSrc) => {
     const imageUpload = document.getElementById('image-upload');
     const deleteBtn = document.getElementById('image-delete');
+    const resetBtn = document.getElementById('image-reset');
 
     deleteBtn.addEventListener('click', () => {
         imageUpload.value = '';
         setImagePreview('');
         refSrc = null;
+        deleteBtn.style.display = 'none';
+        resetBtn.style.display = 'block';
     });
 };
 

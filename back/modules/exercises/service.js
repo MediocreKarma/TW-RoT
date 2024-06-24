@@ -15,6 +15,7 @@ export const SQL_SELECT_STATEMENT =
         qc.title as "categoryTitle",
         q.text as "text",
         q.image_id as "imageId",
+        null as "image",
         array_agg(jsonb_build_object('id', a.id, 'description', a.description, 'correct', a.correct) order by random()) as "answers"
     from 
         question q 

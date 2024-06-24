@@ -78,10 +78,10 @@ export const validateAnswerSetInput = (answers, booleanProperty = 'selected', ve
         if (verifyDescription && !answer.description) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_MISSING_DESCRIPTION}, `Missing description in answer`);
         }
-        if (answer['id'] < 1) {
+        if (verifyId && answer['id'] < 1) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_ID_TOO_LOW}, 'Answer id too low');
         }
-        if (answer['id'] >= answerIds.length) {
+        if (verifyId && answer['id'] >= answerIds.length) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.ANSWER_ID_TOO_HIGH}, 'Answer id too high');
         }
         answerIds[verifyId ? answer['id'] : i] = true;

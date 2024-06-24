@@ -685,7 +685,6 @@ export const isAuthenticated = withDatabaseOperation(async function (
         );
     }
     if ((result[0].flags & USER_ROLES.BANNED) !== 0) {
-        console.log('here');
         await client.query(
             `delete from user_token where user_id = $1::int`,
             [result[0].id]

@@ -47,6 +47,11 @@ export const fetchQuestions = withDatabaseOperation(async function (
             `${SQL_SELECT_STATEMENT} where not q.deleted ${SQL_GROUPING_STATEMENT} offset $1::int limit $2::int`,
             [start, count]
         );
+        for (const q of result.rows) {
+            q.answers.sort((a, b) => a.id - b.id); 
+            adjustOutputAnswerSet(q.answers);
+            addImageToQuestion(q);
+        }
         return new CSVResponse(buildCSVFromPGResult(result), 'Successfully retrieved question CSV');
     }
 
@@ -99,7 +104,6 @@ export const fetchQuestion = withDatabaseOperation(async function (
     }
 
     const qId = params['path']['id'];
-    console.log(qId);
     if (!isStringValidInteger(qId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_ID}, 'Invalid question id');
     }
@@ -108,19 +112,20 @@ export const fetchQuestion = withDatabaseOperation(async function (
         [qId]
     ));
 
+    
+    if (result.rows.length === 0) {
+        return new ServiceResponse(404, {errorCode: ErrorCodes.QUESTION_ID_NOT_FOUND}, 'No question found');
+    }
+
+    const question = result.rows[0];    
+    question.answers.sort((a, b) => a.id - b.id); 
+    adjustOutputAnswerSet(question.answers);
+    addImageToQuestion(question);
+
     if (params['query'].output === 'csv') {
         return new CSVResponse(buildCSVFromPGResult(result), 'Successfully retrieved question CSV');
     }
 
-    const qstRows = result.rows;
-    if (qstRows.length === 0) {
-        return new ServiceResponse(404, {errorCode: ErrorCodes.QUESTION_ID_NOT_FOUND}, 'No question found');
-    }
-
-    const question = qstRows[0];
-    question.answers.sort((a, b) => a.id - b.id); 
-    adjustOutputAnswerSet(question.answers);
-    addImageToQuestion(question);
     return new ServiceResponse(200, question, 'Successfully retrieved question');
 });
 
@@ -262,7 +267,7 @@ export const addQuestion = async function (client, question) {
 
     question.id = (await client.query(
         `insert into question (category_id, text, image_id) values ($1::int, $2::varchar, $3::text) returning id`,
-        [question.categoryId, question.text, imageId]
+        [question.categoryId, question.text, question.imageId]
     )).rows[0].id;
 
     return await writeQuestion(client, question, image, imageId);
@@ -282,10 +287,7 @@ export const createQuestions = withDatabaseTransaction(async function (
     if (!isAdmin(params['authorization'])) {
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
-    console.log('here');
-    if (req?.headers['content-type']?.includes('multipart/form-data')) {
-        
-        console.log('here');
+    if (req.headers['content-type']?.includes('multipart/form-data')) {
         try {
             if (params['body']?.fields?.question) {
                 const question = JSON.parse(params['body']?.fields?.question);
@@ -294,29 +296,55 @@ export const createQuestions = withDatabaseTransaction(async function (
             }
             else if (params['body']?.files?.csv) {
                 const questions = await parseCSV(params['body'].files.csv.filepath);
-                console.log(questions);
-                // for (const question of questions) {
-                //     delete question.id;
-                //     question.categoryId = parseInt(question.categoryId);
-                // }
-            }   
+                for (const question of questions) {
+                    question.categoryId = parseInt(question.categoryId);
+                    if (isNaN(question.categoryId)) {
+                        delete question.categoryId;
+                    }
+                    question.answers = JSON.parse(question.answers);
+                    console.log(question);
+                    const result = await addQuestion(client, question);
+                    console.log(result);
+                    if (result.status < 200 || result.status > 299) {
+                        return result;
+                    }
+                }                
+                return new ServiceResponse(204, null, 'Successfully created multiple questions');
+            }
+            else if (params['body']?.fields?.questions[0]) {
+                
+                const questions = JSON.parse(params['body']?.fields?.questions[0]);
+
+                for (const qst of questions) {
+                    const result = addQuestion(client, qst);
+                    if (result.status < 200 || result.status > 299) {
+                        return result;
+                    }
+                }
+                return new ServiceResponse(204, null, 'Successfully created multiple questions');
+            }
+            else {
+                return addQuestion(client, params['body']['fields']['question']);
+            }
         } catch (err) {
+            console.log(err);
             return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_FORMAT}, 'Invalid form data submission');
         }
     }
     else {
-        console.log('here');
-        if (Array.isArray(params['body'])) {
-            for (const qst of params['body']) {
+        if (Array.isArray(params['body']?.fields?.questions)) {
+            console.log(params['body'].fields.questions);
+            for (const qst of params['body'].fields.questions) {
+                console.log('hereeee');
                 const result = addQuestion(client, qst);
                 if (result.status < 200 || result.status > 299) {
                     return result;
                 }
             }
+            return new ServiceResponse(204, null, 'Successfully created multiple questions');
         }
         else {
-            console.log('here');
-            return addQuestion(client, params['body']);
+            return addQuestion(client, params['body']['fields']['question']);
         }
     }
 });

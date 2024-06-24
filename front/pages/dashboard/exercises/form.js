@@ -96,13 +96,20 @@ export const getBase64Buffer = (file) => {
 
 export const setImagePreview = (data) => {
     const preview = document.getElementById('image-preview');
-    console.log(data?.slice(0, 100));
+    const button = document.getElementById('image-reset');
     if (data) {
         preview.src = data;
         preview.style.display = 'block';
+        if (!data.startsWith('http')) {
+            button.style.display = 'block';
+        }
+        else {
+            button.style.display = 'none';
+        }
     } else {
         preview.src = '';
         preview.style.display = 'none';
+        button.style.display = 'none';
     }
 };
 
@@ -169,12 +176,17 @@ export const addListenerToImageInput = () => {
 export const addListenerToImageResetInput = (defaultSrc, refSrc) => {
     const imageUpload = document.getElementById('image-upload');
     const resetBtn = document.getElementById('image-reset');
+    const deleteBtn = document.getElementById('image-delete');
 
     resetBtn.addEventListener('click', () => {
         imageUpload.value = '';
-
+        
         setImagePreview(defaultSrc);
         refSrc = defaultSrc;
+
+        if (deleteBtn) {
+            deleteBtn.style.display = 'block';
+        }
     });
 };
 
@@ -191,6 +203,21 @@ export const convertObjectToFormData = (objectData) => {
 
     return data;
 };
+
+export const readFileIntoString = async (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onerror = () => {
+            reader.abort();
+            reject(new Error('Invalid file'));
+        }
+        reader.onload = () => {
+            resolve(reader.result);
+        }
+        reader.readAsText(file);
+    });
+} 
 
 export const collectFormData = async (form) => {
     const data = new FormData(form);
