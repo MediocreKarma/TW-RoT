@@ -105,10 +105,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!cachedUserData()) {
         showInfoModal(
             renderMessage(
-                'Nu puteți accesa această funcționalitate fiindcă nu sunteți autentificat. Veți fi redirectat la pagina principală.'
+                'Nu puteți accesa această funcționalitate fiindcă nu sunteți autentificat.'
             ),
             () => {
-                window.location.href = '/';
+                window.location.href = '/exercises';
             }
         );
         return;
