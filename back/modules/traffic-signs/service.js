@@ -63,7 +63,6 @@ export const getSignCategory = withDatabaseOperation(async function (
             'Invalid id format'
         );
     }
-    console.log(id);
     const results = (
         await client.query(
             'select id, title, design, purpose, suggestion, image_id as "imageId" from sign_category where id = $1::int',
@@ -87,8 +86,6 @@ export const getSignCategory = withDatabaseOperation(async function (
             [id]
         )
     ).rows;
-
-    console.log({ category: categoryInfo, signs: signCategory });
 
     signCategory.forEach((sign) => buildImageForObj(sign));
     return new ServiceResponse(
@@ -281,7 +278,7 @@ export const addSignsToCategory = withDatabaseOperation(async function (
     }
     try {
         if (params['body']?.files?.csv) {
-            const parsedSigns = parseCSV(params['body']?.files?.csv);
+            const parsedSigns = await parseCSV(params['body']?.files?.csv);
             for (const sign of parsedSigns) {
                 const result = addSign(client, sign);
                 if (result.status < 200 || 299 < result.status) {

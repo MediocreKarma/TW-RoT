@@ -1,5 +1,5 @@
 import API from '/js/api.js';
-import { get, post, patch, del } from '/js/authRequests.js';
+import { get, post, patch, del, postFormData } from '/js/authRequests.js';
 
 export const fetchChapter = async (id) => {
     const response = await get(`${API.CHAPTERS}/chapters/${id}`);
@@ -18,6 +18,10 @@ export const deleteChapter = async (id) => {
 export const postChapter = async (data) => {
     await post(`${API.CHAPTERS}/chapters`, data);
 };
+
+export const postChapterForm = async (formData) => {
+    await postFormData(`${API.CHAPTERS}/chapters`, formData);
+}
 
 export const patchChapter = async (id, data) => {
     await patch(`${API.CHAPTERS}/chapters/${id}`, data);
