@@ -77,19 +77,23 @@ const disableOuterLinks = (targetNode) => {
     const innerButtonsArray = Array.from(innerButtons);
     const innerLinksArray = Array.from(innerLinks);
 
-    const linkExceptions = ['/logout'];
+    const idExceptions = ['header-logout'];
 
     allButtons.forEach((button) => {
-        if (!innerButtonsArray.includes(button)) {
+        if (
+            !innerButtonsArray.includes(button) &&
+            !idExceptions.includes(button.id)
+        ) {
             button.addEventListener('click', showModal);
             button.disabled = true;
         }
     });
 
     allLinks.forEach((link) => {
+        console.log(link.href);
         if (
             !innerLinksArray.includes(link) &&
-            !linkExceptions.includes(link.href)
+            !idExceptions.includes(link.id)
         ) {
             link.addEventListener('click', showModal);
             link.href = 'javascript:void(0)';

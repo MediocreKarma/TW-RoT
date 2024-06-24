@@ -12,11 +12,13 @@ export default function updateButtons() {
     let loginLink = loginLinkLi.querySelector('a');
     loginLink.href = '/logout';
     loginLink.innerText = 'Delogare';
+    loginLink.id = 'header-logout';
 
     let profileLinkLi = loginLinkLi.cloneNode(true);
     let profileLink = profileLinkLi.querySelector('a');
     profileLink.href = '/profile';
     profileLink.innerText = '';
+    delete profileLink.id;
 
     let profileText = document.createElement('span');
     profileText.innerText = 'Profil (';
