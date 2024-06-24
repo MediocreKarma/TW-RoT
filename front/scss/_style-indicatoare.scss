@@ -4,6 +4,22 @@
 
 .indicatoare {
     @include utils.main-page-container; 
+
+    &__buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: vars.$padding-small;
+        width: 80%;
+
+        a {
+            text-align: center;
+            margin-top: 0px;
+            margin-bottom: 10px;
+            flex: 1;
+            align-self: stretch;
+        }
+    }
 }
 
 .category-container {
@@ -64,7 +80,7 @@
             flex-grow: 0;
         }
 
-        & :nth-last-child(2) {
+        & > :nth-last-child(2) {
             justify-content: flex-start;
             flex-grow: 1;
         }

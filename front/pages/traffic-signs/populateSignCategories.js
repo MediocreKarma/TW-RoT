@@ -2,6 +2,7 @@ import { fetchCategories } from './requests.js';
 import { showLoading } from '/js/render.js';
 import { renderError } from '/js/errors.js';
 import { showInfoModal } from '/js/modals.js';
+import {isAdmin} from "/js/auth.js";
 
 const renderCategory = (categoryData) => {
     const anchor = document.createElement('a');
@@ -20,13 +21,44 @@ const renderCategory = (categoryData) => {
     title.className = 'category-card__title';
     title.textContent = categoryData.title;
 
-    const button = document.createElement('div');
-    button.className = 'button';
-    button.textContent = 'Învață';
+    const buttonHolder = document.createElement('div');
+    buttonHolder.style.display = 'flex';
+    buttonHolder.style.gap = '10px';
+    buttonHolder.style['flex-wrap'] = 'wrap';
+    buttonHolder.style['justify-content'] = 'center';
+
+    const buttons = [];
+
+    const learnButton = document.createElement('div');
+    learnButton.className = 'button';
+    learnButton.textContent = 'Învață';
+    buttons.push(learnButton);
+
+    buttonHolder.append(learnButton);
+
+    if (isAdmin()) {
+        const editButton = document.createElement('div');
+        editButton.className = 'button';
+        editButton.textContent = 'Șterge';
+    
+        const deleteButton = document.createElement('div');
+        deleteButton.className = 'button';
+        deleteButton.textContent = 'Editează';
+
+        buttonHolder.append(editButton, deleteButton);
+        buttons.push(editButton, deleteButton);
+    }
+
+    for (const button of buttons) {
+        button.style.flex = '1';
+        button.style['text-align'] = 'center';
+        button.style['align-self'] = 'stretch';
+        button.style['justify-self'] = '';
+    }
 
     cardBodyDiv.appendChild(img);
     cardBodyDiv.appendChild(title);
-    cardBodyDiv.appendChild(button);
+    cardBodyDiv.appendChild(buttonHolder);
 
     anchor.appendChild(cardBodyDiv);
 
