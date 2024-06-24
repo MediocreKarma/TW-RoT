@@ -39,6 +39,8 @@ paths:
                       type: integer
                     title:
                       type: string
+                    isaddendum:
+                      type: boolean
     post:
       summary: Submit new chapter
       operationId: postChapter
