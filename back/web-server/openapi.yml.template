@@ -40,6 +40,59 @@ paths:
                       type: integer
                     title:
                       type: string
+                    isaddendum:
+                      type: boolean
+
+    post:
+      summary: Submit new chapter
+      operationId: postChapter
+      tags:
+        - Chapters
+      servers:
+        - url: https://localhost:{CHAPTERS_PORT}/api/v1
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: object
+              properties:
+                title:
+                  type: string
+                  description: Title of chapter
+                  example: "New chapter"
+                number:
+                  type: integer
+                  description: Number of chapter
+                  example: 1
+                content:
+                  type: string
+                  description: Content of chapter
+                  example: "Chapter content"
+                isAddendum:
+                  type: boolean
+                  description: Whether chapter is addendum
+                  example: false
+      responses:
+        '200':
+          description: Chapter content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  number:
+                    type: integer
+                  title:
+                    type: string
+                  content:
+                    type: string
+                  isaddendum:
+                    type: boolean
+    
+      
 
   /chapters/{id}:
     get:
@@ -69,6 +122,79 @@ paths:
                     type: string
                   content:
                     type: string
+                  isaddendum:
+                    type: boolean
+    patch:
+      summary: Patch chapter
+      operationId: patchChapter
+      tags:
+        - Chapters
+      servers:
+        - url: https://localhost:{CHAPTERS_PORT}/api/v1
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: object
+              properties:
+                title:
+                  type: string
+                  description: Title of chapter
+                  example: "New chapter"
+                number:
+                  type: integer
+                  description: Number of chapter
+                  example: 1
+                content:
+                  type: string
+                  description: Content of chapter
+                  example: "Chapter content"
+                isaddendum:
+                  type: boolean
+                  description: Whether chapter is addendum
+                  example: false
+      responses:
+        '204':
+          description: Chapter patched successfully
+
+    delete:
+      summary: Delete chapter
+      description: Delete chapter
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the chapter
+      tags:
+        - Chapters
+      servers:
+        - url: https://localhost:{CHAPTERS_PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      responses:
+        '204':
+          description: Chapter deleted successfully
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+      
+    
 
   /sign-categories:
     get:
