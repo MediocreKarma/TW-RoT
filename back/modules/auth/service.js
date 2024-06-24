@@ -443,35 +443,40 @@ export const requestCredentialChange = withDatabaseOperation(async function (
  * Perform an email update if possible
  */
 const updateEmail = withDatabaseTransaction(async (client, userId, newEmail) => {
-    if (await isEmailUsed(client, newEmail)) {
-        return;
+    try {
+        if (await isEmailUsed(client, newEmail)) {
+            return;
+        }
+    
+        const username = (await client.query(
+            `update user_account 
+                set updated_at = now()::timestamp, new_email = $1::varchar
+                where id = $2::int returning username`,
+            [newEmail, userId]
+        )).rows[0].username;
+    
+        const token = await genToken();
+        await client.query(
+            `insert into user_token (user_id, token_type, token_value, created_at)
+                values($1::int, 'confirm_email', $2::varchar, now()::timestamp)`,
+            [userId, token]
+        );
+        const link = `${process.env.FRONTEND_URL}/verify?token=${token}`;
+        let template = readFileSync('templates/updateEmail.html', 'utf-8');
+        template = template
+            .replace(/{USERNAME}/g, username)
+            .replace(/{CONFIRMATION_LINK}/g, link)
+            .replace(/{WEBSITE_NAME}/g, process.env.WEBSITE_NAME);
+        await emailTransporter.sendMail({
+            from: `${process.env.EMAIL_NAME} <${process.env.EMAIL_ADDRESS}>`,
+            to: newEmail,
+            subject: CHANGE_EMAIL_SUBJECT,
+            html: template,
+        });
     }
-
-    const username = (await client.query(
-        `update user_account 
-            set updated_at = now()::timestamp, new_email = $1::varchar
-            where id = $2::int returning username`,
-        [newEmail, userId]
-    )).rows[0].username;
-
-    const token = await genToken();
-    await client.query(
-        `insert into user_token (user_id, token_type, token_value, created_at)
-            values($1::int, 'confirm_email', $2::varchar, now()::timestamp)`,
-        [userId, token]
-    );
-    const link = `${process.env.FRONTEND_URL}/verify?token=${token}`;
-    let template = readFileSync('templates/updateEmail.html', 'utf-8');
-    template = template
-        .replace(/{USERNAME}/g, username)
-        .replace(/{CONFIRMATION_LINK}/g, link)
-        .replace(/{WEBSITE_NAME}/g, process.env.WEBSITE_NAME);
-    await emailTransporter.sendMail({
-        from: `${process.env.EMAIL_NAME} <${process.env.EMAIL_ADDRESS}>`,
-        to: newEmail,
-        subject: CHANGE_EMAIL_SUBJECT,
-        html: template,
-    });
+    catch (err) {
+        console.log(err);
+    }
 });
 
 /**
@@ -564,9 +569,19 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
     }
     else {
         userId = params['body']?.id;
-        if (!isStringValidInteger(userId)) {
+        if (isNaN(userId)) {
             return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_USER_ID}, 'Invalid user id');
         }
+
+        const result = (await client.query(
+            `select ' ' from user_account where id = $1::int and flags & ${USER_ROLES.ADMIN} = 0`,
+            [userId]
+        ));
+        
+        if (!result.rowCount) {
+            return new ServiceResponse(404, {errorCode: ErrorCodes.USER_NOT_FOUND}, 'No such user');
+        }
+
     }
 
     if (type === 'username') {

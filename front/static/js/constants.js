@@ -79,6 +79,7 @@ export const ErrorCodes = Object.freeze({
     CATEGORY_TITLE_TOO_LONG: 74,
     DESCRIPTION_TOO_LONG: 75,
     INVALID_QUESTION_FORMAT: 76,
+    USER_NOT_FOUND: 77,
 });
 
 /**
