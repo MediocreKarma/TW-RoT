@@ -16,7 +16,7 @@ import {
     postExercise,
     postExercises,
 } from '../requests.js';
-import {readFileIntoString} from '/js/utils.js';
+import { readFileIntoString } from '/js/utils.js';
 
 export const reactToSubmitResponse = async (
     form,
@@ -57,7 +57,6 @@ const onFormSubmit = async (event) => {
     event.preventDefault();
 
     const form = event.target;
-    setSubmitButtonDisabled(form, true);
     const data = await collectFormData(form);
     const validation = validateFormData(data);
 
@@ -67,6 +66,7 @@ const onFormSubmit = async (event) => {
     } else {
         clearFormError(form);
     }
+    setSubmitButtonDisabled(form, true);
 
     const formData = convertObjectToFormData(data);
     await reactToSubmitResponse(form, formData);

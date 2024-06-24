@@ -476,6 +476,25 @@
                         typeof="sa:image"
                     />
                 </p>
+                <p>
+                    La nivel de frontend, aplicația este eficientizată din punct
+                    de vedere al request-urilor la API; se utilizează
+                    <i>localStorage</i> pe post de cache pentru stocarea datelor
+                    unui utilizator autentificat, precum numele, id-ul, și
+                    inclusiv chestionarul activ al utilizatorului, dacă are
+                    unul.
+                </p>
+                <p>
+                    Erorile la nivel de API sunt semnalate și la nivel de
+                    frontend, prin intermediul pop-up-urilor (sau modalelor).
+                </p>
+                <p>
+                    A fost conceput un server web special pentru frontend, care
+                    permite rute dinamice (ex.
+                    <i>/traffic-code/chapters/:id</i>) și are posibilitatea de a
+                    restricționa livrarea anumitor fișiere doar
+                    administratorilor (prin middleware-ul de autentificare).
+                </p>
             </section>
             <section>
                 <h3>3.2. Funcțiile produsului</h3>

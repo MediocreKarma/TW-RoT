@@ -6,7 +6,7 @@ import {
     showConfirmModal,
     showGeneralModal,
 } from '/js/modals.js';
-import { showFormError } from '/js/form/errors.js';
+import { showFormError, clearFormError } from '/js/form/errors.js';
 import { validateForm } from '/js/form/validate.js';
 import { disableFormSubmit, enableFormSubmit } from '/js/form/utils.js';
 
@@ -92,7 +92,10 @@ export const categoryFormSubmit = (closeModal, cb, refresh) => {
 
         if (!validation.valid) {
             showFormError(form, validation.message);
+            enableFormSubmit(form);
             return;
+        } else {
+            clearFormError(form);
         }
 
         const formData = new FormData(form);

@@ -33,6 +33,7 @@ const onFormSubmit = async (originalData, event) => {
     console.log(validation);
     if (!validation.valid) {
         showFormError(form, validation.message);
+        setSubmitButtonDisabled(form, false);
         return;
     } else {
         clearFormError(form);

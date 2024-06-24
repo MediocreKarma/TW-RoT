@@ -7,11 +7,11 @@ import {
 } from '/js/modals.js';
 import { renderMessage, showLoading } from '/js/render.js';
 import { isAdmin } from '/js/auth.js';
-import { showFormError } from '/js/form/errors.js';
+import { showFormError, clearFormError } from '/js/form/errors.js';
 import { validateForm } from '/js/form/validate.js';
 import { disableFormSubmit, enableFormSubmit } from '/js/form/utils.js';
 import { postChapter, postChapterForm } from './requests.js';
-import {readFileIntoString} from '/js/utils.js';
+import { readFileIntoString } from '/js/utils.js';
 
 export const renderChapterForm = () => {
     if (!isAdmin()) {
@@ -69,7 +69,7 @@ export const renderChapterForm = () => {
     confirm.innerText = 'Confirmă';
     confirm.type = 'submit';
     // <label for="import" class="button"></label>
-    //                     <input type="file" accept="text/csv, application/json" id="import" class="button" style="display: none">    
+    //                     <input type="file" accept="text/csv, application/json" id="import" class="button" style="display: none">
     const impLabel = document.createElement('label');
     impLabel.className = 'button';
     impLabel.textContent = 'Importă';
@@ -91,7 +91,7 @@ export const renderChapterForm = () => {
                     () => {
                         window.location.reload();
                     }
-                )
+                );
             } else {
                 let result;
                 try {
@@ -114,12 +114,16 @@ export const renderChapterForm = () => {
                         window.location.reload();
                     }
                 );
-            }        
+            }
         } catch (err) {
             console.log(err);
-            showInfoModal(renderMessage('Eroare la import, fișier invalid'), () => {window.location.reload();});
+            showInfoModal(
+                renderMessage('Eroare la import, fișier invalid'),
+                () => {
+                    window.location.reload();
+                }
+            );
         }
-
     });
 
     form.append(buttons);
@@ -162,7 +166,10 @@ export const chapterFormSubmit = (closeModal, onConfirm, refresh) => {
 
         if (!validation.valid) {
             showFormError(form, validation.message);
+            enableFormSubmit(form);
             return;
+        } else {
+            clearFormError(form);
         }
 
         const formData = new FormData(form);
@@ -173,6 +180,7 @@ export const chapterFormSubmit = (closeModal, onConfirm, refresh) => {
 
         try {
             await onConfirm(data);
+            enableFormSubmit(form);
         } catch (e) {
             showInfoModal(renderError(e));
             enableFormSubmit(form);

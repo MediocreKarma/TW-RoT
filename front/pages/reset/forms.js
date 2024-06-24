@@ -1,5 +1,5 @@
 import { validateForm } from '/js/form/validate.js';
-import { showFormError, removeFormError } from '/js/form/errors.js';
+import { showFormError, clearFormError } from '/js/form/errors.js';
 import { renderError } from '/js/errors.js';
 import { showInfoModal } from '/js/modals.js';
 import { enableFormSubmit, disableFormSubmit } from '/js/form/utils.js';
@@ -17,7 +17,7 @@ export const addFormSubmit = async (formId, submitCallback, validators) => {
             return;
         }
 
-        removeFormError(form);
+        clearFormError(form);
         disableFormSubmit(form);
 
         const data = new FormData(event.target);
@@ -25,10 +25,10 @@ export const addFormSubmit = async (formId, submitCallback, validators) => {
 
         try {
             await submitCallback(dataObject);
-            enableFormSubmit(form);
         } catch (e) {
-            enableFormSubmit(form);
             showInfoModal(renderError(e));
+        } finally {
+            enableFormSubmit(form);
         }
     });
 };
