@@ -1,9 +1,16 @@
-import { getUrlParameter, updateUrlParameter } from '../common.js';
+import {
+    getUrlParameter,
+    updateUrlParameter,
+    updatePagination,
+    disablePagination,
+    scrollToTop,
+} from '../common.js';
 import {
     deleteUserProgress,
     deleteUser,
     getUsers,
     patchBanUser,
+    changeUserEmail,
 } from '../requests.js';
 import { showInfoModal, showConfirmModal } from '/js/modals.js';
 import { renderError } from '/js/errors.js';
@@ -15,7 +22,41 @@ const COUNT = 20;
 let total = 0;
 let currentPage = 0;
 let currentQuery;
-let searchTimeout; // bounce-debounce my beloved
+let searchTimeout;
+
+const renderEmailForm = () => {
+    const form = document.createElement('form');
+
+    const group = document.createElement('div');
+    group.classList.add('form__group');
+
+    const emailLabel = document.createElement('label');
+    emailLabel.innerText = 'Email';
+
+    const emailField = document.createElement('input');
+    emailField.type = 'email';
+    emailField.name = 'email';
+    emailField.classList.add('form__input');
+
+    const buttons = document.createElement('div');
+    buttons.classList.add('form__buttons');
+
+    // const cancel = document.createElement('button');
+    // cancel.innerText = 'Anulează';
+
+    const confirm = document.createElement('button');
+    confirm.innerText = 'Confirmă';
+    confirm.type = 'submit';
+
+    buttons.append(confirm);
+
+    group.append(emailLabel);
+    group.append(emailField);
+
+    form.append(group, buttons);
+
+    return form;
+};
 
 function renderCard(user) {
     const card = document.createElement('div');
@@ -71,11 +112,7 @@ function renderCard(user) {
     const completedQuestionnaires = document.createElement('li');
     completedQuestionnaires.classList.add('dashboard-card__stats__row');
     completedQuestionnaires.innerHTML = `Nr. chestionare admise: <span>${user.solvedQuestionnaires}</span>`;
-    statList.append(
-        correctPercentage,
-        correctAnswers,
-        completedQuestionnaires
-    );
+    statList.append(correctPercentage, correctAnswers, completedQuestionnaires);
     statsSection.append(statsLabel, statList);
 
     const actionsSection = document.createElement('div');
@@ -180,6 +217,39 @@ function renderCard(user) {
         const changeEmailButton = document.createElement('button');
         changeEmailButton.classList.add('dashboard-card__action', 'button');
         changeEmailButton.textContent = 'Schimbă email';
+
+        changeEmailButton.onclick = async () => {
+            const form = renderEmailForm();
+            const closeModal = showInfoModal(form);
+
+            const onFormSubmit = async (e) => {
+                e.preventDefault();
+                form.querySelector('button[type=submit]').disabled = true;
+
+                const formData = new FormData(form);
+                const email = formData.get('email');
+
+                try {
+                    // change credentials
+                    await changeUserEmail(user.id, email);
+                    showInfoModal(
+                        renderMessage(
+                            `A fost trimis un email de confirmare pe adresa ${email}.`
+                        )
+                    );
+                } catch (e) {
+                    showInfoModal(renderError(e));
+                    form.querySelector('button[type=submit]').disabled = false;
+                    return;
+                }
+
+                closeModal();
+                updatePageContent();
+            };
+
+            form.addEventListener('submit', onFormSubmit);
+        };
+
         actionsSection.append(
             actionsLabel,
             restrictButton,
@@ -208,42 +278,6 @@ function showData(users) {
     });
 }
 
-const getPaginationRange = (total, count, currentPage) => {
-    const totalPages = Math.ceil(total / count);
-    if (totalPages === 0) {
-        return [
-            {
-                value: 0,
-                selected: true,
-            },
-        ];
-    }
-
-    let range = [];
-    let rangeStart = Math.max(0, currentPage - 2);
-    let rangeEnd = Math.min(totalPages - 1, currentPage + 2);
-    if (rangeEnd - rangeStart < 4) {
-        if (rangeStart > 0) {
-            rangeStart = Math.max(0, rangeEnd - 4);
-        }
-        if (rangeEnd < totalPages - 1) {
-            rangeEnd = Math.min(totalPages - 1, rangeStart + 4);
-        }
-    }
-    for (let i = rangeStart; i <= rangeEnd; i++) {
-        range.push({ value: i, selected: i === currentPage });
-    }
-
-    return range;
-};
-
-function scrollToTop() {
-    document.documentElement.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-    });
-}
-
 const setPage = async (page) => {
     currentPage = page;
     updateUrlParameter('page', currentPage);
@@ -257,55 +291,6 @@ const setPage = async (page) => {
     await sleep(100);
 
     scrollToTop();
-};
-
-const updatePagination = (page, total, count) => {
-    const paginationContainer = document.getElementById('pagination');
-    paginationContainer.innerHTML = '';
-
-    const renderPaginationNode = (pageNo, selected, innerText) => {
-        const btn = document.createElement('button');
-        btn.onclick = async () => {
-            btn.disabled = true;
-            await setPage(pageNo);
-        };
-        btn.innerText = innerText ? innerText : pageNo + 1;
-        btn.classList.add('button');
-        if (selected) {
-            btn.classList.add('selected');
-            btn.disabled = true;
-        }
-        return btn;
-    };
-
-    paginationContainer.appendChild(renderPaginationNode(0, page === 0, '<<'));
-    paginationContainer.appendChild(
-        renderPaginationNode(
-            Math.max(page - 1, 0),
-            page === Math.max(page - 1, 0),
-            '<'
-        )
-    );
-
-    const numbers = getPaginationRange(total, count, page);
-    numbers.forEach(({ value, selected }) => {
-        paginationContainer.appendChild(renderPaginationNode(value, selected));
-    });
-
-    console.log(total + ' ' + count);
-    const lastPage = total < count ? 0 : Math.ceil(total / count) - 1;
-    console.log(lastPage);
-
-    paginationContainer.appendChild(
-        renderPaginationNode(
-            Math.max(Math.min(page + 1, lastPage), 0),
-            page === Math.max(Math.min(page + 1, lastPage), 0),
-            '>'
-        )
-    );
-    paginationContainer.appendChild(
-        renderPaginationNode(lastPage, page === lastPage, '>>')
-    );
 };
 
 const setInitialParams = () => {
@@ -324,29 +309,6 @@ const setInitialParams = () => {
 
 const currentStart = () => {
     return currentPage * COUNT;
-};
-
-// irreversible function that disables pagination buttons (to prevent race conditions while loading data)
-const disablePagination = () => {
-    const paginationContainer = document.getElementById('pagination');
-    paginationContainer.querySelectorAll('button').forEach((button) => {
-        button.disabled = true;
-    });
-};
-
-const setSearchDisabled = (disabled) => {
-    const searchInput = document.getElementById('search');
-    searchInput.disabled = disabled;
-};
-
-// reversible! function that disables search, for same reasons as above
-const disableSearch = () => {
-    setSearchDisabled(true);
-};
-
-// function that enables search, because we're not rebuilding the search elements, they have to be re-enabled
-const enableSearch = () => {
-    setSearchDisabled(false);
 };
 
 const search = async (query) => {
@@ -374,7 +336,7 @@ async function updatePageContent() {
         total = responseData.total;
 
         showData(data);
-        updatePagination(currentPage, total, COUNT, currentQuery);
+        updatePagination(currentPage, total, COUNT, setPage);
     } catch (e) {
         showInfoModal(renderError(e), () => {
             window.location.href = '/';

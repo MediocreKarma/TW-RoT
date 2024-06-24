@@ -1,5 +1,5 @@
 import API from '/js/api.js';
-import { get, patch, del } from '/js/authRequests.js';
+import { get, post, patch, del } from '/js/authRequests.js';
 
 export const getExercises = async (start, count, query) => {
     const response = await get(
@@ -35,4 +35,11 @@ export const deleteUserProgress = async (userId) => {
 
 export const deleteUser = async (userId) => {
     await del(`${API.USERS}/users/${userId}`);
+};
+
+export const changeUserEmail = async (userId, email) => {
+    await post(`${API.AUTH}/auth/change-email`, {
+        id: userId,
+        value: email,
+    });
 };

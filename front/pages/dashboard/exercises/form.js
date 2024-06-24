@@ -8,8 +8,6 @@ export const NEW_CATEGORY_SELECT_OPTION = {
     text: 'Categorie nouă',
 };
 
-// export const EMPTY_BASE64_BUFFER = 'data:application/octet-stream;base64,';
-
 export const validateFormData = (formData) => {
     console.log(formData);
     const validatorResponse = (isValid, errorMessage) => {
@@ -230,4 +228,8 @@ export const collectFormData = async (form) => {
     );
 
     return finalDataObj;
+};
+
+export const setSubmitButtonDisabled = (form, disabled) => {
+    form.querySelector('button[type=submit]').disabled = disabled;
 };

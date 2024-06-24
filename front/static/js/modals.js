@@ -1,4 +1,11 @@
-const createOrUpdateModal = (innerNode, id = '__modal', confirm = false) => {
+/**
+ * Base function for modals. Creates a modal with specified id.
+ *
+ * @param {*} innerNode the DOM node with the inner contents of the modal
+ * @param {*} id the ID of the modal
+ * @returns the DOM node representing the modal
+ */
+const createOrUpdateModal = (innerNode, id = '__modal') => {
     let modalOverlay = document.getElementById(id);
     if (!modalOverlay) {
         modalOverlay = document.createElement('div');
@@ -11,7 +18,7 @@ const createOrUpdateModal = (innerNode, id = '__modal', confirm = false) => {
         // add close btn
         let closeButton = document.createElement('button');
         closeButton.id = id + '-close';
-        closeButton.innerText = 'X';
+        closeButton.innerText = '✖';
         closeButton.classList.add('modal__close');
         modal.appendChild(closeButton);
 
@@ -25,6 +32,15 @@ const createOrUpdateModal = (innerNode, id = '__modal', confirm = false) => {
     return modalOverlay;
 };
 
+/**
+ * Shows a modal on screen with a random id. Returns a function
+ * which removes the modal from the screen.
+ *
+ * @param {*} modalContent the DOM node with the inner contents of the modal
+ * @param {*} onClose function to be executed upon close
+ * @returns a function which removes the modal from the screen,
+ * without executing onClose
+ */
 export const showInfoModal = (modalContent, onClose = undefined) => {
     const id = Math.random().toString(36).slice(2, 9);
     const modalId = `error-modal-${id}`;
@@ -32,19 +48,27 @@ export const showInfoModal = (modalContent, onClose = undefined) => {
     document.body.append(modal);
     const closeBtn = document.getElementById(`${modalId}-close`);
 
-    closeBtn.onclick = function (e) {
+    const onCloseModal = () => {
+        modal.parentNode?.removeChild(modal);
+    };
+
+    closeBtn.onclick = (e) => {
         if (onClose) {
             onClose(e);
         }
-        modal.parentNode?.removeChild(modal);
+        onCloseModal();
     };
+
+    return onCloseModal;
 };
 
-export const showConfirmModal = (
-    modalContent,
-    onClose = undefined,
-    waitToConfirm = true // not sure if I'll need this but... I'm keeping it around for whenever I *might* add an onConfirm callback
-) => {
+/**
+ * Shows a confirm modal on screen. Returns whether the user confirmed or not.
+ *
+ * @param {*} modalContent the DOM node with the inner contents of the modal
+ * @returns true / false, whether the user confirmed
+ */
+export const showConfirmModal = (modalContent) => {
     return new Promise((resolve) => {
         const id = 'confirm-modal';
         const modal = createOrUpdateModal(modalContent, id);

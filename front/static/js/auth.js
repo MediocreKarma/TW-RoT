@@ -1,6 +1,8 @@
 import API from '/js/api.js';
 import { post } from '/js/requests.js';
 
+import { USER_ROLES } from '/js/constants.js';
+
 export const UserData = {
     id: 'userId',
     username: 'userUsername',
@@ -61,7 +63,7 @@ export const isLoggedIn = () => {
 export const isAdmin = (flags) => {
     return (Number.isInteger(flags)
         ? flags
-        : parseInt(cachedUserData().flags, 10)) === 1
+        : parseInt(cachedUserData().flags, 10)) === USER_ROLES.ADMIN
         ? true
         : false;
 };
@@ -69,7 +71,7 @@ export const isAdmin = (flags) => {
 export const isBanned = (flags) => {
     return (Number.isInteger(flags)
         ? flags
-        : parseInt(cachedUserData().flags, 10)) > 1
+        : parseInt(cachedUserData().flags, 10)) === USER_ROLES.BANNED
         ? true
         : false;
 };
