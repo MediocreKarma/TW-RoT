@@ -354,8 +354,8 @@ paths:
                         image:
                           type: string
     delete:
-      summary: Get sign category
-      operationId: getSignCategory
+      summary: Delete sign category
+      operationId: deleteSignCategory
       tags:
         - Sign Categories
       servers:
