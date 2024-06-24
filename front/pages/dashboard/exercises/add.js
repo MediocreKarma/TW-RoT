@@ -5,6 +5,7 @@ import {
     collectFormData,
     validateFormData,
     convertObjectToFormData,
+    setSubmitButtonDisabled,
 } from './form.js';
 import { showInfoModal } from '/js/modals.js';
 import { renderMessage } from '/js/render.js';
@@ -14,7 +15,9 @@ import { getExerciseCategories, submitExercise } from './requests.js';
 
 const onFormSubmit = async (event) => {
     event.preventDefault();
+
     const form = event.target;
+    setSubmitButtonDisabled(form, true);
     const data = await collectFormData(form);
     const validation = validateFormData(data);
 
@@ -31,6 +34,7 @@ const onFormSubmit = async (event) => {
 
     try {
         const questionData = await submitExercise(formData);
+        setSubmitButtonDisabled(form, false);
         showInfoModal(
             renderMessage(
                 `Întrebarea a fost înregistrată cu succes. Veți fi redirectat la pagina de dashboard.`
@@ -40,7 +44,7 @@ const onFormSubmit = async (event) => {
             }
         );
     } catch (e) {
-        console.log(e);
+        showInfoModal(renderError(e));
     }
 };
 
@@ -54,7 +58,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const form = document.getElementById('exercise-form');
     console.log(await collectFormData(form));
 
-    // TODO: move into onFormSubmit
     document
         .getElementById('exercise-form')
         .addEventListener('submit', onFormSubmit);
