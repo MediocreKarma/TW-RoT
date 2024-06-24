@@ -101,13 +101,10 @@ export const fetchQuestion = withDatabaseOperation(async function (
     if (!isStringValidInteger(qId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_ID}, 'Invalid question id');
     }
-    console.log(`${SQL_SELECT_STATEMENT} where not q.deleted and q.id = $1::int ${SQL_GROUPING_STATEMENT}`)
     const res = (await client.query(
         `${SQL_SELECT_STATEMENT} where not q.deleted and q.id = $1::int ${SQL_GROUPING_STATEMENT}`,
         [qId]
     )).rows;
-
-    console.log(res);
 
     if (res.length === 0) {
         return new ServiceResponse(404, {errorCode: ErrorCodes.QUESTION_ID_NOT_FOUND}, 'No question found');
@@ -142,6 +139,10 @@ const validateInfoQuestion = (question, validateText = true) => {
 }
 
 const prepImage = async (question) => {
+    if (question.imageId) {
+        addImageToQuestion(question);
+        return {image: null, imageId: null};
+    }
     if (question.imageInfo) {
         try {
             const image = await Jimp.read(question.imageInfo.filepath);
@@ -274,7 +275,10 @@ export const createQuestions = withDatabaseTransaction(async function (
     if (!isAdmin(params['authorization'])) {
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
+    console.log('here');
     if (req?.headers['content-type']?.includes('multipart/form-data')) {
+        
+        console.log('here');
         try {
             if (params['body']?.fields?.question) {
                 const question = JSON.parse(params['body']?.fields?.question);
@@ -294,6 +298,7 @@ export const createQuestions = withDatabaseTransaction(async function (
         }
     }
     else {
+        console.log('here');
         if (Array.isArray(params['body'])) {
             for (const qst of params['body']) {
                 const result = addQuestion(client, qst);
@@ -303,6 +308,7 @@ export const createQuestions = withDatabaseTransaction(async function (
             }
         }
         else {
+            console.log('here');
             return addQuestion(client, params['body']);
         }
     }

@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { ServiceResponse, ImageResponse } from './serviceResponse.js';
+import { ErrorCodes } from '../../common/constants.js';
 
 /**
  * utility function that gets an image from the local ./images folder
