@@ -1,10 +1,11 @@
 import { ErrorCodes } from '../../common/constants.js';
-import { isStringValidInteger } from '../../common/utils.js';
+import { isAdmin, isStringValidInteger } from '../../common/utils.js';
 import { withDatabaseOperation, withDatabaseTransaction } from '../_common/db.js';
 import { CSVResponse, ImageResponse, ServiceResponse } from '../_common/serviceResponse.js';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { buildCSVFromPGResult } from '../_common/utils.js';
+import { buildCSVFromPGResult, validateAuth } from '../_common/utils.js';
+import { error } from 'console';
 dotenv.config({ path: '../../.env' });
 
 const API_IMAGE_URL = `${process.env.TRAFFIC_SIGNS_URL}/api/v1/images/{id}.png`;
@@ -62,6 +63,7 @@ export const getSignCategory = withDatabaseOperation(async function (
             'Invalid id format'
         );
     }
+    console.log(id);
     const results = (
         await client.query(
             'select id, title, design, purpose, suggestion, image_id as "imageId" from sign_category where id = $1::int',
@@ -175,8 +177,41 @@ export const getComparison = withDatabaseOperation(async function (
     return new ServiceResponse(200, result, 'Successfully retrieved comparison category');
 });
 
-export const addSignCategory = withDatabaseTransaction(async function (
-    client, _req, _res, params
-) {
+export const addSignCategory = withDatabaseOperation(async function (
+    client, req, res, params
+) {   
+    const authValidation = validateAuth(params['authorization']);
+    if (authValidation) {
+        return authValidation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+
+    const exists = (await client.query(
+        `select count(' ')::int as exists from sign_category where $1::varchar = title`,
+        [params['body'].title]
+    )).rows[0].exists;
+
+    if (exists) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.CATEGORY_ALREADY_EXISTS}, 'Category already exists');
+    }
+
+    try {
+        await client.query(
+            `call insert_sign_category($1::jsonb)`,
+            [params['body']]
+        )
+    }
+    catch (e) {
+        console.log(e);
+        return new ServiceResponse(400, {errorCode: ErrorCodes.FAILED_TO_CREATE_SIGN_CATEGORY}, 'Failed to create');
+    }
+    const id = (await client.query(
+        `select id from sign_category order by id desc limit 1`
+    )).rows[0].id;
     
+    const category = await getSignCategory(req, res, {path: {id: `${id}`}});
+
+    return new ServiceResponse(201, category.body, 'Successfully created new category');
 });

@@ -222,6 +222,92 @@ paths:
                       type: string
                     image:
                       type: string
+    post:
+      summary: Create new sign category
+      operationId: postSignCategory
+      tags: 
+        - Sign Categories
+      servers:
+        - url: https://localhost:{TRAFFIC_SIGNS_PORT}/api/v1
+      security:
+        - cookieAuth: [ ]
+      requestBody:
+        description: Sign category body, most fields optional
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                image:
+                  type: string
+                design:
+                  type: string
+                purpose:
+                  type: string
+                suggestion:
+                  type: string
+                signs:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      image:
+                        type: string
+      responses:
+        '201':
+          description: Sign category details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      imageId: 
+                          type: string
+                      image:
+                        type: string
+                      design:
+                        type: string
+                      purpose:
+                        type: string
+                      suggestion:
+                        type: string
+                  signs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        description:
+                          type: string
+                        imageId:
+                          type: string
+                        image:
+                          type: string
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
 
   /sign-categories/{id}:
     get:
