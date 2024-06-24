@@ -1,4 +1,4 @@
-import { isLoggedIn, UserData, cachedUserData } from './auth.js';
+import { isLoggedIn, UserData, cachedUserData, isAdmin } from './auth.js';
 
 import API from '/js/api.js';
 import { get } from '/js/authRequests.js';
@@ -11,6 +11,9 @@ const getQuestionnaire = async (userId) => {
 };
 
 if (isLoggedIn()) {
+    if (isAdmin()) {
+        return;
+    }
     let hasQuestionnaire = false;
 
     const questionnaire = localStorage.getItem(UserData.questionnaire);
