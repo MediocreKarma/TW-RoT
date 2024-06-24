@@ -7,10 +7,11 @@ import {
     scrollToTop,
     disablePagination,
 } from '../common.js';
-import { getExercises, deleteExercise } from '../requests.js';
+import { getExercises, deleteExercise, getExercise } from '../requests.js';
 import { showInfoModal, showConfirmModal } from '/js/modals.js';
 import { renderError } from '/js/errors.js';
 import { renderMessage } from '/js/render.js';
+import API from '/js/api.js'
 
 const defaultPage = 0;
 const COUNT = 20;
@@ -115,9 +116,24 @@ const renderCard = (question) => {
         }
     };
 
+    const exportJSONButton = document.createElement('a');
+    exportJSONButton.className = 'dashboard-card__action button';
+    exportJSONButton.textContent = 'Exportează ca JSON';
+    
+    const jsonString = JSON.stringify(question, null, 2);
+    exportJSONButton.href = URL.createObjectURL(new Blob([jsonString], {type: `text/json`}));
+    exportJSONButton.download = `question_${question.id}.json`;
+
+    const exportCSVButton = document.createElement('a');
+    exportCSVButton.className = 'dashboard-card__action button';
+    exportCSVButton.textContent = 'Exportează ca CSV';
+    exportCSVButton.href = new URL(`${API.EXERCISES}/exercises/${question.id}?output=csv`);
+
     actions.appendChild(actionsLabel);
     actions.appendChild(modifyButton);
     actions.appendChild(deleteButton);
+    actions.appendChild(exportJSONButton);
+    actions.appendChild(exportCSVButton);
 
     card.appendChild(info);
     card.appendChild(role);

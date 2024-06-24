@@ -35,18 +35,19 @@ export const fetchQuestions = withDatabaseOperation(async function (
         return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
     }
 
-    if (params['query'].output === 'csv') {
-        const result = await client.query(
-            `${SQL_SELECT_STATEMENT} ${SQL_GROUPING_STATEMENT}`
-        );
-        return new CSVResponse(buildCSVFromPGResult(result), 'Successfully retrieved question CSV');
-    }
-
     const start = params['query']?.start ?? '0';
     const count = params['query']?.count ?? '5';
     const startAndCountValidation = validateStartAndCountParams(start, count);
     if (startAndCountValidation instanceof ServiceResponse) {
         return startAndCountValidation;
+    }
+
+    if (params['query'].output === 'csv') {
+        const result = await client.query(
+            `${SQL_SELECT_STATEMENT} where not q.deleted ${SQL_GROUPING_STATEMENT} offset $1::int limit $2::int`,
+            [start, count]
+        );
+        return new CSVResponse(buildCSVFromPGResult(result), 'Successfully retrieved question CSV');
     }
 
     const query = params['query']?.query ?? '';
@@ -98,19 +99,25 @@ export const fetchQuestion = withDatabaseOperation(async function (
     }
 
     const qId = params['path']['id'];
+    console.log(qId);
     if (!isStringValidInteger(qId)) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.INVALID_QUESTION_ID}, 'Invalid question id');
     }
-    const res = (await client.query(
+    const result = (await client.query(
         `${SQL_SELECT_STATEMENT} where not q.deleted and q.id = $1::int ${SQL_GROUPING_STATEMENT}`,
         [qId]
-    )).rows;
+    ));
 
-    if (res.length === 0) {
+    if (params['query'].output === 'csv') {
+        return new CSVResponse(buildCSVFromPGResult(result), 'Successfully retrieved question CSV');
+    }
+
+    const qstRows = result.rows;
+    if (qstRows.length === 0) {
         return new ServiceResponse(404, {errorCode: ErrorCodes.QUESTION_ID_NOT_FOUND}, 'No question found');
     }
 
-    const question = res[0];
+    const question = qstRows[0];
     question.answers.sort((a, b) => a.id - b.id); 
     adjustOutputAnswerSet(question.answers);
     addImageToQuestion(question);

@@ -10,8 +10,11 @@ export const getExercises = async (start, count, query) => {
     return await response.json();
 };
 
-export const getExercise = async (questionId) => {
-    const response = await get(`${API.EXERCISES}/exercises/${questionId}`);
+export const getExercise = async (questionId, csv = false) => {
+    const response = await get(`${API.EXERCISES}/exercises/${questionId}${csv ? '?output=csv': ''}`);
+    if (csv) {
+        return response;
+    }
     return await response.json();
 };
 
