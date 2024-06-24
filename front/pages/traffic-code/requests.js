@@ -7,7 +7,9 @@ export const fetchChapter = async (id) => {
 };
 
 export const fetchChapters = async (query = false) => {
-    const response = await get(`${API.CHAPTERS}/chapters${query ? '?output=json' : ''}`);
+    const response = await get(
+        `${API.CHAPTERS}/chapters${query ? '?output=json' : ''}`
+    );
     return await response.json();
 };
 
@@ -21,7 +23,7 @@ export const postChapter = async (data) => {
 
 export const postChapterForm = async (formData) => {
     await postFormData(`${API.CHAPTERS}/chapters`, formData);
-}
+};
 
 export const patchChapter = async (id, data) => {
     await patch(`${API.CHAPTERS}/chapters/${id}`, data);
@@ -37,5 +39,5 @@ export const getChaptersCSV = () => {
 };
 
 export const getChapterCSV = (id) => {
-    return `${API.CHAPTERS}/chapter/${id}?output=csv`;
+    return `${API.CHAPTERS}/chapters/${id}?output=csv`;
 };
