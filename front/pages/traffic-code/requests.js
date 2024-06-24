@@ -6,8 +6,8 @@ export const fetchChapter = async (id) => {
     return await response.json();
 };
 
-export const fetchChapters = async () => {
-    const response = await get(`${API.CHAPTERS}/chapters`);
+export const fetchChapters = async (query = false) => {
+    const response = await get(`${API.CHAPTERS}/chapters${query ? '?output=json' : ''}`);
     return await response.json();
 };
 

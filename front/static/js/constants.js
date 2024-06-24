@@ -92,6 +92,7 @@ export const ErrorCodes = Object.freeze({
     INVALID_CHAPTER_TITLE: 87,
     INVALID_CHAPTER_CONTENT: 88,
     FAILED_TO_CREATE_SIGN_CATEGORY: 89,
+    FAILED_TO_CREATE_SIGNS: 90
 });
 
 /**

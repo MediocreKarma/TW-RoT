@@ -1,5 +1,5 @@
 import { ErrorCodes } from '../../common/constants.js';
-import { isAdmin, isStringValidInteger } from '../../common/utils.js';
+import { isAdmin, isStringValidInteger, parseCSV } from '../../common/utils.js';
 import { withDatabaseOperation, withDatabaseTransaction } from '../_common/db.js';
 import { CSVResponse, ImageResponse, ServiceResponse } from '../_common/serviceResponse.js';
 import dotenv from 'dotenv';
@@ -214,4 +214,106 @@ export const addSignCategory = withDatabaseOperation(async function (
     const category = await getSignCategory(req, res, {path: {id: `${id}`}});
 
     return new ServiceResponse(201, category.body, 'Successfully created new category');
+});
+
+const prepImage = async (card) => {
+    if (card.imageId) {
+        addImageToQuestion(card);
+        return {image: null, imageId: null};
+    }
+    if (card.imageInfo) {
+        try {
+            const image = await Jimp.read(card.imageInfo.filepath);
+            const imageId = uuid4();
+            card.imageId = imageId;
+            addImageToQuestion(card);
+            delete card.imageInfo;
+            return {image: image, imageId: imageId};
+        } catch (err) {
+            delete card.image;
+            return {image: null, imageId: null};
+        }
+    }
+    if (!card.image) {
+        return {image: null, imageId: null};
+    }
+    try {
+        const buffer = Buffer.from(card.image.replace(/^data:image\/\w+;base64,/, ''), 'base64')
+        const image = await Jimp.read(buffer);
+        const imageId = uuid4();
+        card.imageId = imageId;
+        addImageToQuestion(card);
+        return {image: image, imageId: imageId};
+    }
+    catch (err) {
+        delete card.image;
+        return {image: null, imageId: null};
+    }
+}
+
+const addSign = async (client, sign) => {
+    const {image, imageId} = prepImage(sign);
+    try {
+        await client.query(
+            `insert into sign (default, $1::int, $2::varchar, $3::varchar, $4::varchar)`,
+            [sign.categoryId, sign.title, sign.description, sign.imageId]
+        );
+        
+        if (image) {
+            await image.writeAsync(`./images/${imageId}.png`);
+        }
+    }
+    catch (err) {
+        console.log(err);
+        return new ServiceResponse(400, {ErrorCodes: ErrorCodes.FAILED_TO_CREATE_SIGNS}, 'Failed to create sign');
+    }
+}
+
+export const addSignsToCategory = withDatabaseOperation(async function (
+    client, _req, _res, params
+) {
+    const authValidation = validateAuth(params['authorization']);
+    if (authValidation) {
+        return authValidation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+    try {
+        if (params['body']?.files?.csv) {
+            const parsedSigns = parseCSV(params['body']?.files?.csv);
+            for (const sign of parsedSigns) {
+                const result = addSign(client, sign);
+                if (result.status < 200 || 299 < result.status) {
+                    return result;
+                }
+            }
+            return ServiceResponse(204, null, 'Successfully created multiple signs');
+        }
+        else if (params['body']?.files?.image) { // single file with image 
+            const sign = JSON.parse(params['body'].fields.sign);
+            sign.imageInfo = params['body'].files.image.filepath;
+            return addSign(client, sign);
+        }
+        else if (params['body']?.fields?.signs) { // multiple signs from array obj
+            const signs = JSON.parse(params['body']?.fields?.signs);
+            for (const sign of parsedSigns) {
+                const result = await addSign(client, sign);
+                if (result.status < 200 || 299 < result.status) {
+                    return result;
+                }
+            }
+            return ServiceResponse(204, null, 'Successfully created multiple signs');
+        }
+        else if (params['body']?.fields?.sign) {
+            const sign = JSON.parse(params['body'].fields.sign)
+            return await addSign(client, sign);
+        }
+        else {
+            return await addSign(client, params['body']);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+    return new ServiceResponse(400, {errorCode: ErrorCodes.FAILED_TO_CREATE_SIGNS}, 'Failed to create signs');
 });

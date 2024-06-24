@@ -20,6 +20,9 @@ export const getAllChapters = withDatabaseOperation(async function (
             'Successfully retrieved chapters csv'
         );
     }
+    if (params['query'].output === 'json') {
+        return new ServiceResponse(200, (await client.query('select * from chapter')).rows,  'Successfully retrieved chapters json')
+    }
 
     const chapters = (
         await client.query('select id, number, title, isaddendum from chapter order by id')
@@ -47,6 +50,13 @@ export const getChapterContent = withDatabaseOperation(async function (
             400,
             { errorCode: ErrorCodes.INVALID_CHAPTER_ID },
             'Invalid id format'
+        );
+    }
+
+    if (params['query'].output === 'csv') {
+        return new CSVResponse(
+            buildCSVFromPGResult(await client.query(`select * from chapter where id = $1`, [id])), 
+            'Successfully retrieved chapters csv'
         );
     }
 

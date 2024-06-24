@@ -63,7 +63,19 @@ export const renderChapterForm = () => {
     const confirm = document.createElement('button');
     confirm.innerText = 'Confirmă';
     confirm.type = 'submit';
-    buttons.append(confirm);
+    // <label for="import" class="button"></label>
+    //                     <input type="file" accept="text/csv, application/json" id="import" class="button" style="display: none">    
+    const impLabel = document.createElement('label');
+    impLabel.className = 'button';
+    impLabel.textContent = 'Importă';
+    impLabel.htmlFor = 'import';
+    const impInput = document.createElement('input');
+    impInput.type = 'file';
+    impInput.accept = 'text/csv, application/json';
+    impInput.id = 'import';
+    impInput.style.display = 'none';
+    buttons.append(impLabel, impInput, confirm);
+
     form.append(buttons);
     return form;
 };

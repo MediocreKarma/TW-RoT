@@ -166,7 +166,7 @@ const setTopButtons = (chapterData) => {
 };
 const fetchAndShowChapters = async () => {
     try {
-        const chapters = await fetchChapters();
+        const chapters = await fetchChapters(true);
         setTopButtons(chapters);
         showChapters(chapters);
     } catch (e) {

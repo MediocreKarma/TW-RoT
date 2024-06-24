@@ -121,7 +121,7 @@ const renderCard = (question) => {
 
     const exportJSONButton = document.createElement('a');
     exportJSONButton.className = 'dashboard-card__action button';
-    exportJSONButton.textContent = 'Exportează ca JSON';
+    exportJSONButton.textContent = 'Exportă ca JSON';
     
     const jsonString = JSON.stringify(question, null, 2);
     exportJSONButton.href = URL.createObjectURL(new Blob([jsonString], {type: `text/json`}));
@@ -129,7 +129,7 @@ const renderCard = (question) => {
 
     const exportCSVButton = document.createElement('a');
     exportCSVButton.className = 'dashboard-card__action button';
-    exportCSVButton.textContent = 'Exportează ca CSV';
+    exportCSVButton.textContent = 'Exportă ca CSV';
     exportCSVButton.href = new URL(`${API.EXERCISES}/exercises/${question.id}?output=csv`);
 
     actions.appendChild(actionsLabel);
