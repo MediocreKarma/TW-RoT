@@ -41,21 +41,25 @@ export const fetchQuestions = withDatabaseOperation(async function (
     if (startAndCountValidation instanceof ServiceResponse) {
         return startAndCountValidation;
     }
+    const query = params['query']?.query ?? '';
 
     if (params['query'].output === 'csv') {
         const result = await client.query(
-            `${SQL_SELECT_STATEMENT} where not q.deleted ${SQL_GROUPING_STATEMENT} offset $1::int limit $2::int`,
-            [start, count]
+            `${SQL_SELECT_STATEMENT} ${SQL_WHERE_FETCH_STATEMENT} ${SQL_GROUPING_STATEMENT} offset $2::int limit $3::int`,
+            [query, start, count]
         );
         for (const q of result.rows) {
             q.answers.sort((a, b) => a.id - b.id); 
             adjustOutputAnswerSet(q.answers);
             addImageToQuestion(q);
+            if (!q.image) {
+                q.imageId = '';
+                q.image = '';
+            }
         }
         return new CSVResponse(buildCSVFromPGResult(result), 'Successfully retrieved question CSV');
     }
 
-    const query = params['query']?.query ?? '';
 
     const data = (await client.query(
         `${SQL_SELECT_STATEMENT} ${SQL_WHERE_FETCH_STATEMENT} ${SQL_GROUPING_STATEMENT}
