@@ -166,16 +166,15 @@ export const addListenerToImageInput = () => {
         });
 };
 
-export const addListenerToImageResetInput = (defaultSrc) => {
+export const addListenerToImageResetInput = (defaultSrc, refSrc) => {
     const imageUpload = document.getElementById('image-upload');
     const resetBtn = document.getElementById('image-reset');
 
     resetBtn.addEventListener('click', () => {
-        // wipe image upload input
         imageUpload.value = '';
 
-        // set image to default
         setImagePreview(defaultSrc);
+        refSrc = defaultSrc;
     });
 };
 

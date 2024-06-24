@@ -6,14 +6,21 @@ import {
     validateFormData,
     convertObjectToFormData,
     setSubmitButtonDisabled,
+    setImagePreview,
 } from './form.js';
 import { showInfoModal } from '/js/modals.js';
 import { renderMessage } from '/js/render.js';
 import { renderError } from '/js/errors.js';
 import { showFormError, clearFormError } from '/js/form/errors.js';
-import { getExerciseCategories, submitExercise } from './requests.js';
+import {
+    getExerciseCategories,
+    getExercise,
+    postExercise,
+} from '../requests.js';
 
-const onFormSubmit = async (event) => {
+let imgSrc = null;
+
+const onFormSubmit = async (originalData, event) => {
     event.preventDefault();
 
     const form = event.target;
@@ -29,36 +36,96 @@ const onFormSubmit = async (event) => {
         clearFormError(form);
     }
 
-    const formData = convertObjectToFormData(data);
-    console.log(formData);
+    const mergedData = {
+        ...originalData,
+        ...data,
+    };
 
-    try {
-        const questionData = await submitExercise(formData);
-        setSubmitButtonDisabled(form, false);
-        showInfoModal(
-            renderMessage(
-                `Întrebarea a fost înregistrată cu succes. Veți fi redirectat la pagina de dashboard.`
-            ),
-            () => {
-                window.location.href = `/dashboard/exercises?query=${questionData?.id}`;
-            }
-        );
-    } catch (e) {
-        showInfoModal(renderError(e));
+    // console.log(mergedData);
+
+    // const formData = convertObjectToFormData(data);
+    // console.log(formData);
+
+    // try {
+    //     const postQuestionData = await postExercise(formData);
+    //     setSubmitButtonDisabled(form, false);
+    //     showInfoModal(
+    //         renderMessage(
+    //             `Întrebarea a fost înregistrată cu succes. Veți fi redirectat la pagina de dashboard.`
+    //         ),
+    //         () => {
+    //             window.location.href = `/dashboard/exercises?query=${postQuestionData?.id}`;
+    //         }
+    //     );
+    // } catch (e) {
+    //     showInfoModal(renderError(e));
+    // }
+};
+
+const getQuestionId = () => {
+    const url = new URL(window.location.href);
+
+    const pathParts = url.pathname.split('/');
+    const id = pathParts[3];
+
+    return parseInt(id, 10);
+};
+
+const populateForm = (form, questionData) => {
+    const setProperty = (inputName, property, value) => {
+        form.querySelector(`[name=${inputName}]`)[property] = value;
+    };
+
+    const setValue = (inputName, value) =>
+        setProperty(inputName, 'value', value);
+
+    setValue('description', questionData.text);
+
+    for (let i = 1; i <= 3; ++i) {
+        setValue(`answer${i}`, questionData.answers[i - 1].description);
+        if (questionData.answers[i - 1].correct) {
+            setProperty(`correct${i}`, 'checked', true);
+        }
     }
+    setValue('category-id', questionData.categoryId);
+    setImagePreview(questionData.image);
+
+    imgSrc = questionData.image ? questionData.imageId : null;
+};
+
+export const addListenerToImageDeleteInput = (refSrc) => {
+    const imageUpload = document.getElementById('image-upload');
+    const deleteBtn = document.getElementById('image-delete');
+
+    deleteBtn.addEventListener('click', () => {
+        imageUpload.value = '';
+        setImagePreview('');
+        refSrc = null;
+    });
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    addListenerToImageInput();
-    addListenerToImageResetInput();
+    try {
+        const id = getQuestionId();
+        const questionData = await getExercise(id);
 
-    const categories = await getExerciseCategories();
-    showCategories(categories.categories);
+        const categories = await getExerciseCategories();
+        showCategories(categories.categories);
 
-    const form = document.getElementById('exercise-form');
-    console.log(await collectFormData(form));
+        const form = document.getElementById('exercise-form');
 
-    document
-        .getElementById('exercise-form')
-        .addEventListener('submit', onFormSubmit);
+        populateForm(form, questionData);
+        document.querySelector('#question-id').innerText = id;
+
+        addListenerToImageInput();
+        addListenerToImageResetInput(questionData.image, imgSrc);
+        addListenerToImageDeleteInput(imgSrc);
+
+        document
+            .getElementById('exercise-form')
+            .addEventListener(
+                'submit',
+                async (e) => await onFormSubmit(questionData, e)
+            );
+    } catch (e) {}
 });

@@ -4,6 +4,8 @@ import {
     updatePagination,
     disablePagination,
     scrollToTop,
+    disableSearch,
+    enableSearch,
 } from '../common.js';
 import {
     deleteUserProgress,
@@ -22,7 +24,6 @@ const COUNT = 20;
 let total = 0;
 let currentPage = 0;
 let currentQuery;
-let searchTimeout;
 
 const renderEmailForm = () => {
     const form = document.createElement('form');
@@ -347,27 +348,10 @@ async function updatePageContent() {
 
 const addListenerToSearch = () => {
     const searchInput = document.getElementById('search');
-
-    searchInput.addEventListener('input', async () => {
-        const value = searchInput.value;
-
-        if (searchTimeout) {
-            clearInterval(searchTimeout);
-        }
-        searchTimeout = setTimeout(async () => {
-            disableSearch();
-            await search(value);
-            enableSearch();
-        }, 300);
-    });
-
     const searchForm = document.getElementById('search-form');
     searchForm.addEventListener('submit', async (e) => {
         const value = searchInput.value;
         e.preventDefault();
-        if (searchTimeout) {
-            clearInterval(searchTimeout);
-        }
         disableSearch();
         await search(value);
         enableSearch();

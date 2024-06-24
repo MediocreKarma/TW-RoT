@@ -1,11 +1,29 @@
 import API from '/js/api.js';
-import { get, post, patch, del } from '/js/authRequests.js';
+import { get, post, postFormData, patch, del } from '/js/authRequests.js';
 
 export const getExercises = async (start, count, query) => {
     const response = await get(
         `${API.EXERCISES}/exercises?start=${start}&count=${count}${
             query ? `&query=${query}` : ''
         }`
+    );
+    return await response.json();
+};
+
+export const getExercise = async (questionId) => {
+    const response = await get(`${API.EXERCISES}/exercises/${questionId}`);
+    return await response.json();
+};
+
+export const getExerciseCategories = async () => {
+    const response = await get(`${API.EXERCISES}/exercises/categories`);
+    return await response.json();
+};
+
+export const postExercise = async (questionData) => {
+    const response = await postFormData(
+        `${API.EXERCISES}/exercises`,
+        questionData
     );
     return await response.json();
 };

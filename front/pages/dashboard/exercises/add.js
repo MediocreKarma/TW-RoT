@@ -11,7 +11,7 @@ import { showInfoModal } from '/js/modals.js';
 import { renderMessage } from '/js/render.js';
 import { renderError } from '/js/errors.js';
 import { showFormError, clearFormError } from '/js/form/errors.js';
-import { getExerciseCategories, submitExercise } from './requests.js';
+import { getExerciseCategories, postExercise } from '../requests.js';
 
 const onFormSubmit = async (event) => {
     event.preventDefault();
@@ -33,7 +33,7 @@ const onFormSubmit = async (event) => {
     console.log(formData);
 
     try {
-        const questionData = await submitExercise(formData);
+        const questionData = await postExercise(formData);
         setSubmitButtonDisabled(form, false);
         showInfoModal(
             renderMessage(
