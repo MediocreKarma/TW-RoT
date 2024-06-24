@@ -151,10 +151,6 @@ const validateInfoQuestion = (question, validateText = true) => {
 }
 
 const prepImage = async (question) => {
-    if (question.imageId) {
-        addImageToQuestion(question);
-        return {image: null, imageId: null};
-    }
     if (question.imageInfo) {
         try {
             const image = await Jimp.read(question.imageInfo.filepath);
@@ -167,6 +163,10 @@ const prepImage = async (question) => {
             delete question.image;
             return {image: null, imageId: null};
         }
+    }
+    if (question.imageId) {
+        addImageToQuestion(question);
+        return {image: null, imageId: null};
     }
     if (!question.image) {
         return {image: null, imageId: null};

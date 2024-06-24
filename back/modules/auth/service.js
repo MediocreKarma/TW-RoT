@@ -530,7 +530,7 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
     const user = await isAuthenticated(req, res, params);
 
     let userId;
-    if (!user?.errorCode && (user.flags & USER_ROLES.ADMIN) !== 0 && (user.flags & USER_ROLES.BANNED) === 0) {
+    if (!(!user?.errorCode && (user.flags & USER_ROLES.ADMIN) !== 0 && (user.flags & USER_ROLES.BANNED) === 0)) {
         const token = params['body']?.token;
         if (!token) {
             return new ServiceResponse(
