@@ -198,7 +198,7 @@ export const collectFormData = async (form) => {
 
     let finalDataObj = {};
 
-    if (dataObject['image-upload'] && dataObject['image-upload'] != '') {
+    if (form.querySelector('#image-upload').files.length > 0) {
         finalDataObj.image = dataObject['image-upload'];
         console.log(finalDataObj.image);
     }

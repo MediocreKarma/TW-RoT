@@ -16,6 +16,7 @@ import {
     getExerciseCategories,
     getExercise,
     postExercise,
+    deleteExercise,
 } from '../requests.js';
 
 let imgSrc = null;
@@ -41,25 +42,25 @@ const onFormSubmit = async (originalData, event) => {
         ...data,
     };
 
-    // console.log(mergedData);
+    console.log(mergedData);
+    const formData = convertObjectToFormData(mergedData);
+    console.log(formData);
 
-    // const formData = convertObjectToFormData(data);
-    // console.log(formData);
-
-    // try {
-    //     const postQuestionData = await postExercise(formData);
-    //     setSubmitButtonDisabled(form, false);
-    //     showInfoModal(
-    //         renderMessage(
-    //             `Întrebarea a fost înregistrată cu succes. Veți fi redirectat la pagina de dashboard.`
-    //         ),
-    //         () => {
-    //             window.location.href = `/dashboard/exercises?query=${postQuestionData?.id}`;
-    //         }
-    //     );
-    // } catch (e) {
-    //     showInfoModal(renderError(e));
-    // }
+    try {
+        const postQuestionData = await postExercise(formData);
+        await deleteExercise(originalData.id);
+        setSubmitButtonDisabled(form, false);
+        showInfoModal(
+            renderMessage(
+                `Întrebarea a fost modificată cu succes. Veți fi redirectat la pagina de dashboard.`
+            ),
+            () => {
+                window.location.href = `/dashboard/exercises?query=${postQuestionData?.id}`;
+            }
+        );
+    } catch (e) {
+        showInfoModal(renderError(e));
+    }
 };
 
 const getQuestionId = () => {
@@ -81,15 +82,14 @@ const populateForm = (form, questionData) => {
 
     setValue('description', questionData.text);
 
-    for (let i = 1; i <= 3; ++i) {
-        setValue(`answer${i}`, questionData.answers[i - 1].description);
-        if (questionData.answers[i - 1].correct) {
-            setProperty(`correct${i}`, 'checked', true);
+    for (let i = 0; i < Math.min(questionData.answers.length, 3); ++i) {
+        setValue(`answer${i + 1}`, questionData.answers[i].description);
+        if (questionData.answers[i].correct) {
+            setProperty(`correct${i + 1}`, 'checked', true);
         }
     }
     setValue('category-id', questionData.categoryId);
     setImagePreview(questionData.image);
-
     imgSrc = questionData.image ? questionData.imageId : null;
 };
 
@@ -127,5 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 'submit',
                 async (e) => await onFormSubmit(questionData, e)
             );
-    } catch (e) {}
+    } catch (e) {
+        showInfoModal(renderError(e));
+    }
 });

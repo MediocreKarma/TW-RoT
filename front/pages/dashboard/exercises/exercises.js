@@ -205,6 +205,23 @@ async function updatePageContent() {
         data = responseData.data;
         total = responseData.total;
 
+        const exerciseById = data.filter(
+            (exercise) => `${exercise.id}` === currentQuery
+        );
+
+        if (exerciseById.length === 0) {
+            try {
+                const responseData = await getExercise(currentQuery);
+                data = [responseData, ...data];
+                total = total + 1;
+            } catch (e) {
+                if (e?.status === 404 || e?.status === 400) {
+                } else {
+                    throw e;
+                }
+            }
+        }
+
         showData(data);
         updatePagination(currentPage, total, COUNT, setPage);
     } catch (e) {
