@@ -353,6 +353,32 @@ paths:
                           type: string
                         image:
                           type: string
+    delete:
+      summary: Get sign category
+      operationId: getSignCategory
+      tags:
+        - Sign Categories
+      servers:
+        - url: https://localhost:{PORT}/api/v1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - cookieAuth: []
+      responses:
+        '204':
+          description: Success
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
   /comparison-categories:
     get:
       summary: Returns a list of comparison categories

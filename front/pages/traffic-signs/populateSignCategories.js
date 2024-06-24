@@ -44,52 +44,6 @@ const renderCategory = (categoryData) => {
 
     buttonHolder.append(learnButton);
 
-    if (isAdmin()) {
-        const editButton = document.createElement('div');
-        editButton.className = 'button';
-        editButton.textContent = 'Editează';
-
-        editButton.onclick = async (e) => {
-            e.preventDefault();
-
-            const form = renderCategoryForm();
-            try {
-                const category = (await fetchCategory(categoryData.id))
-                    .category;
-                populateCategoryForm(form, category);
-                const closeModal = showGeneralModal(form);
-
-                form.onsubmit = categoryFormSubmit(
-                    closeModal,
-                    async (objectFormData) => {
-                        console.log(objectFormData);
-                        showInfoModal(
-                            renderMessage(
-                                'Categoria a fost adăugată cu succes.'
-                            )
-                        );
-                    },
-                    showCategories
-                );
-            } catch (e) {
-                showInfoModal(renderError(e));
-            }
-        };
-
-        const deleteButton = document.createElement('div');
-        deleteButton.className = 'button';
-        deleteButton.textContent = 'Șterge';
-
-        deleteButton.addEventListener('click', () => {
-            // try {
-            //     await del(`${API.TRAFFIC_SIGNS}/`)
-            // }
-        });
-
-        buttonHolder.append(editButton, deleteButton);
-        buttons.push(editButton, deleteButton);
-    }
-
     for (const button of buttons) {
         button.style.flex = '1';
         button.style['text-align'] = 'center';
@@ -125,38 +79,7 @@ const showCategories = async () => {
         categoriesData.forEach((category) => {
             container.appendChild(renderCategory(category));
         });
-
-        if (isAdmin()) {
-            let newCategory = document.getElementById('new-category');
-            if (!newCategory) {
-                newCategory = document.createElement('a');
-                newCategory.href = '#';
-                newCategory.id = 'new-category';
-                newCategory.classList.add('button');
-                newCategory.textContent = 'Adaugă o categorie nouă';
-                document.getElementById('button-holder').append(newCategory);
-            }
-
-            newCategory.onclick = async (e) => {
-                e.preventDefault();
-
-                const form = renderCategoryForm();
-                const closeModal = showGeneralModal(form);
-
-                form.onsubmit = categoryFormSubmit(
-                    closeModal,
-                    async (objectFormData) => {
-                        console.log(objectFormData);
-                        showInfoModal(
-                            renderMessage(
-                                'Categoria a fost adăugată cu succes.'
-                            )
-                        );
-                    },
-                    showCategories
-                );
-            };
-        }
+        
     } catch (e) {
         showInfoModal(renderError(e), () => {
             window.location.href = '/';

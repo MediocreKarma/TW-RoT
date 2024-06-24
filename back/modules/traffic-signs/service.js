@@ -172,46 +172,7 @@ export const getComparison = withDatabaseOperation(async function (
     }
     result.forEach(sign => buildImageForObj(sign));
     return new ServiceResponse(200, result, 'Successfully retrieved comparison category');
-});
-
-export const addSignCategory = withDatabaseOperation(async function (
-    client, req, res, params
-) {   
-    const authValidation = validateAuth(params['authorization']);
-    if (authValidation) {
-        return authValidation;
-    }
-    if (!isAdmin(params['authorization'])) {
-        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
-    }
-
-    const exists = (await client.query(
-        `select count(' ')::int as exists from sign_category where $1::varchar = title`,
-        [params['body'].title]
-    )).rows[0].exists;
-
-    if (exists) {
-        return new ServiceResponse(400, {errorCode: ErrorCodes.CATEGORY_ALREADY_EXISTS}, 'Category already exists');
-    }
-
-    try {
-        await client.query(
-            `call insert_sign_category($1::jsonb)`,
-            [params['body']]
-        )
-    }
-    catch (e) {
-        console.log(e);
-        return new ServiceResponse(400, {errorCode: ErrorCodes.FAILED_TO_CREATE_SIGN_CATEGORY}, 'Failed to create');
-    }
-    const id = (await client.query(
-        `select id from sign_category order by id desc limit 1`
-    )).rows[0].id;
-    
-    const category = await getSignCategory(req, res, {path: {id: `${id}`}});
-
-    return new ServiceResponse(201, category.body, 'Successfully created new category');
-});
+}); 
 
 const prepImage = async (card) => {
     if (card.imageId) {
@@ -247,6 +208,54 @@ const prepImage = async (card) => {
         return {image: null, imageId: null};
     }
 }
+
+export const addSignCategory = withDatabaseOperation(async function (
+    client, req, res, params
+) {   
+    const authValidation = validateAuth(params['authorization']);
+    if (authValidation) {
+        return authValidation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+
+    const exists = (await client.query(
+        `select count(' ')::int as exists from sign_category where $1::varchar = title`,
+        [params['body'].title]
+    )).rows[0].exists;
+
+    if (exists) {
+        return new ServiceResponse(400, {errorCode: ErrorCodes.CATEGORY_ALREADY_EXISTS}, 'Category already exists');
+    }
+    try {
+        if (params.body?.files?.csv) {
+            console.log('csv');
+            return new ServiceResponse(405, null);
+        }
+        else if (params.body?.files?.image) {
+            console.log('image');
+            return new ServiceResponse(405, null);
+        }
+        else if (Array.isArray(params.body)) {
+            console.log('array');
+            return new ServiceResponse(405, null);
+        }
+        else {
+            const category = JSON.parse(params['body'].fields.category);
+            category.title = category.categoryTitle;
+
+            await client.query(
+                `call insert_sign_category($1::jsonb)`,
+                [category]
+            );
+        }
+    }
+    catch (e) {
+        console.log(e);
+        return new ServiceResponse(400, {errorCode: ErrorCodes.FAILED_TO_CREATE_SIGN_CATEGORY}, 'Failed to create');
+    }
+});
 
 const addSign = async (client, sign) => {
     const {image, imageId} = prepImage(sign);
@@ -294,7 +303,7 @@ export const addSignsToCategory = withDatabaseOperation(async function (
         }
         else if (params['body']?.fields?.signs) { // multiple signs from array obj
             const signs = JSON.parse(params['body']?.fields?.signs);
-            for (const sign of parsedSigns) {
+            for (const sign of signs) {
                 const result = await addSign(client, sign);
                 if (result.status < 200 || 299 < result.status) {
                     return result;
@@ -311,6 +320,31 @@ export const addSignsToCategory = withDatabaseOperation(async function (
         }
     } catch (err) {
         console.log(err);
+        return new ServiceResponse(400, {errorCode: ErrorCodes.FAILED_TO_CREATE_SIGNS}, 'Failed to create signs');
     }
-    return new ServiceResponse(400, {errorCode: ErrorCodes.FAILED_TO_CREATE_SIGNS}, 'Failed to create signs');
+});
+
+export const deleteSignCategory = withDatabaseOperation(async function (
+    client, _req, _res, params
+) {
+    const authValidation = validateAuth(params['authorization']);
+    if (authValidation) {
+        return authValidation;
+    }
+    if (!isAdmin(params['authorization'])) {
+        return new ServiceResponse(403, {errorCode: ErrorCodes.UNAUTHORIZED}, 'Unauthorized');
+    }
+
+    try {
+        const result = (await client.query(
+            `delete from sign_category where id = $1::int`, [params.path.id]
+        )).rows;
+        if (result.length === 0) {
+            return new ServiceResponse(404, {errorCode: ErrorCodes.SIGN_CATEGORY_NOT_FOUND});
+        }
+
+        return new ServiceResponse(204, null, 'Success');
+    } catch (err) {
+        return new ServiceResponse(404, {errorCode: ErrorCodes.INVALID_SIGN_CATEGORY});
+    }
 });

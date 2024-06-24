@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ProRutier - Învață eficient informații rutiere</title>
+        <link rel="stylesheet" href="/style/style.css" />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
+        <script src="/components/header/header.js" type="module"></script>
+        <script src="/components/footer/footer.js" type="module"></script>
+        <script src="/dashboard/exercises/add.js" type="module"></script>
+
+        <script src="/components/backToTop.js"></script>
+    </head>
+
+    <body>
+        <header class="header header--no-js" id="header"></header>
+
+        <div class="main-container">
+            <div class="question-edit">
+                <h1 class="question-edit__title">Adaugă întrebare</h1>
+                <form id="exercise-form" class="form">
+                    <div class="form__group">
+                        <div class="form__row--equal">
+                            <div class="form__group">
+                                <label for="question-category"
+                                    >Categorie:</label
+                                >
+                                <div class="comparison__select">
+                                    <select
+                                        id="question-category"
+                                        name="category-id"
+                                    ></select>
+                                </div>
+                            </div>
+                            <div
+                                class="form__group"
+                                id="category-title-input"
+                                style="display: none"
+                            >
+                                <label for="category-title"
+                                    >Titlul categoriei:</label
+                                >
+                                <input
+                                    type="text"
+                                    id="category-title"
+                                    name="category-title"
+                                    class="form__input"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form__group">
+                        <label for="description">Descriere:</label>
+                        <textarea
+                            class="form__input"
+                            id="description"
+                            name="description"
+                            rows="4"
+                        ></textarea>
+                    </div>
+
+                    <div class="form__group">
+                        <label for="answer1">Răspuns 1:</label>
+                        <div class="form__row">
+                            <input
+                                type="text"
+                                id="answer1"
+                                name="answer1"
+                                class="form__input"
+                            />
+                            <input
+                                type="checkbox"
+                                id="correct1"
+                                name="correct1"
+                                value="false"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form__group">
+                        <label for="answer2">Răspuns 2:</label>
+                        <div class="form__row">
+                            <input
+                                type="text"
+                                id="answer2"
+                                name="answer2"
+                                class="form__input"
+                            />
+                            <input
+                                type="checkbox"
+                                id="correct2"
+                                name="correct2"
+                                value="false"
+                            />
+                        </div>
+                    </div>
+                    <div class="form__group">
+                        <label for="answer3">Răspuns 3:</label>
+                        <div class="form__row">
+                            <input
+                                type="text"
+                                id="answer3"
+                                name="answer3"
+                                class="form__input"
+                            />
+                            <input
+                                type="checkbox"
+                                id="correct3"
+                                name="correct3"
+                                value="false"
+                            />
+                        </div>
+                    </div>
+                    <div class="form__group">
+                        <label for="image-upload">Imagine:</label>
+                        <div class="form__image">
+                            <input
+                                type="file"
+                                class="form__input"
+                                id="image-upload"
+                                name="image-upload"
+                                accept="image/*"
+                            />
+                            <img
+                                id="image-preview"
+                                src=""
+                                alt="Image Preview"
+                                style="display: none"
+                            />
+                            <div class="form__row">
+                                <button
+                                    type="button"
+                                    class="button"
+                                    id="image-reset"
+                                    style="display: none"
+                                >
+                                    Resetează imaginea
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form__buttons">
+                        <label for="import" class="button">Importă</label>
+                        <input type="file" accept="text/csv, application/json" id="import" class="button" style="display: none">    
+                        <button type="submit" class="button">Confirmă</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <footer class="footer" id="footer"></footer>
+    </body>
+</html>
