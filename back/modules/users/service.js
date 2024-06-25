@@ -162,10 +162,9 @@ const generateRSS = async () => {
     const tmp = new RSS({
         title: 'Cele mai mari scoruri',
         description: 'Top 100 pe ProRutier',
-        site_url: `${process.env.FRONTEND_URL}/leaderboard?output=rss`,
         feed_url: `${process.env.USERS_URL}/api/v1/leaderboard?output=rss`,
         ttl: 1,
-        site_url: `${process.env.FRONTEND_URL}/leaderboard`,
+        site_url: `${process.env.FRONTEND_URL}`,
         language: 'ro',
         pubDate: new Date()
     });
@@ -179,7 +178,6 @@ const generateRSS = async () => {
                             convertString(`Nr. chestionare admise: ${user.solvedQuestionnaires}<br>`),
             url: getLeaderboardPageForRank(i),
             guid: `rank_${i}`,        
-
         });
     });
 
