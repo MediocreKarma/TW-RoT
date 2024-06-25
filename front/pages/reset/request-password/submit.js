@@ -2,8 +2,10 @@ import { addFormSubmit } from '../forms.js';
 import { requestChangePassword } from '../requests.js';
 import { showInfoModal } from '/js/modals.js';
 import { renderMessage } from '/js/render.js';
+import { fixPasswordInputs } from '/js/showPassword.js';
 
 const submitData = async (data) => {
+    await fixPasswordInputs(document.getElementById('form'));
     await requestChangePassword(data.email);
     showInfoModal(
         renderMessage(

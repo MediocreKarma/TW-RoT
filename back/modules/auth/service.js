@@ -430,7 +430,6 @@ export const requestCredentialChange = withDatabaseOperation(async function (
             'Change type is invalid'
         );
     }
-
     handleRequestChange(email, type);
     return new ServiceResponse(
         200,
@@ -527,10 +526,9 @@ export const verifyChangeRequest = withDatabaseTransaction(async function (
         return validationStatus;
     }
     
-    const user = await isAuthenticated(req, res, params);
-
+    const user = (await isAuthenticated(req, res, params)).body.user;
     let userId;
-    if (!(!user?.errorCode && (user.flags & USER_ROLES.ADMIN) !== 0 && (user.flags & USER_ROLES.BANNED) === 0)) {
+    if (!(!user?.errorCode && (user?.flags & USER_ROLES.ADMIN) !== 0 && (user?.flags & USER_ROLES.BANNED) === 0)) {
         const token = params['body']?.token;
         if (!token) {
             return new ServiceResponse(

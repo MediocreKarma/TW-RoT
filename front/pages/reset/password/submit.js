@@ -4,9 +4,10 @@ import { changePassword } from '../requests.js';
 import { getToken, verifyToken } from '../utils.js';
 import { showInfoModal } from '/js/modals.js';
 import { renderMessage } from '/js/render.js';
-import { userData } from '/js/auth.js';
+import { fixPasswordInputs } from '/js/showPassword.js';
 
 const submitData = async (data) => {
+    await fixPasswordInputs(document.getElementById('form'));
     const token = getToken();
     await changePassword(token, data.password);
     await userData(); // force-update user data
