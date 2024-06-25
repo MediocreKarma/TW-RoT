@@ -149,7 +149,7 @@ const validateInfoQuestion = (question, validateText = true) => {
     if (validateText && !question.text) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.MISSING_TEXT_FROM_QUESTION}, 'Missing text from question');
     }
-    if (validateText && question.description >= 4096) {
+    if (validateText && question.description.length >= 4096) {
         return new ServiceResponse(400, {errorCode: ErrorCodes.DESCRIPTION_TOO_LONG}, 'Description too long');
     }
 }
