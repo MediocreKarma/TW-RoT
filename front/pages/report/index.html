@@ -734,8 +734,8 @@
                         Pagina <b>Cod rutier</b> conține o listă de capitole din
                         Codul Rutier. Această pagină poate fi accesată chiar
                         dacă utilizatorul nu este înregistrat. Pentru
-                        administratori, această pagină permite editarea și
-                        adăugarea de capitole.
+                        administratori, această pagină permite editarea,
+                        ștergerea și adăugarea de capitole.
                         <img
                             src="/report/img/cod_rutier.png"
                             alt="Codul rutier"
@@ -972,6 +972,22 @@
                             typeof="sa:image"
                         />
                     </li>
+                    <li>
+                        Pagina <b>Adaugă/Editează întrebare</b> permite
+                        administratorilor să adauge întrebări noi sau să editeze
+                        întrebări existente. Pagina este accesibilă din
+                        dashboard-ul menționat anterior.
+                        <img
+                            src="/report/img/add_question.png"
+                            alt="Adauga intrebare"
+                            typeof="sa:image"
+                        />
+                        <img
+                            src="/report/img/edit_question.png"
+                            alt="Editeaza intrebare"
+                            typeof="sa:image"
+                        />
+                    </li>
                 </ul>
             </section>
             <section>
@@ -1052,14 +1068,20 @@
                         utilizator, cât și între frontend și backend;
                     </li>
                     <li>
-                        comunicare prin interfața API REST, pentru a transmite
-                        informații cerute de utilizatori;
+                        comunicare prin interfața API REST (în format JSON sau
+                        prin FormData), pentru a transmite informații cerute de
+                        utilizatori;
                     </li>
                     <li>
                         comunicare printr-un feed RSS, prin care utilizatorii
                         pot urmări lista de utilizatori care se află în topul
                         site-ului prin procentul de întrebări la care au răspuns
-                        corect.
+                        corect;
+                    </li>
+                    <li>
+                        comunicare prin fișiere de tip JSON și CSV pentru
+                        importarea și exportarea de date (întrebări, capitole
+                        din Codul Rutier, etc).
                     </li>
                 </ul>
                 <p>
@@ -1068,11 +1090,15 @@
                 </p>
                 <p>
                     Din punct de vedere al securității s-au implementat diverse
-                    măsuri, precum criptarea datelor, utilizarea unui protocol
-                    sigur, autentificarea și autorizarea utilizatorilor și
-                    permiterea anumitor funcționalități doar pentru utilizatori
-                    logați sau pentru administratori, protejarea împotriva a
-                    diverse vulnerabilități comune (precum injecții SQL), etc.
+                    măsuri, precum criptarea datelor, hashing-ul parolelor
+                    utilizatorilor (pentru a nu le stoca în plaintext),
+                    utilizarea unui protocol sigur, autentificarea și
+                    autorizarea utilizatorilor prin cookie-uri sigure
+                    (<i>http-only</i>) și permiterea anumitor funcționalități
+                    doar pentru utilizatori logați sau pentru administratori,
+                    protejarea împotriva a diverse vulnerabilități comune
+                    (precum injecții SQL) prin intermediul
+                    <b>prepared statements</b> pentru PostgreSQL, etc.
                 </p>
             </section>
         </section>
@@ -1144,7 +1170,7 @@
                     <li>
                         Comunicarea cu backend-ul pentru informații și apariția
                         elementelor în pagină se realizează programatic,
-                        folosind JavaScript.
+                        folosind JavaScript <i>client-side</i>.
                     </li>
                 </ul>
             </section>
