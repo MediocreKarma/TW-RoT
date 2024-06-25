@@ -90,7 +90,6 @@ const disableOuterLinks = (targetNode) => {
     });
 
     allLinks.forEach((link) => {
-        console.log(link.href);
         if (
             !innerLinksArray.includes(link) &&
             !idExceptions.includes(link.id)

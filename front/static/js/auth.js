@@ -13,7 +13,6 @@ export const UserData = {
 const isAuthenticated = async () => {
     try {
         const response = await post(`${API.AUTH}/auth/authenticated`, null);
-        console.log(response);
         return await response.json();
     } catch (e) {
         if (e?.status === 401 || e?.status === 403) {

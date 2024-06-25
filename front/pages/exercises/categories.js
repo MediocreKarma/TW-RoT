@@ -45,7 +45,6 @@ const showCategories = async () => {
     showLoading(container);
 
     const categoriesData = await getExerciseCategories();
-    console.log(categoriesData);
     container.innerHTML = '';
 
     categoriesData.categories.forEach((category) => {

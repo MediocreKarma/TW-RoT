@@ -45,7 +45,6 @@ export const onFormSubmit = async (questionData, questionCard, event) => {
             selected: answer.id in dataObject,
         })),
     };
-    console.log(submitData);
 
     const user = cachedUserData();
 
@@ -55,14 +54,12 @@ export const onFormSubmit = async (questionData, questionCard, event) => {
     try {
         if (!user) {
             const responseData = await getExerciseSolution(questionData.id);
-            console.log(responseData);
             answerData = {
                 isCorrect: checkAnswers(submitData.answers, responseData),
                 correctAnswers: responseData,
             };
         } else {
             const responseData = await submitSolution(user.id, submitData);
-            console.log(responseData);
             answerData = responseData;
         }
     } catch (e) {

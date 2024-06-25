@@ -113,7 +113,6 @@ export const errors = Object.fromEntries(
 );
 
 export const getErrorMessageFromCode = (errorCode) => {
-    console.log(errorCode);
     if (errorCode in errors && errors[errorCode]) {
         return errors[errorCode];
     }
@@ -124,7 +123,6 @@ export const getErrorCode = (errorData) => {
 };
 
 export const getErrorMessage = (errorData) => {
-    console.log(errorData);
     if (errorData?.body?.errorCode) {
         return getErrorMessageFromCode(errorData?.body?.errorCode);
     }
@@ -145,9 +143,7 @@ export const renderErrorMessage = (errorMessage) => {
     try {
         errorDetails.innerText = errorMessage;
         errorInfoContainer.appendChild(errorDetails);
-    } catch (e) {
-        console.log(e);
-    }
+    } catch (e) {}
 
     return errorInfoContainer;
 };

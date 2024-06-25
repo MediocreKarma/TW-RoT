@@ -103,7 +103,6 @@ const renderCard = (question) => {
 
         try {
             await deleteExercise(question.id);
-            console.log(currentQuery);
             if (!isNaN(currentQuery) && /^[0-9]+$/.test(currentQuery)) {
                 currentQuery = '';
                 const searchInput = document.getElementById('search');

@@ -30,7 +30,6 @@ const onFormSubmit = async (originalData, event) => {
     const data = await collectFormData(form);
     const validation = validateFormData(data);
 
-    console.log(validation);
     if (!validation.valid) {
         showFormError(form, validation.message);
         setSubmitButtonDisabled(form, false);
@@ -44,9 +43,7 @@ const onFormSubmit = async (originalData, event) => {
         ...data,
     };
 
-    console.log(mergedData);
     const formData = convertObjectToFormData(mergedData);
-    console.log(formData);
 
     try {
         const postQuestionData = await postExercise(formData);

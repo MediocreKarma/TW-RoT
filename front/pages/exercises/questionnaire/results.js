@@ -113,7 +113,6 @@ const renderStatus = (questionnaire) => {
     const stats = getQuestionnaireStatsFromExisting(questionnaire);
 
     const statusNode = document.createElement('h3');
-    console.log(stats);
 
     const correctQuestions =
         stats.totalQuestions - stats.unsolvedQuestions - stats.unsentQuestions;

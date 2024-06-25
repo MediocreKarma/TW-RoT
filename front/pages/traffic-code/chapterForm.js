@@ -97,7 +97,6 @@ export const renderChapterForm = () => {
                 try {
                     result = JSON.parse(await readFileIntoString(file));
                 } catch (err) {
-                    console.log(err);
                     showInfoModal(
                         renderMessage(
                             `Eroare la citirea fișierului JSON. Fișierul este invalid`
@@ -116,7 +115,6 @@ export const renderChapterForm = () => {
                 );
             }
         } catch (err) {
-            console.log(err);
             showInfoModal(
                 renderMessage('Eroare la import, fișier invalid'),
                 () => {

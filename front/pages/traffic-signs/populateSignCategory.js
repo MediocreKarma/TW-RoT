@@ -56,7 +56,6 @@ const showInfo = (targetNode, categoryInfo) => {
         ['Rol', 'purpose'],
         ['Sugestii', 'suggestion'],
     ]);
-    console.log(categoryInfo);
     targetNode.querySelectorAll('.category-info__row').forEach((row) => {
         const keyElement = row.querySelector('.category-info__key');
         const valueElement = row.querySelector('.category-info__value');
@@ -91,11 +90,14 @@ const showCategory = async () => {
         const categoryData = await fetchCategory(id);
         title.innerText = categoryData.category.title;
 
-        document.getElementById('csv-export').href = 
-            `${API.TRAFFIC_SIGNS}/sign-categories?output=csv`;
-        
+        document.getElementById(
+            'csv-export'
+        ).href = `${API.TRAFFIC_SIGNS}/sign-categories?output=csv`;
+
         document.getElementById('json-export').href = URL.createObjectURL(
-            new Blob([JSON.stringify(categoryData, null, 2)], { type: `text/json` })
+            new Blob([JSON.stringify(categoryData, null, 2)], {
+                type: `text/json`,
+            })
         );
 
         showInfo(info, categoryData.category);

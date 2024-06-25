@@ -18,7 +18,6 @@ const populateQuestion = async () => {
             .pop();
         const data = await getUnsolvedExerciseByCategory(id);
         data.answers.sort((a, b) => a.id - b.id);
-        console.log(data);
 
         const card = await renderQuestion(data);
         question.replaceWith(card);
