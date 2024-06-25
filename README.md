@@ -23,5 +23,5 @@ Daca nu au fost modificate setarile din .env, web server-ul va rula pe localhost
 
 Link-uri
 -------------------------------------------
-[Video demonstrativ](https://youtu.be/gwOvNgEUhcE)
+[Video demonstrativ](https://youtu.be/gwOvNgEUhcE) <br>
 [Diagrama C4](https://app.diagrams.net/#G1SN3xsN5CL0ncaiA_02Ie0kxb0tTFaeEs#%7B"pageId"%3A"xpDZ8UGQI6kU-hTMHLIq"%7D)
