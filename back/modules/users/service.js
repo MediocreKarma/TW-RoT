@@ -117,7 +117,7 @@ export const getLeaderboard = withDatabaseOperation(async function (
     }
 
     if (params['query'].output === 'rss') {
-        sendFileResponse(res, 200, rssFeedXml, 'application/rss+xml');
+        sendFileResponse(res, 200, rssFeedXml, 'application/xml');
         return;
     }
     
@@ -159,6 +159,8 @@ const convertString = (str) => {
 const generateRSS = async () => {
     const leaderboard = (await getLeaderboard(null, null, {query: {start: '0', count: '100'}})).body.data;
 
+    const date = new Date();
+
     const tmp = new RSS({
         title: 'Cele mai mari scoruri',
         description: 'Top 100 pe ProRutier',
@@ -166,7 +168,7 @@ const generateRSS = async () => {
         ttl: 1,
         site_url: `${process.env.FRONTEND_URL}`,
         language: 'ro',
-        pubDate: new Date()
+        pubDate: date
     });
 
     leaderboard.forEach((user, i) => {
@@ -177,7 +179,9 @@ const generateRSS = async () => {
                             convertString(`% răspunsuri corecte: ${Math.round(user.solvedQuestions / user.totalQuestions * 100).toFixed(2)}<br>`) +
                             convertString(`Nr. chestionare admise: ${user.solvedQuestionnaires}<br>`),
             url: getLeaderboardPageForRank(i),
-            guid: `rank_${i}`,        
+            guid: `rank_${i}`,
+            author: `${user.username}`,
+            date: date      
         });
     });
 
